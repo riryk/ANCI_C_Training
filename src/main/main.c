@@ -1,7 +1,12 @@
 #include "test.h"
-
+#include <stdio.h>
 
 int main(int argc, char *argv[])
 {
-   test_method("");
+	int c;
+
+	while ((c = getchar()) != EOF)
+       putchar(c);
+
+    test_method("");
 }
