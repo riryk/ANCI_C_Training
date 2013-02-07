@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src\include\test"
+				AdditionalIncludeDirectories=""
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src\include\test"
+				AdditionalIncludeDirectories=""
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -202,6 +202,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+			        Name="inout"
+				    >
+				    <File
+					    RelativePath="src\include\inout\inout.h"
+				    >
+				    </File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="test"
@@ -212,7 +220,15 @@
 				</File>
 			</Filter>
 			<Filter
-				Name="main"
+				Name="inout"
+				>
+			    <File
+					 elativePath="src\inout\inout.c"
+				    >
+				</File>
+			</Filter>
+			<Filter
+			    Name="main"
 				>
 				<File
 					RelativePath="src\main\main.c"

@@ -3,5 +3,7 @@
 
 int test_method(char *test_param)
 {
-   printf("I am a test method");
+	return 1;
+
+   //printf("I am a test method");
 }
