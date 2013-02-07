@@ -1,6 +1,4 @@
-#include "test.h"
-#include <stdio.h>
-#include <windows.h>
+#include "inout.h"
 
 #define _IOREAD_COPY            0x0001
 #define _IOWRT_COPY             0x0002
@@ -106,7 +104,7 @@ int main(int argc, char *argv[])
 	stdout1._ptr_copy = stdout1._base_copy = (char*)malloc_copy(BUF_SIZE);
 	stdout1._cnt_copy = stdout1._bufsiz_copy = BUF_SIZE;
 
- 	if (!WriteFile(
+ 	/*if (!WriteFile(
 		   consoleHandler,
            charsBuf,
            BUF_SIZE,
@@ -116,7 +114,7 @@ int main(int argc, char *argv[])
         dosretval = GetLastError();
 	}
 
-	CloseHandle(consoleHandler);
+	CloseHandle(consoleHandler);*/
          
     printf("hello"); 
 

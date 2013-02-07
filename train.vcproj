@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="src/include/test;src/include/inout;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -195,40 +195,40 @@
 				Name="include"
 				>
 				<Filter
-					Name="test"
+					Name="memory"
 					>
 					<File
-						RelativePath="src\include\test\test.h"
+						RelativePath=".\src\include\memory\memory.h"
 						>
 					</File>
 				</Filter>
 				<Filter
-			        Name="inout"
-				    >
-				    <File
-					    RelativePath="src\include\inout\inout.h"
-				    >
-				    </File>
+					Name="inout"
+					>
+					<File
+						RelativePath="src\include\inout\inout.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
-				Name="test"
+				Name="memory"
 				>
 				<File
-					RelativePath="src\test\test.c"
+					RelativePath=".\src\memory\memory.c"
 					>
 				</File>
 			</Filter>
 			<Filter
 				Name="inout"
 				>
-			    <File
-					 elativePath="src\inout\inout.c"
-				    >
+				<File
+					RelativePath="src\inout\inout.c"
+					>
 				</File>
 			</Filter>
 			<Filter
-			    Name="main"
+				Name="main"
 				>
 				<File
 					RelativePath="src\main\main.c"
