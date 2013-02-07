@@ -14,7 +14,7 @@
 	<ToolFiles>
 	</ToolFiles>
 	<Configurations>
-	    <Configuration
+		<Configuration
 			Name="Debug|Win32"
 			OutputDirectory=".\Debug\train"
 			IntermediateDirectory=".\Debug\train"
@@ -59,6 +59,9 @@
 			/>
 			<Tool
 				Name="VCManagedResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCResourceCompilerTool"
 			/>
 			<Tool
 				Name="VCPreLinkEventTool"
@@ -143,7 +146,10 @@
 				Name="VCManagedResourceCompilerTool"
 			/>
 			<Tool
-				Name="VCManagedResourceCompilerTool"
+				Name="VCResourceCompilerTool"
+			/>
+			<Tool
+				Name="VCPreLinkEventTool"
 			/>
 			<Tool
 				Name="VCLinkerTool"
@@ -186,31 +192,31 @@
 			Name="src"
 			>
 			<Filter
-			    Name="include"
+				Name="include"
 				>
 				<Filter
-			        Name="test"
-				    >
-				    <File
-					    RelativePath="src\include\test\test.h"
-				    >
-				    </File>
+					Name="test"
+					>
+					<File
+						RelativePath="src\include\test\test.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
-			    Name="test"
+				Name="test"
 				>
-			    <File
-					    RelativePath="src\test\test.c"
-				    >
+				<File
+					RelativePath="src\test\test.c"
+					>
 				</File>
 			</Filter>
 			<Filter
-			    Name="main"
+				Name="main"
 				>
 				<File
-					    RelativePath="src\main\main.c"
-				    >
+					RelativePath="src\main\main.c"
+					>
 				</File>
 			</Filter>
 		</Filter>
