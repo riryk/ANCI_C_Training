@@ -11,7 +11,4 @@
 #define INVALID_CONSOLE_MODE       2
 #define WRITE_FILE_ERROR           3
 
-#define NELEMS(x)  (sizeof(x) / sizeof(x[0]))
-
-int write_console(char *message);
-
+int WriteToConsole(char *message);

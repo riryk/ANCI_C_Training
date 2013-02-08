@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/test;src/include/inout;"
+				AdditionalIncludeDirectories="src/include/memory;src/include/inout;src/include/str;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories=""
+				AdditionalIncludeDirectories="src/include/memory;src/include/inout;src/include/str;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -198,7 +198,7 @@
 					Name="memory"
 					>
 					<File
-						RelativePath=".\src\include\memory\memory.h"
+						RelativePath="src\include\memory\memory.h"
 						>
 					</File>
 				</Filter>
@@ -210,12 +210,20 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="str"
+					>
+					<File
+						RelativePath="src\include\str\str.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="memory"
 				>
 				<File
-					RelativePath=".\src\memory\memory.c"
+					RelativePath="src\memory\memory.c"
 					>
 				</File>
 			</Filter>
@@ -232,6 +240,14 @@
 				>
 				<File
 					RelativePath="src\main\main.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="str"
+				>
+				<File
+					RelativePath="src\str\str.c"
 					>
 				</File>
 			</Filter>

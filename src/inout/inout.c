@@ -6,6 +6,8 @@
 *******************************************************************************/
 
 #include "inout.h"
+#include "str.h"
+
 
 /***
 *void write_console(char *message) - writes the message into console output
@@ -26,7 +28,7 @@
 *Exceptions:
 *
 *******************************************************************************/
-int write_console(char *message)
+int WriteToConsole(char *message)
 {
 	HANDLE  consoleHandler;
 
@@ -34,11 +36,11 @@ int write_console(char *message)
 	DWORD   consoleMode;
     
 	BOOL    writeFileResult;
-	INT     messageLength = NELEMS(message);
-	LPDWORD bytesWritten;
+	INT     messageLength = LengthOfStr(message);
+	DWORD   symbolsWritten;
 
 	/* Retrieve a standard std console handler */
-	consoleHandler = GetStdHandle(STD_INPUT_HANDLE); 
+	consoleHandler = GetStdHandle(STD_OUTPUT_HANDLE); 
     
 	/* If windows return error, we break function */
 	if (consoleHandler == INVALID_HANDLE_VALUE)
@@ -62,7 +64,7 @@ int write_console(char *message)
         consoleHandler,
 		message,
         messageLength,
-        bytesWritten,
+        &symbolsWritten,
         NULL);
 
 	/* If unable to write to the std buffer, quit */
