@@ -1,14 +1,8 @@
-#include "memory.h"
-#include "inout.h"
-#include <stdio.h>
+#include "str.h"
 
+/* ANCI C reading 38 */
 int main(int argc, char *argv[])
-{   
-	char c;
-
-	while ((c = getchar()) != EOF)
-       putchar(c);
-
-	return 0;
+{
+    SYMBOL_STAT stat = GetSymbolStat("123 123 34546 7567 5675 \nweqwe");
 }
 

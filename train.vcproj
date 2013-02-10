@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/memory;src/include/inout;src/include/str;"
+				AdditionalIncludeDirectories="src/include/memory;src/include/inout;src/include/str;src/include/mthread;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/memory;src/include/inout;src/include/str;"
+				AdditionalIncludeDirectories="src/include/memory;src/include/inout;src/include/str;src/include/mthread;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -218,6 +218,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="mthread"
+					>
+					<File
+						RelativePath="src\include\mthread\mthread.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="memory"
@@ -248,6 +256,14 @@
 				>
 				<File
 					RelativePath="src\str\str.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="mthread"
+				>
+				<File
+					RelativePath="src\mthread\mthread.c"
 					>
 				</File>
 			</Filter>

@@ -49,7 +49,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>src\include\test;src\include\inout;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\include\memory;src\include\inout;src\include\str;src\include\mthread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>false</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <AssemblerOutput>
@@ -79,7 +79,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>src\include\test;src\include\inout;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\include\memory;src\include\inout;src\include\str;src\include\mthread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>false</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <AssemblerOutput>
@@ -107,12 +107,16 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="src\include\inout\inout.h" />
-    <ClInclude Include="src\include\test\test.h" />
+    <ClInclude Include="src\include\memory\memory.h" />
+	<ClInclude Include="src\include\str\str.h" />
+	<ClInclude Include="src\include\mthread\mthread.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\inout\inout.c" />
-    <ClCompile Include="src\test\test.c" />
+    <ClCompile Include="src\memory\memory.c" />
     <ClCompile Include="src\main\main.c" />
+	<ClCompile Include="src\str\str.c" />
+	<ClCompile Include="src\mthread\mthread.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
