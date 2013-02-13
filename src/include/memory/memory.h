@@ -24,3 +24,4 @@ void* MemoryRealloc_Heap(HANDLE heapHandler, void* memory, unsigned int newSize)
 
 int MemoryFree(void* memory);
 int MemoryFree_Heap(HANDLE heapHandler, void* memory);
+void MemorySet(char* memory, char symbol, int count);

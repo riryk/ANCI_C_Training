@@ -255,3 +255,11 @@ int MemoryFree_Heap(HANDLE heapHandler, void* memory)
 	/* Return success */
 	return 0;
 }
+
+void MemorySet(char* memory, char symbol, int count)
+{
+	while (count--)
+	{
+		*memory++ = symbol;
+	}
+}

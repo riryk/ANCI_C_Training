@@ -6,6 +6,7 @@
 *******************************************************************************/
 
 #include <stdio.h>
+#include "memory.h"
 
 /* Those flags are used to determine whether pointer is inside
  * or outside a word.
@@ -39,3 +40,15 @@ void StrCopyNum(char* source, char* target, int number);
 int GetNumberOfLines(char* str);
 int GetWordCount(char* str);
 SYMBOL_STAT GetSymbolStat(char* str);
+int Atoi(char* str);
+char* Lower(char* str);
+void Squeeze(char* str, char c);
+void ConcatString(char* source, char* strToConcat);
+
+char* ConvertToBinary(int n, char *str);
+char* Dec2Bin(long decimal);
+unsigned GetBits(unsigned x, int p, int n);
+char* Dec2BinBitwise(long i);
+
+int mod7(int x);
+unsigned int BinSearch(unsigned int* Array, unsigned int len, unsigned int Val);

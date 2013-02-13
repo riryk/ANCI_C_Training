@@ -85,7 +85,7 @@ char** ReadConsole_NoLock(DWORD bufferSize)
 		readMessages[i] = (char*)MemoryAlloc(bufferSize * sizeof(char));
 
 		/* Copy chars from temporary buffer to the memory we have just allocated */
-		StrCopyNum(buffer, readMessages[i], bufferSize);
+		StrCopyNum((char*)buffer, readMessages[i], bufferSize);
 
 		/* Increase the buffer pointer */
 		i++;
