@@ -366,6 +366,58 @@ void ConcatString(char* source, char* strToConcat)
 }
 
 /***
+*void ReverseString(char* source) - reverses a string
+* For example string "abcdfg" will be transformed into "gfdcba"
+*
+*Entry:
+*       char* source       - input char array
+*
+*******************************************************************************/
+void ReverseString(char* source)
+{
+	int len;
+	int i;
+	int j;
+	char temp;
+
+	/* Calculate the length of the string */
+	len = LengthOfStr(source);
+
+	for (i = 0, j = len - 1; i < j; i++, j--)
+	{
+		temp = source[i];
+		source[i] = source[j];
+		source[j] = temp;
+	}
+}
+
+/***
+*int Trim(char* source, int n) - deletes odd symbols from the end of the string
+*
+*Entry:
+*       char* source        - a string
+*       int n               - a number of symbols in this string
+*
+*******************************************************************************/
+int Trim(char* source, int n)
+{
+	int i;
+
+	/* Go from the end of the array and skip odd symbols */
+	for (i = n - 1; i >= 0; i--)
+	{
+		if (source[i] != ' ' && source[i] != '\t' && source[i] != '\n')
+		{
+			break;
+		}
+	}
+
+	/* The symbol next to the latest not odd is set to 0 */
+	source[i + 1] = '\0';
+	return i;
+}
+
+/***
 *void Dec2Bin(long decimal, char *binary) - convert a number from decimal system to
 * binary.
 *
@@ -603,28 +655,3 @@ unsigned int BinSearch(unsigned int* Array, unsigned int len, unsigned int Val)
 	return -1;
 }
 
-/*       0 1 2 3 4 5 6
- * Arr = 2 3 5 6 8 9 1, n = 7. gap = 7/2 = 3 
- * i = 3 for (j = 3 - 3; j >= 0; j -= 3) A[0] compare with A[0 + 3]
- * i = 4 for (j = 1; j >= 0; j -= 3) A[1] compare with A[4]
- * i = 5 for ()
- *
- *
- *
- */
-void ShellSort(int Arr[], int n)
-{
-	int gap, i, j, temp;
-
-	for (gap = n / 2; gap > 0; gap /= 2)
-	   for (i = gap; i < n; i++)
-		   for (j = i - gap; j >= 0; j -= gap)
-		   {
-			   if (Arr[j] > Arr[j + gap])
-			   {
-			      temp = Arr[j];
-			      Arr[j] = Arr[j + gap];
-			      Arr[j + gap] = temp;
-			   }
-		   };
-}

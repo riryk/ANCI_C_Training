@@ -226,6 +226,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+					Name="sort"
+					>
+					<File
+						RelativePath="src\include\sort\sort.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="memory"
@@ -264,6 +272,14 @@
 				>
 				<File
 					RelativePath="src\mthread\mthread.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="sort"
+				>
+				<File
+					RelativePath="src\sort\sort.c"
 					>
 				</File>
 			</Filter>

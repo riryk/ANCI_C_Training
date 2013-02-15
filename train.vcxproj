@@ -49,7 +49,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>src\include\memory;src\include\inout;src\include\str;src\include\mthread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\include\memory;src\include\inout;src\include\str;src\include\mthread;src\include\sort;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>false</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <AssemblerOutput>
@@ -79,7 +79,7 @@
     <ClCompile>
       <AdditionalOptions>/MP %(AdditionalOptions)</AdditionalOptions>
       <Optimization>Disabled</Optimization>
-      <AdditionalIncludeDirectories>src\include\memory;src\include\inout;src\include\str;src\include\mthread;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>src\include\memory;src\include\inout;src\include\str;src\include\mthread;src\include\sort;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <StringPooling>false</StringPooling>
       <RuntimeLibrary>MultiThreadedDebugDLL</RuntimeLibrary>
       <AssemblerOutput>
@@ -110,6 +110,7 @@
     <ClInclude Include="src\include\memory\memory.h" />
 	<ClInclude Include="src\include\str\str.h" />
 	<ClInclude Include="src\include\mthread\mthread.h" />
+	<ClInclude Include="src\include\sort\sort.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\inout\inout.c" />
@@ -117,6 +118,7 @@
     <ClCompile Include="src\main\main.c" />
 	<ClCompile Include="src\str\str.c" />
 	<ClCompile Include="src\mthread\mthread.c" />
+	<ClCompile Include="src\sort\sort.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
