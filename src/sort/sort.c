@@ -197,3 +197,60 @@ void Swap(int* Arr, int i, int j)
 	Arr[i] = temp;
 }
 
+/***
+*void QuickSort(int* Arr, int n) 
+* - Sorts an array using Hoar's fastest approach
+*
+*Entry:
+*       int* Arr                 - an input array to sort
+*       int left                 - the left index
+*       int right                - the right index
+*       
+*******************************************************************************/
+void QuickSort(int* Arr, int left, int right)
+{
+    int mid;
+	int midValue;
+	int i;
+    int j;
+
+	/* Determine the median point */
+    mid = (left + right) / 2;
+
+	/* The median value */
+	midValue = Arr[mid];
+
+	/* Move mid element into the left position of the array */
+	Swap(Arr, left, mid);
+
+	/* Divide the whole array into two parts: 
+	 * all items from the first part of array are less or equal than Arr[mid]
+	 * all items from the second part of the array are more than Arr[mid]
+	 * For example:
+	 * Arr = [5, 6, 9, 1, 2, 6, 0, -1, 10, 12]
+	 *       [5, 1, 9, 6, 2, 6, 0, -1, 10, 12]
+     *       [5, 1, 2, 6, 9, 6, 0, -1, 10, 12]
+	 *       [5, 1, 2, 0, 9, 6, 6, -1, 10, 12]
+	 *       [5, 1, 2, 0, -1, 6, 6, 9, 10, 12]
+	 *
+	 * j = 6 i = 6, 9, 1 swap (6, 1) j = 9
+	 * Arr = [5, 1, 9, 6, 2, 6, 0, -1, 10, 12]      
+	 * j - points to the delimiter the lower part and the upper part.
+	 * From start, i and j points to the start of array
+	 */
+	j = left + 1;
+	for (i = left + 1; i <= right; i++)
+	{
+        if (Arr[i] < midValue)
+		{
+			Swap(Arr, i, j);
+			j++;
+		}
+	}
+
+	Swap(Arr, left, j - 1);
+    QuickSort(Arr, left, mid - 1);
+    QuickSort(Arr, mid + 1, right);
+}
+
+

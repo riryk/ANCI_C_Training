@@ -1,6 +1,356 @@
 
 #include "str.h"
 
+#define MAX_STACK_SIZE 100
+#define BUFFER 100
+#define NUMBER -666
+#define MAXOP 100
+
+/* A number of element in stack from which items are free.
+ * For example: [a1, a2, a3,...,stackFreePosition, 0, 0,..., 0,..., MAX_STACK_SIZE]
+ */
+int stackFreePosition = 0;
+
+enum { NAME, PARENS, BRACKETS };
+
+/* the type of the last read token. It can be NAME, PARENS or BRACKETS */
+int tokenType;
+
+/* A memory located for the stack */
+double stackStorage[MAX_STACK_SIZE];
+
+/* A temporary buffer where to keep symbols temporarily */
+char charBuffer[BUFFER];
+char name[BUFFER];
+
+/* Here will be a result of syntax translation */
+char out[1000];
+
+/* Free position in the char buffer */
+int charBufferFreePosition = 0;
+
+/* Push item into stack */
+int StackPush(double item)
+{
+    /* If there are enough space where to put a new item */
+    if (stackFreePosition < MAX_STACK_SIZE)
+    {
+	   stackStorage[stackFreePosition++] = item;
+
+	   /* Return 1 if success */
+	   return 1;
+    }
+
+	/* return false */
+	return 0;
+}
+
+/* Push item into stack */
+double StackPop()
+{
+	/* If stack is empty, return false. */
+    if (stackFreePosition == 0)
+	{
+		return 0.0;
+	}
+    
+	/* Return value and decrement stack free position */
+	return stackStorage[stackFreePosition--];
+}
+
+int GetNextCharFromString()
+{ 
+	return (charBufferFreePosition > 0) ? charBuffer[--charBufferFreePosition] : getchar();
+}
+
+void PutCharToBuffer(char c)
+{
+    if (charBufferFreePosition < BUFFER)
+	{
+        charBuffer[charBufferFreePosition++] = c;
+	}
+}
+
+int IsDigit(char c)
+{
+    return c >= '0' && c <= '9';
+}
+
+/* Read operands from input stream and save them into char array */
+int GetNextOperand(char Source[])
+{
+    int i;
+	int c;
+
+	/* Read the first non empty symbol. Skip all tabs and spaces */
+    while ((Source[0] = c = GetNextCharFromString()) == ' ' || c == '\t')
+		;
+    
+	/* Clear the end of string */
+    Source[1] = '\0';
+
+	/* If we have found a simple char, return it */
+	if (!IsDigit(c) && c != '.')
+	{
+        return c;
+	}
+
+	/* If we are here, that means that we have found a digit */
+	i = 0;
+
+	/* Read all digit symbols */
+    if (IsDigit(c))
+	{
+        while (IsDigit(Source[++i] = c = GetNextCharFromString()))
+			;
+	}
+
+	/* If we have found a deouble delimiter, then read the fraction part */
+	if (c == '.')
+	{
+        while (IsDigit(Source[++i] = c = GetNextCharFromString()))
+			;
+	}
+
+	/* Clear all symbols in the end */
+	Source[i] = '\0';
+
+	/* If we have read too many symbols, give it back to a buffer */
+	if (c != EOF)
+	{
+        PutCharToBuffer(c);
+	}
+
+	return NUMBER;
+}
+
+/* Converts string to double */
+double ConvertStringToDouble(char Source[])
+{
+    double val;
+	double power;
+
+    int i;
+	int sign;
+
+    /* Skip all empty symbols */ 
+	for (i = 0; Source[i] == ' ' || Source[i] == '\t'; i++)
+		;
+    
+	/* Compute a sign of the number */
+	sign = (Source[i] == '-') ? -1 : 1; 
+    if (Source[i] == '+' || Source[i] == '-')
+	{
+        i++;   
+	}
+    
+    /* Convert symbols up to '.' to a single number */ 
+	for (val = 0.0; isdigit(Source[i]); i++)
+	{
+		val = 10 * val + Source[i] - '0';
+	}
+
+	/* If there is fraction */
+	if (Source[i] == '.')
+	{
+        i++;
+	}
+
+    /* Convert fraction symbols after '.' */
+	for (power = 1.0; isdigit(Source[i]); i++)
+	{
+        val = 10 * val + Source[i] - '0';
+		power = power * 10.0;
+	}
+
+	return sign * val / power;
+}
+
+/* Calculates an expression written in reverse polish rules
+ * For example:
+ * the expression (1 - 2) * (4 + 5)
+ * 1 2 - 4 5 + *
+ * The stack history:
+ * 1.  [1]
+ * 2.  [1 2]
+ * 3.  [-1]
+ * 4.  [-1 4]
+ * 5.  [-1 4 5]
+ * 6.  [-1 9]
+ * 7.  [-9]
+ */
+double PolishCalculate()
+{
+	int type;
+	double convertedOperand;
+	double op2;
+    char nextOperand[MAXOP];
+	 
+    while ((type = GetNextOperand(nextOperand)) != EOF)
+	{
+		switch (type)
+		{
+		case NUMBER:
+			convertedOperand = ConvertStringToDouble(nextOperand);
+			StackPush(convertedOperand);
+			break;
+		case '+':
+			StackPush(StackPop() + StackPop());
+			break;
+		case '*':
+			StackPush(StackPop() * StackPop());
+			break;
+		case '-':
+            op2 = StackPop();
+			StackPush(StackPop() - op2);
+			break;
+		case '/':
+			op2 = StackPop();
+            StackPush(StackPop() / op2);
+			break;
+		case '\n':
+			/* Return result */
+            return StackPop(); 
+		default:
+            return 0;
+		}
+	}
+}
+
+/***
+*Lexical grammar, which is used during declarations parsing
+*  dcl        : optional '*' direct-dcl
+*  direct-dcl : name
+*                  |  (dcl)
+*                  |  direct-dcl()
+*                  |  direct-dcl[optional size]
+* For example, how to use this grammar to parse this function: pfa
+*   (*pfa[])() - this is an array of pointers to function without parameters
+* 1. pfa will be recognized as name and thus as direct-dcl
+* 2. pfa[] will be recognized as direct-dcl
+* 3. *pfa[] will be dcl
+* 4. (*pfa[]) will be direct-dcl
+* 5. (*pfa[])() will be direct-dcl
+*******************************************************************************/
+
+/* part of lexical grammar, which implements dcl part */
+void Dcl()
+{
+   int ns;
+
+   /* Skip all elements until we find '*' and count them */
+   for (ns = 0; GetToken() == '*'; ns++)
+	   ;
+
+   /* Lexical scan of direct - dcl */
+   DirDcl();
+
+   /* Process all tokens */
+   while (ns-- > 0)
+   {
+	   strcat(out, " pointer to");
+   }
+}
+
+int DirDcl()
+{
+   int type;
+
+   /* In this case we have found (dcl) part of grammar.
+    * So in this case we call Dcl() recursively
+    */
+   if (tokenType == '(')
+   {
+      Dcl();
+
+	  /* We must have found ) according to the grammar */
+	  if (tokenType != ')')
+	  {
+		  printf("error: missing )\n");
+		  return 0;
+	  }
+   }
+   else if (tokenType == NAME)
+   {
+      strcpy(name, charBuffer);
+   }
+   else
+   {
+      printf("error: unexpected name or (dcl))\n");
+	  return 0;
+   }
+
+   /* Try to find any of '(', ')', '[', ']' symbols */
+   while ((type = GetToken()) == PARENS || type == BRACKETS)
+   {
+	   if (type == PARENS)
+	   {
+           strcat(out, " function returning");
+	   }
+	   else
+	   {
+           strcat(out, " array");
+           strcat(out, charBuffer);
+           strcat(out, " of");
+	   }
+   }
+}
+
+char* ParseDeclaration(char * Declaration)
+{
+    return NULL;
+}
+
+/* Get the next tocken during function declaration parsing */
+int GetToken()
+{
+	int c;
+    char* token = charBuffer;
+
+	/* First of all skip all tab and empty symbols */
+	while((c = GetNextCharFromString()) == ' ' || c == '\t')
+		;
+    
+	/* If we have met a left bracket */
+    if (c == '(')
+	{
+		/* If the next is  */
+        if ((c = GetNextCharFromString()) == ')')
+		{
+			StrCopy(token, "()");
+            return tokenType = PARENS;
+		}
+		else
+		{
+            PutCharToBuffer(c);
+			return tokenType = '(';
+		}
+	}
+	else if (c == '[')
+	{
+		/* Read all content between '[' and ']' symbols into temp buffer */
+		for (*token++ = c; (*token++ = GetNextCharFromString()) != ']';)
+			;
+        *token = '\0';
+        return tokenType = BRACKETS;
+	}
+	else if (isalpha(c))
+	{
+        /* Read all name into temporary buffer */
+        for (*token++ = c; isalnum(c = GetNextCharFromString());)
+		{
+			*token++ = c;
+		}
+
+        *token = '\0';
+        PutCharToBuffer(c);
+		return tokenType = NAME;
+	}
+	else
+	{
+		return tokenType = c;
+	}
+}
 
 /***
 *int LengthOfStr(char *str) - calculate length of string
@@ -415,6 +765,34 @@ int Trim(char* source, int n)
 	/* The symbol next to the latest not odd is set to 0 */
 	source[i + 1] = '\0';
 	return i;
+}
+
+/***
+*int StrCompare(char* source, char* target) - compares two strings
+*
+*Entry:
+*       char* source        - a source string
+*       char* target        - a target string
+*Exit:
+*       Returns 0 if two strings are equal
+*       Returns >0 if source string is bigger than target
+*       Returns <0 if source string is less than target
+*
+*******************************************************************************/
+int StrCompare(char* source, char* target)
+{
+    /* Go through two strings until we find not equal symbols */
+    for (; *source == *target; source++, target++)
+    {
+		/* If we have met the end of the source string, we return 0 */
+        if (*source == '\0')
+		{
+			return 0;
+		}
+    }
+
+	/* If we are here, that means that we have met different symbols */
+	return *source > *target;
 }
 
 /***

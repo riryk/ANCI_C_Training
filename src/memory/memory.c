@@ -2,6 +2,77 @@
 #include <windows.h>
 #include "memory.h"
 
+/* Total central array of memory taken from operation system */
+static char allocBuffer[ALLOC_SIZE];
+
+/* A pointer to free position in the array. 
+ * We divide allocBuffer[0,...,ALLOC_SIZE - 1] into 2 subarrays: 
+ * allocBuffer[0,...,freePosition - 1, freePosition,...,ALLOC_SIZE - 1]
+ */
+static char* freePosition = allocBuffer;
+
+/***
+*char* StackAlloc(int n) - allocate a new n bytes of memory from the storage
+*
+*Exit:
+*       NOT NULL                    success
+*       NULL                        failure
+*
+*******************************************************************************/
+char* StackAlloc(int n)
+{
+    char* startOfBuffer = allocBuffer;
+	char* endOfBuffer = allocBuffer + ALLOC_SIZE;
+
+	/* The position of the pointer if there are enough free space in the array */
+	char* newFreePosition = freePosition + n;
+
+	/* There are no free position where to take a new memory block,
+	 * if the newFreePosition will exceed the end of our buffer.
+	 */
+	if (newFreePosition > endOfBuffer)
+	{
+	    return NULL;
+	}
+
+	/* Alloc memory by moving freePosition pointer for n position right */
+    freePosition += n;
+
+    /* Return a pointer to a new memory  */
+	return freePosition - n;
+}
+
+/***
+*void StackFree(char* memory) - frees memory allocated by StackAlloc
+*
+*Entry:
+*       char*  memory      - a pointer to allocated memory by StackAlloc
+*  
+*  This method of memory management has a very big restriction: It works like stack
+*  For example:
+*   char* Mem1 = StackAlloc(10);
+*   char* Mem2 = StackAlloc(10);
+*   char* Mem3 = StackAlloc(10);  [Mem1,...,9,Mem2,...,19,Mem3,...,29,freePosition,.....]
+*  If we free Mem1, the other memory will be lost and overwritten. So we need to free
+*  the allocated memory in this order:
+*   StackFree(Mem3);
+*   StackFree(Mem2);
+*   StackFree(Mem1);
+*
+*******************************************************************************/
+void StackFree(char* memory)
+{
+	/* A pointer to the end of the buffer */
+    char* endOfBuffer = allocBuffer + ALLOC_SIZE;
+
+	/* If the memory pointer points inside the buffer,
+	 * we simple move freePosition pointer into this memory
+	 */
+	if (memory >= allocBuffer && memory <= endOfBuffer)
+	{
+       freePosition = memory;
+	}
+}
 
 /***
 *HANDLE CreateHeap(int size) - creates a new heap in the current process
@@ -256,6 +327,11 @@ int MemoryFree_Heap(HANDLE heapHandler, void* memory)
 	return 0;
 }
 
+/***
+*void MemorySet(char* memory, char symbol, int count) - 
+* fills allocated memory with a specific sysmbol.
+*
+*******************************************************************************/
 void MemorySet(char* memory, char symbol, int count)
 {
 	while (count--)

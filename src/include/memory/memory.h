@@ -12,9 +12,13 @@
 #define ERROR_MEM_DOES_NOT_BELONG_TO_HEAP 102
 #define SYSTEM_ERROR_DESTROY_HEAP         2
 
+#define ALLOC_SIZE                        10000
 
 HANDLE CreateHeap(int size);
 int DeleteHeap(HANDLE heapHandler);
+
+char* StackAlloc(int n);
+void StackFree(char* memory);
 
 void* MemoryAlloc(unsigned int size);
 void* MemoryAlloc_Heap(HANDLE heapHandler, unsigned int size);

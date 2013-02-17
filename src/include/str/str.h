@@ -45,6 +45,7 @@ char* Lower(char* str);
 void Squeeze(char* str, char c);
 void ConcatString(char* source, char* strToConcat);
 void ReverseString(char* source);
+int StrCompare(char* source, char* target);
 
 char* ConvertToBinary(int n, char *str);
 char* Dec2Bin(long decimal);
