@@ -32,6 +32,9 @@ struct _symbol_stat {
 };
 typedef struct _symbol_stat SYMBOL_STAT;
 
+int GetNextCharFromString();
+void PutCharToBuffer(char c);
+
 int LengthOfStr(char *str);
 
 void StrCopy(char* source, char* target);

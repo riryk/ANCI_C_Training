@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -234,6 +234,14 @@
 						>
 					</File>
 				</Filter>
+				<Filter
+				    Name="datastructures"
+				    >
+				    <File
+					    RelativePath="src\include\datastructures\datastructures.h"
+					>
+				</File>
+			</Filter>
 			</Filter>
 			<Filter
 				Name="memory"
@@ -280,6 +288,14 @@
 				>
 				<File
 					RelativePath="src\sort\sort.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="datastructures"
+				>
+				<File
+					RelativePath="src\datastructures\datastructures.c"
 					>
 				</File>
 			</Filter>
