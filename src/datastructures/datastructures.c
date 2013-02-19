@@ -144,9 +144,14 @@ void BuildWorsStatistic()
 *void AddTreeItem(struct WORD_TREE_ITEM* TreeNode, char* newWord) 
 * - inserts a new word into appropriate place into binary tree or
 *   increments word count if we have found an item with newWord.
+* 
+* A tree has one important property:
+*   leftChild < parent < rightChild
+*
+* Every sorted array can be represented as binary tree
 *
 *******************************************************************************/
-void AddTreeItem(struct WORD_TREE_ITEM* TreeNode, char* newWord)
+struct WORD_TREE_ITEM* AddTreeItem(struct WORD_TREE_ITEM* TreeNode, char* newWord)
 {
 	/* Compare result */
 	int c;
@@ -161,7 +166,12 @@ void AddTreeItem(struct WORD_TREE_ITEM* TreeNode, char* newWord)
 		/* strdup - allocates new memory for string and copies newWord string 
 		 * into newly allocated memory.
 		 */
-		TreeNode->word = strdup(newWord);
+		TreeNode->word = (char*)malloc(sizeof(newWord) + 1);
+		if (TreeNode->word != NULL)
+		{
+			strcpy(TreeNode->word, newWord); 
+		}
+
 		TreeNode->leftChild = NULL;
 		TreeNode->rightChild = NULL;
 	}
@@ -170,9 +180,78 @@ void AddTreeItem(struct WORD_TREE_ITEM* TreeNode, char* newWord)
 	{
 		TreeNode->count++;
 	}
-	/* If TreeNode != NULL and TreeNode->word != newWord, we try to find it  */
+	/* If TreeNode != NULL and TreeNode->word != newWord, we try to find it  
+	 * If newWord < TreeNode->word, then we try to find it in the left subtree
+	 * If newWord > TreeNode->word, then we try to find it in the right subtree
+	 */
+	else if (c < 0)
+	{
+		AddTreeItem(TreeNode->leftChild, newWord);
+	}
 	else
 	{
-
+		AddTreeItem(TreeNode->rightChild, newWord);
 	}
+
+	return TreeNode;
+}
+
+/***
+*void TreePrint(struct WORD_TREE_ITEM* TreeNode) 
+* - Provided that tree contains a sorted array, we can print all elements 
+*   in sorted order
+* For example, we have a tree:
+*                   parent1
+*                  /      \
+*       leftChild1          rightChild1
+*      /          \  
+* leftChild2    rightChild2
+*
+* First of all, we print leftChild2, then leftChild1, rightChild2 and parent1, rightChild1
+*
+*******************************************************************************/
+void TreePrint(struct WORD_TREE_ITEM* TreeNode)
+{
+	/* We do not print NULL items */
+	if (TreeNode == NULL)
+	{
+		return;
+	}
+
+	/* Print left child node */
+	TreePrint(TreeNode->leftChild);
+
+	/* Print tree node */
+	printf("%4d %s\n", TreeNode->count, TreeNode->word);
+
+	/* Print right child node */
+	TreePrint(TreeNode->rightChild);
+}
+
+/***
+*void BuildWorsStatisticUsingTree() - reads words from input and refresh words count
+*  and then writes result into console output using 
+*
+*******************************************************************************/
+void BuildWorsStatisticUsingTree()
+{
+	struct WORD_TREE_ITEM* Root;
+	char word[MAXWORD];
+
+	/* Read output until we meet EOF symbol */
+	while (GetWord(word, MAXWORD) != EOF)
+	{
+		if (isalpha(word[0]))
+		{
+			Root = AddTreeItem(Root, word);
+		}
+	}
+
+	/* Then print all tree */
+	TreePrint(Root);
+}
+
+unsigned ComputeHash(char* s)
+{
+u 
 }

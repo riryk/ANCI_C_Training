@@ -2,6 +2,7 @@
 #include "str.h"
 
 #define MAXWORD 100
+#define HASHSIZE 101
 
 struct WORD_STAT {
 	char* word;
@@ -31,6 +32,14 @@ struct WORD_STAT CWords[] =
 };
 
 #define NKEYS (sizeof CWords / sizeof (struct WORD_STAT))
+
+struct HASHLIST {
+	struct HASHLIST* nextItem;
+	char* name;
+	char* replacementText;
+};
+
+struct HASHLIST* hashtable[HASHSIZE];
 
 int GetWord(char* word, int lim);
 int WordBinSearch(char* word, struct WORD_STAT table[], int n);
