@@ -251,7 +251,76 @@ void BuildWorsStatisticUsingTree()
 	TreePrint(Root);
 }
 
+/***
+*unsigned ComputeHash(char* s) - for every string it computes a hash value,
+* which must be inside a gap [0,...,101]. The most important property of 
+* a hash function must be to sutisfy uniformity of hash values
+*
+*******************************************************************************/
 unsigned ComputeHash(char* s)
 {
-u 
+    unsigned hashVal;
+
+	/* Compute a sum of all chars in the string with additional multiplication */
+    for (hashVal = 0; *s != '\0'; s++)
+	{
+        hashVal = *s + 31 * hashVal;
+	}
+
+	/* This provides generationg a hash from [0,...,HASHSIZE - 1] array */
+	return hashVal % HASHSIZE;
 }
+
+/***
+*struct HASHLIST* HashLookUp(struct HASHLIST* hashtable[HASHSIZE], char* name)-
+* finds item by name in a hash table. First of all the function calculates
+* a hash value for the string name, then finds an appropriate position in 
+* the hashtable and then, if needed, finds the item in the one-directed list
+* The structure of a hash table:
+* If we have string11, string12, string13 and string21, string22, string23
+* using ComputeHash(char* s) we have computed that 
+* string11  \            string21  \
+* string12  -  hash1     string22  -  hash2    string31 - hash3 
+* string13  /            string23  /
+* In this case a hash table will look like:
+*
+* hashtable[hash1] -> [string11] -> [string12] -> [string13] -> NULL
+* hashtable[hash2] -> [string21] -> [string22] -> [string23] -> NULL
+* hashtable[hash3] -> [string31] -> NULL
+* hashtable[hash4] -> NULL
+*
+*******************************************************************************/
+struct HASHLIST* HashLookUp(struct HASHLIST* hashtable[HASHSIZE], char* name)
+{
+   unsigned hashValue;
+   struct HASHLIST* list;
+
+   /* Compute name's hash */
+   hashValue = ComputeHash(name);
+
+   /* Find an appropriate hashtable item and go through the list of items 
+    * with this hash.
+    */
+   for (list = hashtable[hashValue]; list != NULL; list = list->nextItem)
+   {
+	   /* We have found it, we return a pointer */
+	   if (strcmp(name, list->name) == 0)
+	   {
+		   return list;
+	   }
+   }
+
+   /* We have not found it */
+   return NULL;
+}
+
+/***
+*void InstallHashTable(struct HASHLIST* hashtable[HASHSIZE], char* name)-
+* 
+*
+*******************************************************************************/
+void InstallHashTable(struct HASHLIST* hashtable[HASHSIZE], char* name)
+{
+      
+}
+
