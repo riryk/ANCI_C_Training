@@ -9,6 +9,7 @@
 
 #define THREAD_COUNT                 10
 #define BUFFER_SIZE                  8
+#define BUFFER_READ_SIZE             81
 #define BUFFER_ARRAY_SIZE            10
 
 #define INVALID_STD_HANDLE           1
@@ -27,3 +28,7 @@ char** ReadConsole_NoLock(DWORD bufferSize);
 int WriteToConsole(char *message);
 
 int Test_WriteToConsole(char* testMessage, int lockFlag);
+
+void WriteToFile(char* pathToFile, char* message);
+char* ReadFromFile(char* pathToFile);
+void DisplayFileError(LPTSTR lpszFunction);

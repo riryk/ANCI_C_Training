@@ -272,3 +272,170 @@ int Test_WriteToConsole(char* testMessage, int lockFlag)
 	/* Return success */
 	return 0;
 }
+
+/***
+* Routine Description:
+* Writes a message to a file
+*******************************************************************************/
+void WriteToFile(char* pathToFile, char* message)
+{
+	BOOL bErrorFlag = FALSE;
+	DWORD dwBytesToWrite = (DWORD)strlen(message);
+	DWORD dwBytesWritten = 0;
+	/* Get a handler to this file */
+	HANDLE fileHandler = CreateFile(
+		               pathToFile,                         // name of the write
+                       GENERIC_WRITE,                      // open for writing
+                       0,                                  // do not share
+                       NULL,                               // default security
+                       CREATE_NEW | OPEN_EXISTING,         // create new file only
+                       FILE_ATTRIBUTE_NORMAL,              // normal file
+                       NULL);   
+    /* When unable to get a handle to the file. 
+	 * Retrieve the error information and print it to console output. */
+	if (fileHandler == INVALID_HANDLE_VALUE)
+	{
+		DisplayFileError(TEXT("WriteToFile"));
+		printf(TEXT("Terminal failure: Unable to open file \"%s\" for write.\n"), pathToFile);
+		return;
+	}
+	/* Try to write the message into the file */
+	printf(TEXT("Writing %d bytes to %s.\n"), dwBytesToWrite, pathToFile);
+	/* Try to write the message */
+	bErrorFlag = WriteFile( 
+                    fileHandler,           // open file handle
+                    message,               // start of data to write
+                    dwBytesToWrite,        // number of bytes to write
+                    &dwBytesWritten,       // number of bytes that were written
+                    NULL);                 // no overlapped structure
+	/* When unable to write bytes into text file */
+	if (bErrorFlag == FALSE)
+	{
+		DisplayFileError(TEXT("WriteToFile"));
+		printf(TEXT("Terminal failure: Unable to write file.\n"));
+	}
+	else
+	{
+		if (dwBytesWritten != dwBytesToWrite)
+		{
+			/* This is an error because a synchronous write that results in
+             * success (WriteFile returns TRUE) should write all data as
+             * requested. This would not necessarily be the case for
+             * asynchronous writes.
+			 */
+            printf("Error: dwBytesWritten != dwBytesToWrite\n");
+		}
+		else
+		{
+			/* Bytes have been successfully written */
+			printf(TEXT("Wrote %d bytes to %s.\n"), dwBytesToWrite, pathToFile);
+		}
+	}
+	/* Close a file handler and free memory */
+	CloseHandle(fileHandler);
+}
+
+/***
+* Routine Description:
+* Reads bytes to a buffer from a file
+*******************************************************************************/
+char* ReadFromFile(char* pathToFile)
+{
+	char buffer[BUFFER_READ_SIZE];
+	BOOL bErrorFlag = FALSE;
+	DWORD dwBytesRead = 0;
+	/* Get a handler to this file */
+    HANDLE fileHandler = CreateFile(
+		               pathToFile,                         // file to open
+                       GENERIC_READ,                       // open for reading
+                       FILE_SHARE_READ,                    // share for reading
+                       NULL,                               // default security
+                       OPEN_EXISTING,                      // existing file only
+                       FILE_ATTRIBUTE_NORMAL,              // normal file
+                       NULL);                              // no attr. template
+	/* When unable to get a handle to the file. 
+	 * Retrieve the error information and print it to console output. */
+	if (fileHandler == INVALID_HANDLE_VALUE)
+	{
+		DisplayFileError(TEXT("ReadFromFile"));
+		printf(TEXT("Terminal failure: Unable to open file \"%s\" for write.\n"), pathToFile);
+		return NULL;
+	}
+	/* Try to read a buffer from the file */
+	printf(TEXT("Reading a buffer %d bytes from %s.\n"), BUFFER_READ_SIZE, pathToFile);
+	/* Try to read the message */
+	bErrorFlag = ReadFile(
+		           fileHandler, 
+				   buffer, 
+				   BUFFER_READ_SIZE - 1, 
+				   &dwBytesRead, 
+				   NULL);
+	/* If could not read a file content */
+	if (bErrorFlag = FALSE)
+	{
+		DisplayFileError(TEXT("ReadFromFile"));
+		printf(TEXT("Terminal failure: Unable to read from file \"%s\".\n"), pathToFile);
+		CloseHandle(fileHandler);
+		return NULL;
+	}
+	/* This is the section of code that assumes the file is ANSI text. 
+     * Modify this block for other data types if needed.
+	 */
+	if (dwBytesRead > 0 && dwBytesRead <= BUFFER_READ_SIZE - 1)
+	{
+		/* Set the symbols in the end to '\0' */
+		buffer[dwBytesRead] = '\0';
+		/* Successful reading. Write the buffer to console output in test mode */
+		printf(TEXT("Data read from %s (%d bytes): \n"), pathToFile, dwBytesRead);
+		printf("%s\n", buffer);
+	}
+	else if (dwBytesRead == 0)
+	{
+		/* We have not read any bytes from the file. It can be empty */
+		printf(TEXT("No data read from %s: \n"), pathToFile);
+	}
+	else
+	{
+		/* It can be an unpredictable error */
+		printf("\n ** Unexpected value for dwBytesRead ** \n");
+	}
+
+	return buffer;
+}
+
+/***
+* Routine Description:
+* Retrieve and output the system error message for the last-error code
+*******************************************************************************/
+void DisplayFileError(LPTSTR lpszFunction) 
+{ 
+    LPVOID lpMsgBuf;
+    LPVOID lpDisplayBuf;
+	SIZE_T errorBufSize;
+	/* First of all get the latest error code from windows */
+    DWORD dw = GetLastError(); 
+	/* Read a resource message for the last error from Windows resource files */
+    FormatMessage(
+        FORMAT_MESSAGE_ALLOCATE_BUFFER | 
+		FORMAT_MESSAGE_FROM_SYSTEM | 
+		FORMAT_MESSAGE_IGNORE_INSERTS,
+        NULL,
+        dw,
+        MAKELANGID(LANG_NEUTRAL, SUBLANG_DEFAULT),
+        (LPTSTR)&lpMsgBuf,
+        0, 
+        NULL);
+	/* Print the error message into console output */
+	printf("%s failed with error code %d as follows:\n%s", lpszFunction, dw, lpMsgBuf);
+	/* When we call FormatMessage windows function, windows allocates memory
+	 * for LPVOID lpMsgBuf variable. If we call this function several times we will
+	 * gain memory leak. So we need to free memory after writing it to console buffer
+	 * But this memory has been allocated in a Windows heap, which is different from
+	 * our local heap, which malloc uses. If we try to free memory:
+	 *  free(lpMsgBuf)
+	 * we will receive the error that it is not possible to free memory from 
+	 * an another heap. For this purpose we use a native Windows function for free.
+	 */
+    LocalFree(lpMsgBuf);
+}
+
