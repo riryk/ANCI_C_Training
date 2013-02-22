@@ -316,11 +316,58 @@ struct HASHLIST* HashLookUp(struct HASHLIST* hashtable[HASHSIZE], char* name)
 
 /***
 *void InstallHashTable(struct HASHLIST* hashtable[HASHSIZE], char* name)-
-* 
+* Looking for an element in a hashtble and if it is impossible to find it,
+* it adds the item into the hastable, otherwise, if we have found the item and 
+* its name is distinguishing from name parameter, we change it.
 *
 *******************************************************************************/
-void InstallHashTable(struct HASHLIST* hashtable[HASHSIZE], char* name)
+struct HASHLIST* InstallHashTable(struct HASHLIST* hashtable[HASHSIZE], char* name)
 {
-      
+    unsigned hashValue;
+    struct HASHLIST* list;
+
+	/* If we have not found name in the hashtable */
+	if ((list = HashLookUp(hashtable, name)) == NULL)
+	{
+		/* Allocate memory for a new item */
+		list = (struct HASHLIST*)malloc(sizeof(struct HASHLIST));
+		/* Set name */
+		list->name = name;
+		hashValue = ComputeHash(name);
+		/* Insert into a head of a list. hashtable[hashValue] is a link to the 
+		 * head of the list. This list can be empty or filled
+		 * Empty list:  hashtable[hashValue] -> NULL
+		 * Filled list: hashtable[hashValue] -> item1 -> item2 -> ... -> itemn -> NULL
+		 * The fastest approach to insert a value into hashtable is to insert into a head.
+		 * newItem -> hashtable[hashValue] -> item1 -> item2 -> ... -> itemn -> NULL
+		 * hashtable[hashValue] -> newItem -> old_hashtable[hashValue] -> item1 -> item2 -> ... -> itemn -> NULL
+		 */
+		list->nextItem = hashtable[hashValue];
+		hashtable[hashValue]->nextItem = list;
+	}
+	/* Here we have found a item. So let's change the value.
+	 * The common mistake is when:
+	 * list->name = NULL;
+	 * list->name = (char*)malloc(20);
+	 * list->name = (char*)malloc(10);
+	 * Here we have gained a memory leak. Because the memory (char*)malloc(20) are not released to a heap.
+	 * If we repeat this several times, we will be run out of free memory.
+	 * The correct approach is to always free allocated memory using malloc before changing the reference:
+	 * list->name = NULL;
+	 * list->name = (char*)malloc(20);
+	 * free(list->name);
+	 * list->name = (char*)malloc(10);
+	 */
+	else
+	{
+		free((void*)list->name);
+		/* If we cannot allocate memory of name is NULL we return NULL */
+		if ((list->name = strdup(name)) == NULL)
+		{
+			return NULL;
+		}
+
+		return list;
+	}
 }
 

@@ -1,13 +1,11 @@
 #include "str.h"
+#include "inout.h"
 
-/* ANCI C reading 38 */
 int main(int argc, char *argv[])
 { 
-	char* str = (char*)malloc(4*sizeof(char));  
+	char* _runCmd = "D:\\Run.cmd";
+	char* _readMessage = ReadFromFile(_runCmd);
 
-	MemorySet(str, 0, 4*sizeof(char));
-
-
-	//memset(str, 0, 4*sizeof(char));
+	WriteToFile(_runCmd, "I am a new message");
 }
 
