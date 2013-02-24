@@ -6,9 +6,6 @@
 *******************************************************************************/
 
 #include "inout.h"
-#include "str.h"
-#include "mthread.h"
-#include "memory.h"
 
 CRITICAL_SECTION section;
 int wasSectionInitialized = 1;

@@ -6,7 +6,6 @@
 *******************************************************************************/
 
 #include <stdio.h>
-#include "memory.h"
 
 /* Those flags are used to determine whether pointer is inside
  * or outside a word.

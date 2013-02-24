@@ -1,3 +1,5 @@
+#include <windows.h>
+
 /***
 * Purpose:
 *       This file include the function declarations 
