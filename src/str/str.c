@@ -1033,3 +1033,18 @@ unsigned int BinSearch(unsigned int* Array, unsigned int len, unsigned int Val)
 	return -1;
 }
 
+void TestCharEncoding()
+{
+	/* sizeof(char) = 1 byte. It can represents all
+	 * ANCI symbols [0...255]
+	 */
+	char charAnci = 'A'; 
+	/* Here is an example of ANCI char string */
+	char arrayAnci[100] = "A am an ANCI string";
+    /* sizeof(wchar_t) = 2 rytes = 16 bits. This is an representation
+	 * of UTF-16 string encoding.
+	 */   
+    wchar_t charUnicode = L'A';
+	/* Here is an example of Unicode char string */
+    wchar_t arrayUnicode[100] = L"A am an Unicode string";
+}
