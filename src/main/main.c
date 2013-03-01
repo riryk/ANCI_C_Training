@@ -2,8 +2,8 @@
 
 int main(int argc, char *argv[])
 {
-	WorkWithQueueTest();
-
+	DikstraAlgorythmTest();
+	//WorkWithQueueTest();
 	return 0;
 }
 

@@ -1048,3 +1048,54 @@ void TestCharEncoding()
 	/* Here is an example of Unicode char string */
     wchar_t arrayUnicode[100] = L"A am an Unicode string";
 }
+
+BOOL StringReverseW(PWSTR pWideCharStr, DWORD cchLength)
+{
+    PWSTR pEndOfStr = pWideCharStr + wcsnlen_s(pWideCharStr, cchLength) - 1;
+	wchar_t cCharT;
+	while (pWideCharStr < pEndOfStr)
+	{
+		cCharT = *pWideCharStr;
+		*pWideCharStr = *pEndOfStr;
+        pWideCharStr++;
+        pEndOfStr--;
+	}
+	return (TRUE);
+}
+
+BOOL StringReverseA(PSTR pMultiByteStr, DWORD cchLength)
+{
+   PWSTR pWideCharStr;
+   int nLenOfWideCharStr;
+   BOOL fOk = FALSE;
+   /* Calculate the number of characters needed to hold 
+    * the wide-character version of the string.
+	* Using parameter CP_ACP the following string converts ANCI char string into
+	* Unicode string. The return value is the number of characters written into wide char 
+	* string. If the lpWideCharStr and cchWideChar is ommitted, function returns wide char string length.
+	* It returns the number of characters needed for the wide characters string.
+    */
+   nLenOfWideCharStr = MultiByteToWideChar(CP_ACP, 0, pMultiByteStr, cchLength, NULL, 0);
+   /* Allocate memory for a new string */
+   pWideCharStr = (PWSTR)HeapAlloc(GetProcessHeap(), 0, nLenOfWideCharStr * sizeof(wchar_t));
+   /* If we can't allocate a memory, we return false */
+   if (pWideCharStr == NULL)
+   {
+	   return (fOk);
+   }
+   /* Convert ANCI char string to unicode */
+   MultiByteToWideChar(CP_ACP, 0, pMultiByteStr, cchLength, pWideCharStr, nLenOfWideCharStr);
+   /* Call a unicode function */ 
+   fOk = StringReverseW(pWideCharStr, nLenOfWideCharStr);
+   /* We successfully reversed unicode string. Now we need to convert it back
+    * to ANCI string.
+    */
+   if (fOk)
+   {
+      WideCharToMultiByte(CP_ACP, 0, pWideCharStr, cchLength, pMultiByteStr, 
+		  (int)strlen(pMultiByteStr), NULL, NULL); 
+   }
+   /* Free memory */
+   HeapFree(GetProcessHeap(), 0, pWideCharStr);
+   return (fOk);
+}

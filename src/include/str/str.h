@@ -6,6 +6,7 @@
 *******************************************************************************/
 
 #include <stdio.h>
+#include <windows.h>
 
 /* Those flags are used to determine whether pointer is inside
  * or outside a word.

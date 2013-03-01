@@ -1,2 +1,3 @@
 
 void WorkWithQueueTest();
+void DikstraAlgorythmTest();
