@@ -641,3 +641,36 @@ Header* NewMemoryChunkFromOperSyst(unsigned newSize)
 	/* Return new memory */
 	return freeList;
 }
+
+/* Returns 0 if the same instance has been already launched 
+ * on this machine.
+ * Return 1 if the are no other instances.
+ */
+int CheckIfAnotherInstanceIsRunning()
+{
+	/* Try to create named mutext.
+	 * If a mutex with this name is already exists
+	 * (The other instance has alreadu created this),
+	 * the operational system creates a new handle which
+	 * points to the same mutex and increments mutext usage
+	 * GetLastError() returns error already exist message
+	 */
+	HANDLE handle = CreateMutex(
+		NULL, 
+		FALSE, 
+		TEXT("{FA531CC1-0497-11d3-A180-00105A276C3E}"));
+	/* Check if this mutex exists */
+	if (GetLastError() == ERROR_ALREADY_EXISTS)
+	{
+		/* Here we have found the same instance and we need to
+		 * close the already created handle and leave only the firstly created one
+		 */
+		CloseHandle(handle);
+		return 0;
+	}
+	/* This is the first instance of this application running */
+	/* ... */
+	/* Before exiting, close the object */
+	CloseHandle(handle);
+	return 1;
+}

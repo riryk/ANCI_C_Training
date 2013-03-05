@@ -1,6 +1,7 @@
-
+#include "problem2.h"
 
 int main() 
 {
-   return 0;
+	SolveAll();
+    return 0;
 }

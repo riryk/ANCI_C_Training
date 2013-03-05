@@ -278,6 +278,10 @@
 					RelativePath="src\main\problem1.h"
 					>
 				</File>
+				<File
+					RelativePath="src\main\problem2.h"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="str"
