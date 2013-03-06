@@ -674,3 +674,14 @@ int CheckIfAnotherInstanceIsRunning()
 	CloseHandle(handle);
 	return 1;
 }
+
+DWORD GetCurrentSessionId()
+{
+	DWORD processID = GetCurrentProcessId();
+    DWORD sessionID;
+    if (ProcessIdToSessionId(processID, &sessionID))
+	{
+		return sessionID;
+	}
+	return 0;
+}

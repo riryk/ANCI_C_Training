@@ -1,8 +1,17 @@
+/* Include this header file once per compilation unit */
+#pragma once  
 
-#include "ErrorShow.h" 
 #include <Windowsx.h>
 #include <tchar.h>
 #include "Resource.h"
+
+#pragma warning(push, 3)
+#include <Windows.h>
+#pragma warning(pop) 
+#pragma warning(push, 4)
+#include <CommCtrl.h>
+/* For _beginthreadex */
+#include <process.h>  
 
 
 #define ESM_POKECODEANDLOOKUP (WM_USER + 100)
