@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="errorshow"
-	ProjectGUID="{1F169C3B-A907-402D-B2EF-C0BB21E90AF9}"
-	RootNamespace="My01ErrorShow"
+	Name="singleton"
+	ProjectGUID="{002802E7-196C-4C46-8DA4-3DD648018580}"
+	RootNamespace="My02Singleton"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -324,15 +324,15 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="src\UI\ErrorShow\ErrorShow.cpp"
+			RelativePath="src\UI\Singleton\Resource.h"
 			>
 		</File>
 		<File
-			RelativePath="src\UI\ErrorShow\ErrorShow.rc"
+			RelativePath="src\UI\Singleton\Singleton.cpp"
 			>
 		</File>
 		<File
-			RelativePath="src\UI\ErrorShow\Resource.h"
+			RelativePath="src\UI\Singleton\Singleton.rc"
 			>
 		</File>
 	</Files>

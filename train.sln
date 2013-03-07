@@ -4,6 +4,10 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "train", "train.vcproj", "{D
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "errorshow", "errorshow.vcproj", "{1F169C3B-A907-402D-B2EF-C0BB21E90AF9}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "singleton", "sigleton.vcproj", "{002802E7-196C-4C46-8DA4-3DD648018580}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "03-Singleton", "..\..\Books\Windows\03-Singleton\03-Singleton.vcproj", "{6519CE30-7D1C-4A57-AA09-35BAFD171AFD}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -18,6 +22,14 @@ Global
 		{1F169C3B-A907-402D-B2EF-C0BB21E90AF9}.Debug|Win32.Build.0 = Debug|Win32
 		{1F169C3B-A907-402D-B2EF-C0BB21E90AF9}.Release|Win32.ActiveCfg = Release|Win32
 		{1F169C3B-A907-402D-B2EF-C0BB21E90AF9}.Release|Win32.Build.0 = Release|Win32
+		{002802E7-196C-4C46-8DA4-3DD648018580}.Debug|Win32.ActiveCfg = Debug|Win32
+		{002802E7-196C-4C46-8DA4-3DD648018580}.Debug|Win32.Build.0 = Debug|Win32
+		{002802E7-196C-4C46-8DA4-3DD648018580}.Release|Win32.ActiveCfg = Release|Win32
+		{002802E7-196C-4C46-8DA4-3DD648018580}.Release|Win32.Build.0 = Release|Win32
+		{6519CE30-7D1C-4A57-AA09-35BAFD171AFD}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6519CE30-7D1C-4A57-AA09-35BAFD171AFD}.Debug|Win32.Build.0 = Debug|Win32
+		{6519CE30-7D1C-4A57-AA09-35BAFD171AFD}.Release|Win32.ActiveCfg = Release|Win32
+		{6519CE30-7D1C-4A57-AA09-35BAFD171AFD}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
