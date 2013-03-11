@@ -1,4 +1,5 @@
 #include <windows.h>
+#include <tchar.h>
 
 /***
 * Purpose:
@@ -8,5 +9,5 @@
 *******************************************************************************/
 
 HANDLE CreateMThread(PTHREAD_START_ROUTINE threadFunc, LPVOID threadParam);
-
+void DumpModule();
 DWORD WaitFor(CONST HANDLE *threadHandlers, int threadCount);

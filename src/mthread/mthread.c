@@ -96,4 +96,22 @@ void DuplicateHandleToProcess(DWORD dwTProcessId)
 	/* When process S no longer needs to use the mutex, it should close it. */
 	CloseHandle(hObjInProcessS);
 }
-
+/* Gets the base address of the running application */ 
+void DumpModule()
+{
+    /* Get the base address of the running application.
+	 * Can be different from the running module if this code is in a DLL.
+	 */
+    HMODULE hModule = GetModuleHandle(NULL);
+	_tprintf(TEXT("with GetModuleHandle(NULL) = 0x%x\r\n"), hModule);
+	/* Pass the address of the current method DumpModule
+	 * as parameter to GetModuleHandleEx to get the address
+	 * of the current module hModule/hInstance.
+	 */
+    hModule = NULL;
+	GetModuleHandleEx(
+       GET_MODULE_HANDLE_EX_FLAG_FROM_ADDRESS,
+	   (PCTSTR)DumpModule,
+	   &hModule);
+	_tprintf(TEXT("with GetModuleHandleEx = 0x%x\r\n"), hModule);
+}
