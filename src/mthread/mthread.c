@@ -115,3 +115,75 @@ void DumpModule()
 	   &hModule);
 	_tprintf(TEXT("with GetModuleHandleEx = 0x%x\r\n"), hModule);
 }
+
+/* Parses environment strings which have a pattern:
+ * =::=::\
+ * =...
+ * var=value\0
+ * ...
+ * var=value\0\0
+ */
+void DumpEnvStrings()
+{
+	PTSTR pEnvBlock = GetEnvironmentStrings();
+	TCHAR szName[MAX_PATH];
+	TCHAR szValue[MAX_PATH];
+	PTSTR pszCurrent = pEnvBlock;
+	HRESULT hr = S_OK;
+	PCTSTR pszPos = NULL;
+	int current;
+    size_t cbNameLength;
+
+    while (pszCurrent != NULL)
+	{
+        /* Skip the meanigless strings like:
+		 * "=::=::\"
+		 */ 
+		if (*pszCurrent != TEXT('='))
+		{
+			/* Look for '=' separator */
+            pszPos = _tcschr(pszCurrent, TEXT('='));
+			/* Point now to the first character of the value */
+            pszPos++;
+			/* Copy the variable name 
+			 * The length without '='
+			 */
+            cbNameLength = (size_t)pszPos - (size_t)pszCurrent - sizeof(TCHAR);
+            hr = StringCbCopyN(szName, MAX_PATH, pszCurrent, cbNameLength);
+			if (FAILED(hr))
+				break;
+            /* Copy the variable value with the last NULL character 
+			 * and allow truncation because this is for UI only.
+			 */
+			hr = StringCchCopyN(szValue, MAX_PATH, pszPos, _tcslen(pszPos) + 1);
+			if (SUCCEEDED(hr))
+			{
+				_tprintf(TEXT("[%u] %s=%s\r\n"), current, szName, szValue);
+			}
+			else if (hr = STRSAFE_E_INSUFFICIENT_BUFFER)
+			{
+                _tprintf(TEXT("[%u] %s=%s...\r\n"), current, szName, szValue);
+			}
+			else
+			{
+                _tprintf(TEXT("[%u] %s=???\r\n"), current, szName);
+				break;
+			}
+		}
+		else
+		{
+            _tprintf(TEXT("[%u] %s\r\n"), current, pszCurrent);
+		}
+		/* Next variable please */
+		current++;
+		/* Move to the end of the string */
+		while (*pszCurrent != TEXT('\0'))
+			pszCurrent++;
+		pszCurrent++;
+		/* Check if it was not the last string. */
+		if (*pszCurrent == TEXT('\0'))
+			break;
+	}
+	/* Do not forget to to free the memory. */
+	FreeEnvironmentStrings(pEnvBlock);
+}

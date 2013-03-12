@@ -1,5 +1,6 @@
 #include <windows.h>
 #include <tchar.h>
+#include <strsafe.h>
 
 /***
 * Purpose:
@@ -11,3 +12,4 @@
 HANDLE CreateMThread(PTHREAD_START_ROUTINE threadFunc, LPVOID threadParam);
 void DumpModule();
 DWORD WaitFor(CONST HANDLE *threadHandlers, int threadCount);
+void DumpEnvStrings();
