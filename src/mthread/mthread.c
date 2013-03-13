@@ -187,3 +187,23 @@ void DumpEnvStrings()
 	/* Do not forget to to free the memory. */
 	FreeEnvironmentStrings(pEnvBlock);
 }
+
+void PrintEnvironmentVariable(PCTSTR pszVariableName)
+{
+	PTSTR pszValue = NULL;
+	/* Get the size of the buffer that is required to store the value */
+	DWORD dwResult = GetEnvironmentVariable(pszVariableName, pszValue, 0);
+	if (dwResult != 0)
+	{
+		/* Allocate the buffer to store the environment variable value */
+        DWORD size = dwResult * sizeof(TCHAR);
+        pszValue = (PTSTR)malloc(size);
+		GetEnvironmentVariable(pszVariableName, pszValue, size);
+		_tprintf(TEXT("%s=%s\n"), pszVariableName, pszValue);
+		free(pszValue);
+	}
+	else
+	{
+        _tprintf(TEXT("'%s'=<unknown value>\n"), pszVariableName);
+	}
+}
