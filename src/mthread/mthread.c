@@ -207,3 +207,56 @@ void PrintEnvironmentVariable(PCTSTR pszVariableName)
         _tprintf(TEXT("'%s'=<unknown value>\n"), pszVariableName);
 	}
 }
+
+void SpawnChildProcesses()
+{
+	STARTUPINFO si = { sizeof(si) };
+
+	SECURITY_ATTRIBUTES saProcess;
+    SECURITY_ATTRIBUTES saThread;
+
+	PROCESS_INFORMATION piProcessB;
+    PROCESS_INFORMATION piProcessC;
+    
+    TCHAR szPath[MAX_PATH];
+	/* Prepare to spawn Process B from Process A.
+	 * The handle identifying the new process
+	 * object should be inheritable.
+	 */
+	saProcess.nLength = sizeof(saProcess);
+	saProcess.lpSecurityDescriptor = NULL;
+	saProcess.bInheritHandle = TRUE;
+    /* The handle identifying the new thread
+	 * object should not be inheritable.
+	 */
+	saThread.nLength = sizeof(saThread);
+	saThread.lpSecurityDescriptor = NULL;
+	saThread.bInheritHandle = FALSE;
+	/* Spawn Process B */
+	_tcscpy_s(szPath, _countof(szPath), TEXT("cmd.exe")); 
+	CreateProcess(
+		NULL,
+		szPath,
+		&saProcess,
+		&saThread,
+		FALSE,
+		0,
+		NULL,
+		NULL,
+		&si,
+        &piProcessB);
+    _tcscpy_s(szPath, _countof(szPath), TEXT("cmd.exe")); 
+	CreateProcess(
+		NULL,
+		szPath,
+		NULL,
+        NULL,
+		TRUE,
+		0,
+        NULL,
+		NULL,
+		&si,
+		&piProcessC);
+	return 0;
+}
+
