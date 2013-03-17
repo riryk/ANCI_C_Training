@@ -260,3 +260,38 @@ void SpawnChildProcesses()
 	return 0;
 }
 
+void SpawnChildProcessAndWaitUntilItFinishes()
+{
+	STARTUPINFO si = { sizeof(si) };
+	PROCESS_INFORMATION pi;
+	DWORD dwExitCode;
+    TCHAR szPath[MAX_PATH];
+    BOOL fSuccess;
+
+    _tcscpy_s(szPath, _countof(szPath), TEXT("cmd.exe")); 
+     fSuccess = 
+	  CreateProcess(
+		NULL,
+		szPath,
+		NULL,
+        NULL,
+		TRUE,
+		0,
+        NULL,
+		NULL,
+		&si,
+		&pi);
+
+	 if (fSuccess)
+	 {
+		 /* Close the thread handle as soon as it is no longer needed */
+		 CloseHandle(&pi.hThread);
+		 /* Suspend our execution until the child has terminated */
+		 WaitForSingleObject(pi.hProcess, INFINITE);
+		 /* The child process terminated; get its exit code */
+		 GetExitCodeProcess(pi.hProcess);
+         /* Close the process handle as soon as it is no longer needed */
+		 CloseHandle(pi.hProcess);
+	 }
+}
+
