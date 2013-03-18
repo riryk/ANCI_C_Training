@@ -289,9 +289,93 @@ void SpawnChildProcessAndWaitUntilItFinishes()
 		 /* Suspend our execution until the child has terminated */
 		 WaitForSingleObject(pi.hProcess, INFINITE);
 		 /* The child process terminated; get its exit code */
-		 GetExitCodeProcess(pi.hProcess);
+		 GetExitCodeProcess(pi.hProcess, &dwExitCode);
          /* Close the process handle as soon as it is no longer needed */
 		 CloseHandle(pi.hProcess);
 	 }
 }
 
+void RunProcessAsAdmin()
+{
+	/* Initialize the structure */
+	SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
+	/* Ask for privileges elevation */
+	sei.lpVerb = TEXT("runas");
+	/* Create a Command Promt from which you will be able to start
+	 * other elevated applications.
+	 */
+    sei.lpFile = TEXT("cmd.exe");
+	/* Don't forget this parameter; otherwise, the window will be hidden */
+	sei.nShow = SW_SHOWNORMAL;
+	/* Elevate privileges for running this application */
+    if (!ShellExecuteEx(&sei))
+	{
+       DWORD dwStatus = GetLastError();  
+	   if (dwStatus == ERROR_CANCELLED)
+	   {
+		   /* The user refused to allow privileges elevation */
+	   }
+	   else if (dwStatus == ERROR_FILE_NOT_FOUND)
+	   {
+          /* The file defined by lpFile was not found and 
+		   * an error message popped up.
+		   */ 
+	   }
+	}
+}
+
+BOOL GetProcessElevation(TOKEN_ELEVATION_TYPE* pElevationType, BOOL* pIsAdmin)
+{
+    HANDLE hToken = NULL;
+	DWORD dwSize;
+	BOOL bResult = FALSE;
+	/* Get current process token */
+	if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
+	{
+       return (FALSE); 
+	}
+    /* Retrieve elevation type information */
+	if (GetTokenInformation(
+		 hToken,
+		 TokenElevationType,
+		 pElevationType, 
+		 sizeof(TOKEN_ELEVATION_TYPE),
+		 &dwSize))
+	{
+        /* Create the SID corresponding to the Administrators group */ 
+        BYTE adminSID[SECURITY_MAX_SID_SIZE];
+        dwSize = sizeof(adminSID);
+		CreateWellKnownSid(
+            WinBuiltinAdministratorsSid,
+			NULL,
+			&adminSID,
+			&dwSize);
+
+        if (*pElevationType == TokenElevationTypeLimited)
+		{
+			/* Get handle to linked token (will have one if we are lua) */
+			HANDLE hUnfilteredToken = NULL;
+
+            GetTokenInformation(
+				hToken,
+				TokenLinkedToken,
+				(VOID*)&hUnfilteredToken,
+				sizeof(HANDLE),
+				&dwSize);
+			/* Check if this original token contains SID */
+            if (CheckTokenMembership(hUnfilteredToken, &adminSID, pIsAdmin))
+			{
+                bResult = TRUE; 
+			}
+			/* Close the unfiltered token */
+			CloseHandle(hUnfilteredToken);
+		}
+		else
+		{
+			*pIsAdmin = IsUserAnAdmin();
+            bResult = TRUE; 
+		}
+	}
+	CloseHandle(hToken);
+	return (bResult);
+}
