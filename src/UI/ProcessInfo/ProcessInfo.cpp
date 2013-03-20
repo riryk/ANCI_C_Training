@@ -822,140 +822,181 @@ VOID ShowModuleInfo(HWND hwnd, PCTSTR pszModulePath) {
    }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-BOOL GetProcessElevation(TOKEN_ELEVATION_TYPE* pElevationType, BOOL* pIsAdmin) {
-
+BOOL GetProcessElevation(TOKEN_ELEVATION_TYPE* pElevationType, BOOL* pIsAdmin) 
+{
    HANDLE hToken = NULL;
    DWORD dwSize; 
 
-   // Get current process token
+   /* Get current process token 
+    * Try to open this process's access token 
+    * The OpenProcessToken function opens the access token associated with a process
+    */
    if (!OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &hToken))
-      return(FALSE);
+       return(FALSE);
 
    BOOL bResult = FALSE;
 
-   // Retrieve elevation type information 
-   if (GetTokenInformation(hToken, TokenElevationType, 
-      pElevationType, sizeof(TOKEN_ELEVATION_TYPE), &dwSize)) {
-      // Create the SID corresponding to the Administrators group
+   /* Retrieve elevation type information 
+    */
+   if (GetTokenInformation(
+	     hToken, 
+	   	 TokenElevationType, 
+         pElevationType, 
+	   	 sizeof(TOKEN_ELEVATION_TYPE), 
+	   	 &dwSize)) 
+   {
+      /* Create the SID corresponding to the Administrators group */
       byte adminSID[SECURITY_MAX_SID_SIZE];
       dwSize = sizeof(adminSID);
-      CreateWellKnownSid(WinBuiltinAdministratorsSid, NULL, &adminSID, 
-         &dwSize);
+	  
+      CreateWellKnownSid(
+		  WinBuiltinAdministratorsSid, 
+		  NULL, 
+		  &adminSID, 
+          &dwSize);
 
-      if (*pElevationType == TokenElevationTypeLimited) {
-         // Get handle to linked token (will have one if we are lua)
+      if (*pElevationType == TokenElevationTypeLimited) 
+	  {
+         /* Get handle to linked token (will have one if we are lua) */
          HANDLE hUnfilteredToken = NULL;
-         GetTokenInformation(hToken, TokenLinkedToken, (VOID*) 
-            &hUnfilteredToken, sizeof(HANDLE), &dwSize);
-
-         // Check if this original token contains admin SID
-         if (CheckTokenMembership(hUnfilteredToken, &adminSID, pIsAdmin)) {
+         GetTokenInformation(
+			 hToken, 
+			 TokenLinkedToken, 
+			 (VOID*)&hUnfilteredToken, 
+			 sizeof(HANDLE), 
+			 &dwSize);
+         /* Check if this original token contains admin SID */
+         if (CheckTokenMembership(hUnfilteredToken, &adminSID, pIsAdmin)) 
+		 {
             bResult = TRUE;
          }
-
-         // Don't forget to close the unfiltered token
+         /* Don't forget to close the unfiltered token */
          CloseHandle(hUnfilteredToken);
-      } else {
+      } 
+	  else 
+	  {
          *pIsAdmin = IsUserAnAdmin();
          bResult = TRUE;
       }
    }
 
-   // Don't forget to close the process token
+   /* Don't forget to close the process token */
    CloseHandle(hToken);
 
    return(bResult);
 }
 
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) {
-   
+BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) 
+{   
    chSETDLGICONS(hwnd, IDI_PROCESSINFO);
 
-   // Is set to TRUE if the Administrator privileges 
-   // are available; either because running elevated
-   // or simply because UAC has been disabled.
+   /* Is set to TRUE if the Administrator privileges 
+    * are available; either because running elevated
+    * or simply because UAC has been disabled.
+	*/
    BOOL bCanReadSystemProcesses = FALSE;
 
-   // Show if we are running with filtered token or not
-   if (GetProcessElevation(&s_elevationType, &s_bIsAdmin)) {
-      // prefix title with elevation
+   /* Show if we are running with filtered token or not */
+   if (GetProcessElevation(&s_elevationType, &s_bIsAdmin)) 
+   {
+      /* prefix title with elevation */
       TCHAR szTitle[64];
 
-      switch(s_elevationType) {
-         // Default user or UAC is disabled
+      switch(s_elevationType) 
+	  {
+         /* Default user or UAC is disabled */
          case TokenElevationTypeDefault:  
-            if (IsUserAnAdmin()) {
-               _tcscpy_s(szTitle, _countof(szTitle), 
-                  TEXT("Default Administrator: ")); 
+            if (IsUserAnAdmin()) 
+			{
+               _tcscpy_s(
+				   szTitle, 
+				   _countof(szTitle), 
+                   TEXT("Default Administrator: ")); 
                bCanReadSystemProcesses = true;
-            } else {
-               _tcscpy_s(szTitle, _countof(szTitle), 
-                  TEXT("Default: ")); 
+            } 
+			else 
+			{
+               _tcscpy_s(
+				   szTitle, 
+				   _countof(szTitle), 
+                   TEXT("Default: ")); 
             }
          break;
-         
-         // Process has been successfully elevated
+         /* Process has been successfully elevated */
          case TokenElevationTypeFull:
-            if (IsUserAnAdmin()) {
-               _tcscpy_s(szTitle, _countof(szTitle), 
-                  TEXT("Elevated Administrator: ")); 
+            if (IsUserAnAdmin()) 
+			{
+               _tcscpy_s(
+				   szTitle, 
+				   _countof(szTitle), 
+                   TEXT("Elevated Administrator: ")); 
                bCanReadSystemProcesses = true;
-            } else {
-               _tcscpy_s(szTitle, _countof(szTitle), 
-                  TEXT("Elevated: ")); 
+            } 
+			else 
+			{
+               _tcscpy_s(
+				   szTitle, 
+				   _countof(szTitle), 
+                   TEXT("Elevated: ")); 
             }
          break;
-
-         // Process is running with limited privileges
+         /* Process is running with limited privileges */
          case TokenElevationTypeLimited:
-            if (s_bIsAdmin) {
-               _tcscpy_s(szTitle, _countof(szTitle), 
-                  TEXT("Filtered Administrator: ")); 
-            } else {
-               _tcscpy_s(szTitle, _countof(szTitle), 
-                  TEXT("Filtered: ")); 
+            if (s_bIsAdmin) 
+			{
+               _tcscpy_s(
+				   szTitle, 
+				   _countof(szTitle), 
+                   TEXT("Filtered Administrator: ")); 
+            } 
+			else 
+			{
+               _tcscpy_s(
+				   szTitle, 
+				   _countof(szTitle), 
+                   TEXT("Filtered: ")); 
             }
          break;
       }
 
-      // Update the dialog title based on the elevation level
-      GetWindowText(hwnd, _tcschr(szTitle, TEXT('\0')), 
+      /* Update the dialog title based on the elevation level */
+      GetWindowText(
+		  hwnd, 
+		  _tcschr(szTitle, TEXT('\0')), 
          _countof(szTitle) - _tcslen(szTitle));
       SetWindowText(hwnd, szTitle);
 
-      // Add the "shield" icon if needed to allow the user
-      // to restart the application with elevated privileges
-      if (!bCanReadSystemProcesses) {
+      /* Add the "shield" icon if needed to allow the user
+       * to restart the application with elevated privileges
+	   */
+      if (!bCanReadSystemProcesses) 
+	  {
          Button_SetElevationRequiredState(
             GetDlgItem(hwnd, IDC_BTN_SYSTEM_PROCESSES), 
                !bCanReadSystemProcesses);
-      } else {
-         // No need to show the button...
+      } 
+	  else 
+	  {
+         /* No need to show the button... */
          ShowWindow(GetDlgItem(hwnd, IDC_BTN_SYSTEM_PROCESSES), SW_HIDE);
          
-         // ... and the combo-box can take the whole width of the dialog box
+         /* ... and the combo-box can take the whole width of the dialog box */
          MoveWindow(GetDlgItem(hwnd, IDC_BTN_SYSTEM_PROCESSES), 
             0, 0, 0, 0, FALSE);
       }
    }
    
-   // Hide the module-helper listbox.
+   /* Hide the module-helper listbox. */
    ShowWindow(GetDlgItem(hwnd, IDC_MODULEHELP), SW_HIDE);
 
-   // Have the results window use a fixed-pitch font
-   SetWindowFont(GetDlgItem(hwnd, IDC_RESULTS), 
-      GetStockFont(ANSI_FIXED_FONT), FALSE);
+   /* Have the results window use a fixed-pitch font */
+   SetWindowFont(
+	   GetDlgItem(hwnd, IDC_RESULTS), 
+       GetStockFont(ANSI_FIXED_FONT), 
+	   FALSE);
 
-   // By default, show the running processes
+   /* By default, show the running processes */
    Dlg_PopulateProcessList(hwnd);
 
    return(TRUE);
@@ -1095,13 +1136,10 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
    }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
 INT_PTR WINAPI Dlg_Proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
    
-   switch (uMsg) {
+   switch (uMsg) 
+   {
       chHANDLE_DLGMSG(hwnd, WM_INITDIALOG, Dlg_OnInitDialog);
       chHANDLE_DLGMSG(hwnd, WM_SIZE,       Dlg_OnSize);
       chHANDLE_DLGMSG(hwnd, WM_COMMAND,    Dlg_OnCommand);
@@ -1116,16 +1154,18 @@ int WINAPI _tWinMain(HINSTANCE hInstanceExe, HINSTANCE, PTSTR pszCmdLine, int) {
 	*/
    CToolhelp::EnablePrivilege(SE_DEBUG_NAME, TRUE);
    
-   // To get access to SACL.
+   /* To get access to SACL.*/
    CToolhelp::EnablePrivilege(SE_SECURITY_NAME, TRUE);     
 
-   // Show main window
+   /* Show main window */
    DialogBox(hInstanceExe, MAKEINTRESOURCE(IDD_PROCESSINFO), NULL, Dlg_Proc);
 
+   /* Adjust old privileges back */
    CToolhelp::EnablePrivilege(SE_SECURITY_NAME, FALSE);     
+   /* Adjust old privileges back */
    CToolhelp::EnablePrivilege(SE_DEBUG_NAME, FALSE);
    return(0);
 }
 
 
-//////////////////////////////// End of File //////////////////////////////////
+
