@@ -50,32 +50,67 @@ void AddText(HWND hwnd, PCTSTR pszFormat, ...) {
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
+
+/* ^%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
+ *  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ *  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+ */
 
 
-BOOL GetProcessIntegrityLevel(HANDLE hProcess, PDWORD pIntegrityLevel, 
-   PDWORD pPolicy, PDWORD pResourceIntegrityLevel, PDWORD pResourcePolicy) {
-   
+
+BOOL GetProcessIntegrityLevel(
+   HANDLE hProcess, 
+   PDWORD pIntegrityLevel, 
+   PDWORD pPolicy, 
+   PDWORD pResourceIntegrityLevel, 
+   PDWORD pResourcePolicy) 
+{   
    HANDLE hToken = NULL;
-   if (!OpenProcessToken(hProcess, TOKEN_READ, &hToken)) {
+
+   /* The OpenProcessToken function opens the access token associated with a process. 
+    * ProcessHandle [in]
+    *    A handle to the process whose access token is opened. 
+	*    The process must have the PROCESS_QUERY_INFORMATION access permission.
+	* DesiredAccess [in]
+    *    Specifies an access mask that specifies the requested types 
+	*    of access to the access token. These requested access types 
+	*    are compared with the discretionary access control list (DACL) 
+	*    of the token to determine which accesses are granted or denied.
+    */
+   if (!OpenProcessToken(hProcess, TOKEN_READ, &hToken)) 
+   {
       return(FALSE);
    }
 
    BOOL bReturn = FALSE;
    
-   // First, compute the size of the buffer to get the Integrity level
+   /* First, compute the size of the buffer to get the Integrity level */
    DWORD dwNeededSize = 0;
+   /* The GetTokenInformation function retrieves a specified type 
+    * of information about an access token. The calling process must have appropriate 
+	* access rights to obtain the information. */
    if (!GetTokenInformation(
-      hToken, TokenIntegrityLevel, NULL, 0, &dwNeededSize)) {
-
+          hToken, 
+		  TokenIntegrityLevel, 
+		  NULL, 
+		  0, 
+		  &dwNeededSize)) 
+   {
       PTOKEN_MANDATORY_LABEL pTokenInfo = NULL;
-      if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) {
-         // Second, allocate a memory block with the the required size 
+      if (GetLastError() == ERROR_INSUFFICIENT_BUFFER) 
+	  {
+         /* Second, allocate a memory block with the the required size */
          pTokenInfo = (PTOKEN_MANDATORY_LABEL)LocalAlloc(0, dwNeededSize);
-         if (pTokenInfo != NULL) {
-            // And finally, ask for the integrity level
-            if (GetTokenInformation(hToken, TokenIntegrityLevel, pTokenInfo, 
-               dwNeededSize, &dwNeededSize)) {
+         if (pTokenInfo != NULL) 
+		 {
+            /* And finally, ask for the integrity level */
+            if (GetTokenInformation(
+				  hToken, 
+				  TokenIntegrityLevel, 
+				  pTokenInfo, 
+                  dwNeededSize, 
+				  &dwNeededSize)) 
+			{
 
                *pIntegrityLevel = 
                   *GetSidSubAuthority(
@@ -140,23 +175,34 @@ BOOL GetProcessIntegrityLevel(HANDLE hProcess, PDWORD pIntegrityLevel,
    return(bReturn);   
 }
 
-BOOL GetProcessIntegrityLevel(DWORD PID, PDWORD pIntegrityLevel, 
-   PDWORD pPolicy, PDWORD pResourceIntegrityLevel, PDWORD pResourcePolicy) {
-   
-   // Sanity checks
+BOOL GetProcessIntegrityLevel(
+   DWORD PID, 
+   PDWORD pIntegrityLevel, 
+   PDWORD pPolicy, 
+   PDWORD pResourceIntegrityLevel, 
+   PDWORD pResourcePolicy) 
+{   
+   /* Sanity checks */
    if ((PID <= 0) || (pIntegrityLevel == NULL))
       return(FALSE);
 
-   // Check if we can get information for this process
-   HANDLE hProcess = OpenProcess(
-      READ_CONTROL | PROCESS_QUERY_INFORMATION, 
-      FALSE, PID);
+   /* Check if we can get information for this process */
+   HANDLE hProcess = 
+	 OpenProcess(
+        READ_CONTROL | PROCESS_QUERY_INFORMATION, 
+        FALSE, 
+		PID);
 
    if (hProcess == NULL)
       return(FALSE);
 
-   BOOL bReturn = GetProcessIntegrityLevel(hProcess, pIntegrityLevel, 
-      pPolicy, pResourceIntegrityLevel, pResourcePolicy);
+   BOOL bReturn = 
+	 GetProcessIntegrityLevel(
+	    hProcess, 
+		pIntegrityLevel, 
+        pPolicy, 
+		pResourceIntegrityLevel, 
+		pResourcePolicy);
 
    // Don't forget to release the process handle
    CloseHandle(hProcess);
@@ -164,10 +210,8 @@ BOOL GetProcessIntegrityLevel(DWORD PID, PDWORD pIntegrityLevel,
    return(bReturn);
 }
 
-
-
-VOID Dlg_PopulateProcessList(HWND hwnd) {
-
+VOID Dlg_PopulateProcessList(HWND hwnd) 
+{
    HWND hwndList = GetDlgItem(hwnd, IDC_PROCESSMODULELIST);
    SetWindowRedraw(hwndList, FALSE);
    ComboBox_ResetContent(hwndList);
@@ -175,26 +219,36 @@ VOID Dlg_PopulateProcessList(HWND hwnd) {
    CToolhelp thProcesses(TH32CS_SNAPPROCESS);
    PROCESSENTRY32 pe = { sizeof(pe) };
    BOOL fOk = thProcesses.ProcessFirst(&pe);
-   for (; fOk; fOk = thProcesses.ProcessNext(&pe)) {
+
+   /* Call function Process32Next for each process in the system */
+   for (; fOk; fOk = thProcesses.ProcessNext(&pe)) 
+   {
       TCHAR sz[1024];
 
-      // Place the process name (without its path) & ID in the list
+      /* Place the process name (without its path) & ID in the list */
       PCTSTR pszExeFile = _tcsrchr(pe.szExeFile, TEXT('\\'));
-      if (pszExeFile == NULL) {
+      if (pszExeFile == NULL) 
+	  {
          pszExeFile = pe.szExeFile;
-      } else {
-         pszExeFile++; // Skip over the slash
+      } 
+	  else 
+	  {
+		 /* Skip over the slash */
+         pszExeFile++; 
       }
 
-      // Append the code/resource integrity level and policy
+      /* Append the code/resource integrity level and policy */
       DWORD dwCodeIntegrityLevel = 0;
       DWORD dwCodePolicy = TOKEN_MANDATORY_POLICY_OFF;
       DWORD dwResourcePolicy = 0;
       DWORD dwResourceIntegrityLevel = 0;
+
       TCHAR szCodeDetails[256];
       szCodeDetails[0] = TEXT('\0');
+
       TCHAR szResourceDetails[256];
       szResourceDetails[0] = TEXT('\0');
+
       if (GetProcessIntegrityLevel(pe.th32ProcessID, &dwCodeIntegrityLevel, 
          &dwCodePolicy, &dwResourceIntegrityLevel, &dwResourcePolicy)) {
          switch (dwCodeIntegrityLevel) {
@@ -1003,11 +1057,8 @@ BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam)
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-
-
-BOOL Dlg_OnSize(HWND hwnd, UINT state, int cx, int cy) {
-
+BOOL Dlg_OnSize(HWND hwnd, UINT state, int cx, int cy) 
+{
    RECT btnRect;
    HWND hwndCtl = GetDlgItem(hwnd, IDC_BTN_SYSTEM_PROCESSES);
    GetClientRect(hwndCtl, &btnRect);
@@ -1029,60 +1080,86 @@ BOOL Dlg_OnSize(HWND hwnd, UINT state, int cx, int cy) {
    return(0);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-DWORD StartElevatedProcess(LPCTSTR szExecutable, LPCTSTR szCmdLine) {
-
-   // Initialize the structure.
+DWORD StartElevatedProcess(LPCTSTR szExecutable, LPCTSTR szCmdLine) 
+{
+   /* Initialize the structure. */
    SHELLEXECUTEINFO sei = { sizeof(SHELLEXECUTEINFO) };
-
-   // Ask for privileges elevation.
+   /* Ask for privileges elevation. */
    sei.lpVerb = TEXT("runas");
-
-   // Pass the application to start with high privileges.
+   /* Pass the application to start with high privileges. */
    sei.lpFile = szExecutable;
-
-   // Pass the command line.
+   /* Pass the command line. */
    sei.lpParameters = szCmdLine;
-
-   // Don't forget this parameter otherwise the window will be hidden.
+   /* Don't forget this parameter otherwise the window will be hidden. */
    sei.nShow = SW_SHOWNORMAL;
-
+   /* pExecInfo [in, out]
+    *    Type: SHELLEXECUTEINFO*
+    *    A pointer to a SHELLEXECUTEINFO structure 
+	*    that contains and receives information about 
+    *  	 the application being executed. 
+	* Returns TRUE if successful; otherwise, FALSE.
+	* Call GetLastError for extended error information.
+	*/
    ShellExecuteEx(&sei);
    return(GetLastError());
 }
 
-///////////////////////////////////////////////////////////////////////////////
-
-
-void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
-
+void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) 
+{
    static BOOL s_fProcesses = TRUE;
 
-   switch (id) {
+   switch (id) 
+   {
       case IDCANCEL:
          EndDialog(hwnd, id);
          break;
 
-      // Restart the application when we are not running 
-      // as Elevated Administrator.
-      case IDC_BTN_SYSTEM_PROCESSES: {
-         // Hide ourself before trying to start the same application
-         // but with elevated privileges.
+      /* Restart the application when we are not running 
+       * as Elevated Administrator.
+	   */
+      case IDC_BTN_SYSTEM_PROCESSES: 
+	  {
+         /* Hide ourself before trying to start the same application
+          * but with elevated privileges.
+		  */
          ShowWindow(hwnd, SW_HIDE);
 
          TCHAR szApplication[MAX_PATH];
          DWORD cchLength = _countof(szApplication);
+
+         /* Retrieves the full name of the executable 
+		  * image for the specified process.
+		  * hProcess [in]
+          *   A handle to the process. 
+		  *   This handle must be created with the PROCESS_QUERY_INFORMATION 
+		  *   or PROCESS_QUERY_LIMITED_INFORMATION access right. 
+		  *   For more information, see Process Security and Access Rights.
+		  * dwFlags [in]
+          *   This parameter can be one of the following values.
+		  *   0 The name should use the Win32 path format.
+		  *     The name should use the native system path format.
+		  * lpExeName [out]
+          *   The path to the executable image. 
+		  *   If the function succeeds, this string is null-terminated. 
+		  * lpdwSize [in, out]
+          *   On input, specifies the size of the lpExeName buffer, in characters. 
+		  *   On success, receives the number of characters written to the buffer, 
+		  *   not including the null-terminating character.
+		  */
          QueryFullProcessImageName(
-            GetCurrentProcess(), 0, szApplication, &cchLength);
+            GetCurrentProcess(), 
+			0, 
+			szApplication, 
+			&cchLength);
+
          DWORD dwStatus = StartElevatedProcess(szApplication, NULL);
-         if (dwStatus == S_OK) {
-            // not need to keep on working under lower privileges.
+         if (dwStatus == S_OK) 
+		 {
+            /* not need to keep on working under lower privileges. */
             ExitProcess(0);
          }
          
-         // In case of error, show up again.
+         /* In case of error, show up again. */
          ShowWindow(hwnd, SW_SHOWNORMAL);
       }
       break;

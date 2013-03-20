@@ -194,24 +194,41 @@ inline BOOL CToolhelp::ReadProcessMemory(DWORD dwProcessID,
       cbRead, pNumberOfBytesRead));
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-inline BOOL CToolhelp::ProcessFirst(PPROCESSENTRY32 ppe) const {
-
+inline BOOL CToolhelp::ProcessFirst(PPROCESSENTRY32 ppe) const 
+{
+   /* Retrieves information about the first process encountered in a system snapshot. 
+    * hSnapshot [in]
+    *    A handle to the snapshot returned from a previous
+	*    call to the CreateToolhelp32Snapshot function.
+	* lppe [in, out]
+    *    A pointer to a PROCESSENTRY32 structure. 
+	*    It contains process information such as the name of the executable file,
+	*    the process identifier, and the process identifier of the parent process.
+    */
    BOOL fOk = Process32First(m_hSnapshot, ppe);
    if (fOk && (ppe->th32ProcessID == 0))
-      fOk = ProcessNext(ppe); // Remove the "[System Process]" (PID = 0)
+   {
+       fOk = ProcessNext(ppe); 
+   }
+   /* Remove the "[System Process]" (PID = 0) */
    return(fOk);
 }
 
-
-inline BOOL CToolhelp::ProcessNext(PPROCESSENTRY32 ppe) const {
-
+inline BOOL CToolhelp::ProcessNext(PPROCESSENTRY32 ppe) const 
+{
+   /* Retrieves information about the next process recorded in a system snapshot.
+    * hSnapshot [in]
+    *  A handle to the snapshot returned from a previous call 
+	*  to the CreateToolhelp32Snapshot function.
+	* lppe [out]
+    *  A pointer to a PROCESSENTRY32 structure. 
+    */
    BOOL fOk = Process32Next(m_hSnapshot, ppe);
    if (fOk && (ppe->th32ProcessID == 0))
-      fOk = ProcessNext(ppe); // Remove the "[System Process]" (PID = 0)
+   {
+      fOk = ProcessNext(ppe); 
+   }
+   /* Remove the "[System Process]" (PID = 0) */
    return(fOk);
 }
 
