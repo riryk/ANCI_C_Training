@@ -379,3 +379,83 @@ BOOL GetProcessElevation(TOKEN_ELEVATION_TYPE* pElevationType, BOOL* pIsAdmin)
 	CloseHandle(hToken);
 	return (bResult);
 }
+
+/* Return values are: 
+ *  1. means that the process is inside a job.
+ *  2. 
+ */
+int StartRestrictedProcess()
+{
+   /* Check if we are not already associated with a job.
+    * If this is the case, there is no way to switch to 
+	* another job.
+    */
+    BOOL bInJob = FALSE;
+	HANDLE hjob;
+	/* Determines whether the process is running in the specified job. 
+	 * ProcessHandle [in]
+	 *   A handle to the process to be tested. 
+	 *   The handle must have the PROCESS_QUERY_INFORMATION 
+	 *   or PROCESS_QUERY_LIMITED_INFORMATION access right. 
+	 *   For more information, see Process Security and Access Rights.
+	 * JobHandle [in, optional]
+     *   A handle to the job. If this parameter is NULL, 
+	 *   the function tests if the process is running under any job.
+     *   If this parameter is not NULL, the handle must have the JOB_OBJECT_QUERY access right. 
+	 *   For more information, see Job Object Security and Access Rights.
+     * Result [out]
+     *   A pointer to a value that receives TRUE 
+	 *   if the process is running in the job, and FALSE otherwise.
+	 */
+    IsProcessInJob(GetCurrentProcess(), NULL, &bInJob);
+	if (bInJob)
+	{
+	   return 1;   
+	}
+	/* Create a job kernel object. */
+    hjob = CreateJobObject(NULL, TEXT("Wintellect_RestrictedProcessJob"));
+    /* Place some restrictions on processes in the job. 
+	 * First, set some basic restrictions.
+	 */
+	JOBOBJECT_BASIC_LIMIT_INFORMATION jobli = { 0 };
+	/* The process always runs in the idle priority class. */
+	jobli.PriorityClass = IDLE_PRIORITY_CLASS;
+	/* The job cannot use more than 1 second of CPU time. */
+	jobli.PerJobUserTimeLimit.QuadPart = 10 * 1000;
+	/* These are the only 2 restrictions I want placed on the job (process). */
+	jobli.LimitFlags = JOB_OBJECT_LIMIT_PRIORITY_CLASS
+		| JOB_OBJECT_LIMIT_JOB_TIME;
+	/* Sets limits for a job object. */
+	SetInformationJobObject(
+		hjob, 
+		JobObjectBasicLimitInformation,
+	    &jobli,
+		sizeof(jobli));
+    /* Second, set some UI restrictions. */
+	JOBOBJECT_BASIC_UI_RESTRICTIONS jobuir;
+	/* A fancy zero */
+	jobuir.UIRestrictionsClass = JOB_OBJECT_UILIMIT_NONE;
+	/* The process can't log off the system. */
+	jobuir.UIRestrictionsClass |= JOB_OBJECT_UILIMIT_EXITWINDOWS;
+	/* The process can't access USER objects (such as other windows)
+	 * in the system.   
+	 */
+	jobuir.UIRestrictionsClass |= JOB_OBJECT_UILIMIT_HANDLES;
+    /* Sets limits for a job object.
+	 */
+	SetInformationJobObject(
+		hjob, 
+		JobObjectBasicUIRestrictions, 
+		&jobuir,
+		sizeof(jobuir));
+	/* Spawn the process that is to be in the job.
+	 * Note: 
+	 *   You must first spawn the process and then place the process
+	 *   in the job. This means that the process' thread must be initially
+	 *   suspended so that it can't so that it can't execute any code 
+	 *   outside of the job's restrictions.
+	 */
+	STARTUPINFO si = { sizeof(si) };
+	PROCESS_INFORMATION pi;
+
+}
