@@ -50,14 +50,6 @@ void AddText(HWND hwnd, PCTSTR pszFormat, ...) {
 }
 
 
-
-/* ^%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%5
- *  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- *  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
- */
-
-
-
 BOOL GetProcessIntegrityLevel(
    HANDLE hProcess, 
    PDWORD pIntegrityLevel, 
@@ -112,6 +104,39 @@ BOOL GetProcessIntegrityLevel(
 				  &dwNeededSize)) 
 			{
 
+               /* The GetSidSubAuthority function returns a pointer to a 
+			    * specified subauthority in a security identifier (SID). 
+				* The subauthority value is a relative identifier (RID). 
+				* pSid [in] 
+                *   A pointer to the SID structure from which a pointer 
+				*   to a subauthority is to be returned.
+                *   This function does not handle SID structures that are not valid. 
+				*   Call the IsValidSid function to verify that the SID structure 
+				*   is valid before you call this function.
+                * nSubAuthority [in] 
+                *   Specifies an index value identifying the subauthority array 
+				*   element whose address the function will return.
+				*   The function performs no validation tests on this value. 
+				*   An application can call the GetSidSubAuthorityCount function 
+				*   to discover the range of acceptable values.
+				* Return value:
+				*   If the function succeeds, the return value is a pointer 
+				*   to the specified SID subauthority. To get extended error information, 
+				*   call GetLastError.
+			    */
+
+               /* Exaplanation for GetSidSubAuthorityCount function
+			    * The GetSidSubAuthorityCount function returns a pointer 
+				* to the member in a security identifier (SID) structure 
+				* that contains the subauthority count.
+				* pSid [in] 
+                *   A pointer to the SID structure from which a pointer
+				*   to the subauthority count is returned.
+                *   This function does not handle SID structures that are not valid.
+				*   Call the IsValidSid function to verify that the SID structure 
+				*   is valid before you call this function.
+                *
+			    */
                *pIntegrityLevel = 
                   *GetSidSubAuthority(
                      pTokenInfo->Label.Sid, 
@@ -120,42 +145,87 @@ BOOL GetProcessIntegrityLevel(
                bReturn = TRUE;
             }
           
-            // Don't forget to free the memory
+            /* Don't forget to free the memory */
             LocalFree(pTokenInfo);
          }
       }
    }
 
-   // Try to get the policy if the integrity level was available
-   if (bReturn) {
+   /* Try to get the policy if the integrity level was available */
+   if (bReturn) 
+   {
       *pPolicy = TOKEN_MANDATORY_POLICY_OFF;
       dwNeededSize = sizeof(DWORD);
-      GetTokenInformation(hToken, TokenMandatoryPolicy, pPolicy, 
-         dwNeededSize, &dwNeededSize);
+      GetTokenInformation(
+		  hToken, 
+		  TokenMandatoryPolicy, 
+		  pPolicy, 
+          dwNeededSize, 
+		  &dwNeededSize);
    }
    
-   // Look for the resource policy
-   *pResourceIntegrityLevel = 0; // 0 means none explicitely set
+   /* Look for the resource policy */
+   *pResourceIntegrityLevel = 0; 
+   /* 0 means none explicitely set */
    *pResourcePolicy = 0;
    
    PACL pSACL = NULL;
    PSECURITY_DESCRIPTOR pSD = NULL;
    DWORD dwResult = ERROR_SUCCESS;
    
-   // Look for the no-read-up/no-write-up policy in the SACL
-   if (hToken != NULL) {
+   /* Look for the no-read-up/no-write-up policy in the SACL */
+   if (hToken != NULL) 
+   {
+      /* The GetSecurityInfo function retrieves a copy of the 
+	   * security descriptor for an object specified by a handle.
+	   * handle [in] 
+       *  A handle to the object from which to retrieve security information.
+	   * ObjectType [in] 
+       *  SE_OBJECT_TYPE enumeration value that indicates the type of object.
+       * SecurityInfo [in] 
+       *  A set of bit flags that indicate the type of security information to retrieve.
+	   *  This parameter can be a combination of the SECURITY_INFORMATION bit flags.
+       * ppsidOwner [out, optional] 
+       *  A pointer to a variable that receives a pointer to the owner SID 
+	   *  in the security descriptor returned in ppSecurityDescriptor. 
+	   *  The returned pointer is valid only if you set the OWNER_SECURITY_INFORMATION flag. 
+	   *  This parameter can be NULL if you do not need the owner SID.
+       *
+       *
+	   */
       dwResult = 
          GetSecurityInfo(
-            hProcess, SE_KERNEL_OBJECT,
+            hProcess, 
+			SE_KERNEL_OBJECT,
             LABEL_SECURITY_INFORMATION,
-            NULL, NULL, NULL, 
-            &pSACL, &pSD
+            NULL, 
+			NULL, 
+			NULL, 
+            &pSACL, 
+			&pSD
           );
-      if (dwResult == ERROR_SUCCESS) {
-         if (pSACL != NULL) {
+
+      if (dwResult == ERROR_SUCCESS) 
+	  {
+         if (pSACL != NULL) 
+		 {
             SYSTEM_MANDATORY_LABEL_ACE* pACE = NULL;
-            if ((pSACL->AceCount > 0) && (GetAce(pSACL, 0, (PVOID*)&pACE))) {
-               if (pACE != NULL) {
+			/* The GetAce function obtains a pointer to an access control entry (ACE) 
+			 * in an access control list (ACL).
+			 * pAcl [in] 
+             *    A pointer to an ACL that contains the ACE to be retrieved.
+             * dwAceIndex [in] 
+             *    The index of the ACE to be retrieved. 
+			 *    A value of zero corresponds to the first ACE in the ACL, 
+			 *    a value of one to the second ACE, and so on.
+             * pAce [out] 
+             *    A pointer to a pointer that the function sets to the address of the ACE.
+             *
+			 */
+            if ((pSACL->AceCount > 0) && (GetAce(pSACL, 0, (PVOID*)&pACE))) 
+			{
+               if (pACE != NULL) 
+			   {
                   SID* pSID = (SID*)(&pACE->SidStart);
                   *pResourceIntegrityLevel = pSID->SubAuthority[0];
                   *pResourcePolicy = pACE->Mask;
@@ -164,12 +234,11 @@ BOOL GetProcessIntegrityLevel(
          }
       }
       
-      // Cleanup memory allocated on our behalf
+      /* Cleanup memory allocated on our behalf */
       if (pSD != NULL) LocalFree(pSD); 
    }
 
-
-   // Don't forget to close the token handle.
+   /* Don't forget to close the token handle. */
    CloseHandle(hToken);
 
    return(bReturn);   
