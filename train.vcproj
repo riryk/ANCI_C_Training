@@ -287,6 +287,10 @@
 					>	
 				</File>
 				<File
+					RelativePath="src\main\problem6.c"
+					>	
+				</File>
+				<File
 					RelativePath="src\main\problem1.h"
 					>
 				</File>
