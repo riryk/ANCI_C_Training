@@ -524,3 +524,66 @@ int StartRestrictedProcess()
 	CloseHandle(pi.hProcess);
 	CloseHandle(hjob);
 }
+
+void EnumProcessIdsInJob(HANDLE hjob)
+{
+   /* I assume that there will never be more 
+    * 10 processes in this job.
+    */
+   #define MAX_PROCESS_IDS 10
+   DWORD x;
+   /* Calculate the number of bytes needed for
+    * structure and process IDs.
+    */
+   DWORD cb = sizeof(JOBOBJECT_BASIC_PROCESS_ID_LIST) + 
+	   (MAX_PROCESS_IDS - 1) * sizeof(DWORD);
+   /* Allocate the block of memory. */
+   PJOBOBJECT_BASIC_PROCESS_ID_LIST pjobpil = 
+	   (PJOBOBJECT_BASIC_PROCESS_ID_LIST)_alloca(cb);
+   /* Tell the function the maximum number of processes
+    * that we allocated space for.
+    */
+   pjobpil->NumberOfAssignedProcesses = MAX_PROCESS_IDS;
+   /* Request the current set of process IDs. 
+    * Retrieves limit and job state information from the job object.
+	* hJob [in, optional]
+    *    A handle to the job whose information is being queried.
+	*    If this value is NULL and the calling process is associated 
+	*    with a job, the job associated with the calling process is used. 
+	*    If the job is nested, the immediate job of the calling process is used.   
+	* obObjectInfoClass [in]
+    *    The information class for the limits to be queried. 
+	*    This parameter can be one of the following values.
+	*    JobObjectBasicProcessIdList = 3
+	*      The lpJobObjectInfo parameter is a pointer 
+	*      to a JOBOBJECT_BASIC_PROCESS_ID_LIST structure.
+    * pJobObjectInfo [out]
+    *    The limit or job state information. 
+	*    The format of this data depends on the value 
+	*    of the JobObjectInfoClass parameter.     
+	* cbJobObjectInfoLength [in]
+    *    The count of the job information being queried, in bytes. 
+	*    This value depends on the value of the JobObjectInfoClass parameter.
+	* lpReturnLength [out, optional]
+    *    A pointer to a variable that receives the length of data 
+	*    written to the structure pointed to by the lpJobObjectInfo parameter. 
+	*    If you do not want to receive this information, specify NULL.
+    */
+   QueryInformationJobObject(
+	   hjob,
+	   JobObjectBasicProcessIdList,
+	   pjobpil,
+	   cb,
+	   &cb);
+   /* Enumerate the process IDs */
+   for (x = 0; x < pjobpil->NumberOfProcessIdsInList; x++)
+   {
+	   /* Use pjobpil->ProcessIdList[x]... */
+   }
+   /* Since _alloca was used to allocate the memory,
+    * we do not need to free it here.
+    */
+}
+
+
+
