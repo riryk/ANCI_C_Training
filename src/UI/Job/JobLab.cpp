@@ -1,29 +1,28 @@
-/******************************************************************************
-Module:  JobLab.cpp
-Notices: Copyright (c) 2008 Jeffrey Richter & Christophe Nasarre
-******************************************************************************/
 
 
-#include "CmnHdr.h"     /* See Appendix A. */
+#include "CmnHdr.h"     
 #include <windowsx.h>
 #include <tchar.h>
 #include <stdio.h>
 #include "Resource.h"
 #include "Job.h"
-//#include <psapi.h>   // for GetModuleFileNameEx, GetProcessImageFileName
+
 
 #include <StrSafe.h>
 
 #pragma comment (lib, "psapi.lib")  
 
 
-///////////////////////////////////////////////////////////////////////////////
 
 
 CJob   g_job;           // Job object
 HWND   g_hwnd;          // Handle to dialog box (accessible by all threads)
-HANDLE g_hIOCP;         // Completion port that receives Job notifications
-HANDLE g_hThreadIOCP;   // Completion port thread
+
+/* Completion port that receives Job notifications */
+HANDLE g_hIOCP;        
+
+/* Completion port thread */
+HANDLE g_hThreadIOCP;   
 
 // Completion keys for the completion port
 #define COMPKEY_TERMINATE  ((UINT_PTR) 0)
@@ -31,74 +30,132 @@ HANDLE g_hThreadIOCP;   // Completion port thread
 #define COMPKEY_JOBOBJECT  ((UINT_PTR) 2)
 
 
-///////////////////////////////////////////////////////////////////////////////
-
-
 void GetProcessName(DWORD PID, PTSTR szProcessName, size_t cchSize)
 {
-   HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, 
-      FALSE, PID);
-   if (hProcess == NULL) {
+   /* Opens an existing local process object. */
+   HANDLE hProcess = 
+	   OpenProcess(
+	       PROCESS_QUERY_INFORMATION | PROCESS_VM_READ, 
+           FALSE, 
+		   PID);
+
+   if (hProcess == NULL) 
+   {
       _tcscpy_s(szProcessName, cchSize, TEXT("???"));
       return;
    }
 
-   //if (GetModuleFileNameEx(hProcess, (HMODULE)0, szProcessName, cchSize) 
-   //    == 0) {
-   //   // GetModuleFileNameEx could fail when the address space
-   //   // is not completely initialized. This occurs when the job
-   //   // notification happens.
-   //   // Hopefully, GetProcessImageFileNameW still works even though
-   //   // the obtained path is more complication to decipher
-   //   //    \Device\HarddiskVolume1\Windows\System32\notepad.exe
-   //   if (!GetProcessImageFileName(hProcess, szProcessName, cchSize)) {
-   //      _tcscpy_s(szProcessName, cchSize, TEXT("???"));
-   //   }
-   //}
-   // but it is easier to call this function instead that works fine
-   // in all situations.
-   DWORD dwSize = (DWORD) cchSize;
-   QueryFullProcessImageName(hProcess, 0, szProcessName, &dwSize);
+   DWORD dwSize = (DWORD)cchSize;
+   /* Retrieves the full name of the executable image 
+    * for the specified process. 
+    */
+   QueryFullProcessImageName(
+	   hProcess, 
+	   0, 
+	   szProcessName, 
+	   &dwSize);
 
-   // Don't forget to close the process handle
+   /* Don't forget to close the process handle */
    CloseHandle(hProcess);
 }
 
-DWORD WINAPI JobNotify(PVOID) {
+/* This function is launched in a separate thread and waits for 
+ * a message from a completion port associated with a job.
+ */
+DWORD WINAPI JobNotify(PVOID) 
+{
    TCHAR sz[2000];
    BOOL fDone = FALSE;
 
-   while (!fDone) {
+   while (!fDone) 
+   {
       DWORD dwBytesXferred;
       ULONG_PTR CompKey;
       LPOVERLAPPED po;
-      GetQueuedCompletionStatus(g_hIOCP, 
-         &dwBytesXferred, &CompKey, &po, INFINITE);
+      
+	  /* Attempts to dequeue an I/O completion packet 
+	   * from the specified I/O completion port. 
+	   * If there is no completion packet queued, the function 
+	   * waits for a pending I/O operation associated with the completion port to complete.
+	   *
+       * To dequeue multiple I/O completion packets at once, 
+	   * use the GetQueuedCompletionStatusEx function
+	   *  
+	   * CompletionPort [in] 
+       *   A handle to the completion port. To create a completion port, 
+	   *   use the CreateIoCompletionPort function.
+	   *
+	   * lpNumberOfBytes [out] 
+       *   A pointer to a variable that receives the number of bytes 
+	   *   transferred during an I/O operation that has completed
+       *   
+	   * lpCompletionKey [out] 
+       *   A pointer to a variable that receives the completion key value 
+	   *   associated with the file handle whose I/O operation has completed. 
+	   *   A completion key is a per-file key that is specified in a call to CreateIoCompletionPort.
+       *
+	   * lpOverlapped [out]  
+       *   A pointer to a variable that receives the address of the 
+	   *   OVERLAPPED structure that was specified when the completed I/O operation was started. 
+	   * 
+	   * dwMilliseconds [in] 
+       *   The number of milliseconds that the caller is willing to wait 
+	   *   for a completion packet to appear at the completion port. 
+	   *   If a completion packet does not appear within the specified time, 
+	   *   the function times out, returns FALSE, and sets *lpOverlapped to NULL.
+	   *
+       *   If dwMilliseconds is INFINITE, the function will never time out. 
+	   *   If dwMilliseconds is zero and there is no I/O operation to dequeue, 
+	   *   the function will time out immediately.
+       */
+      GetQueuedCompletionStatus(
+		  g_hIOCP, 
+          &dwBytesXferred, 
+		  &CompKey, 
+		  &po, 
+		  INFINITE);
 
-      // The app is shutting down, exit this thread
+      /* The app is shutting down, exit this thread */
       fDone = (CompKey == COMPKEY_TERMINATE);
 
       HWND hwndLB = FindWindow(NULL, TEXT("Job Lab"));
       hwndLB = GetDlgItem(hwndLB, IDC_STATUS);
 
-      if (CompKey == COMPKEY_JOBOBJECT) {
+      if (CompKey == COMPKEY_JOBOBJECT) 
+	  {
          _tcscpy_s(sz, _countof(sz), TEXT("--> Notification: "));
          PTSTR psz = sz + _tcslen(sz);
-         switch (dwBytesXferred) {
-         case JOB_OBJECT_MSG_END_OF_JOB_TIME:
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
-               TEXT("Job time limit reached"));
-            break;
+         switch (dwBytesXferred) 
+		 {
+			 /* We have reached an event when job time was reached */
+             case JOB_OBJECT_MSG_END_OF_JOB_TIME:
+                  StringCchPrintf(
+					    psz, 
+						_countof(sz) - _tcslen(sz), 
+                        TEXT("Job time limit reached"));
+             break;
+			 /* The time allowed for process in the job is exceeded.
+			  * So we get process name from the overlapped structure.
+			  */
+             case JOB_OBJECT_MSG_END_OF_PROCESS_TIME: 
+			 {
+                  TCHAR szProcessName[MAX_PATH];
+                  
+				  /* po is a process identifier. */
+                  GetProcessName(
+					  PtrToUlong(po), 
+					  szProcessName, 
+					  MAX_PATH);
 
-         case JOB_OBJECT_MSG_END_OF_PROCESS_TIME: {
-            TCHAR szProcessName[MAX_PATH];
-            GetProcessName(PtrToUlong(po), szProcessName, MAX_PATH);
+                  StringCchPrintf(
+					  psz, 
+					  _countof(sz) - _tcslen(sz), 
+                      TEXT("Job process %s (Id=%d) time limit reached"), 
+                      szProcessName, 
+					  po);
+             }
+             break;
 
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
-               TEXT("Job process %s (Id=%d) time limit reached"), 
-               szProcessName, po);
-         }
-         break;
 
          case JOB_OBJECT_MSG_ACTIVE_PROCESS_LIMIT:
             StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
@@ -523,30 +580,73 @@ INT_PTR WINAPI Dlg_Proc (HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
    return(FALSE);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int) {
-
-   // Check if we are not already associated with a job.
-   // If this is the case, there is no way to switch to
-   // another job.
+int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int) 
+{
+   /* Check if we are not already associated with a job.
+    * If this is the case, there is no way to switch to
+    * another job.
+	*/
    BOOL bInJob = FALSE;
    IsProcessInJob(GetCurrentProcess(), NULL, &bInJob);
-   if (bInJob) {
-      MessageBox(NULL, TEXT("Process already in a job"), 
-         TEXT(""), MB_ICONINFORMATION | MB_OK);
+   if (bInJob) 
+   {
+      MessageBox(
+		  NULL, 
+		  TEXT("Process already in a job"), 
+          TEXT(""), 
+		  MB_ICONINFORMATION | MB_OK);
+
       return(-1);
    }
 
-   // Create the completion port that receives job notifications
-   g_hIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE, NULL, 0, 0);
+   /* Create the completion port that receives job notifications 
+    * Creates an input/output (I/O) completion port 
+	* and associates it with a specified file handle, 
+	* or creates an I/O completion port that is not 
+	* yet associated with a file handle, allowing association at a later time.
+    * 
+	*  Associating an instance of an opened file handle with an I/O completion 
+	*  port allows a process to receive notification of the completion 
+	*  of asynchronous I/O operations involving that file handle.
+	*
+    * FileHandle [in] 
+    *   An open file handle or INVALID_HANDLE_VALUE.
+    *   The handle must be to an object that supports overlapped I/O.
+    *   If a handle is provided, it has to have been opened 
+	*   for overlapped I/O completion. 
+	*   For example, you must specify the FILE_FLAG_OVERLAPPED flag
+	*   when using the CreateFile function to obtain the handle.
+	*
+    *   If INVALID_HANDLE_VALUE is specified, 
+	*   the function creates an I/O completion port without associating it 
+	*   with a file handle. In this case, the ExistingCompletionPort parameter 
+	*   must be NULL and the CompletionKey parameter is ignored.
+    * 
+	* ExistingCompletionPort [in, optional] 
+    *   A handle to an existing I/O completion port or NULL.
+    *   If this parameter is NULL, the function creates a new I/O completion port and, 
+	*   if the FileHandle parameter is valid, associates it with the new I/O completion port. 
+	*   Otherwise no file handle association occurs. 
+	*   The function returns the handle to the new I/O completion port if successful.
+	*  
+	*  
+    */
+   g_hIOCP = CreateIoCompletionPort(
+	   INVALID_HANDLE_VALUE, 
+	   NULL, 
+	   0, 
+	   0);
 
-   // Create a thread that waits on the completion port
-   g_hThreadIOCP = chBEGINTHREADEX(NULL, 0, JobNotify, NULL, 0, NULL);
+   /* Create a thread that waits on the completion port */
+   g_hThreadIOCP = chBEGINTHREADEX(
+	   NULL, 
+	   0, 
+	   JobNotify, 
+	   NULL, 
+	   0, 
+	   NULL);
 
-   // Create the job object
+   /* Create the job object */
    g_job.Create(NULL, TEXT("JobLab"));
    g_job.SetEndOfJobInfo(JOB_OBJECT_POST_AT_END_OF_JOB);
    g_job.AssociateCompletionPort(g_hIOCP, COMPKEY_JOBOBJECT);
