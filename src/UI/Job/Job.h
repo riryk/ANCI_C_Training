@@ -1,7 +1,4 @@
-/******************************************************************************
-Module:  Job.h
-Notices: Copyright (c) 2008 Jeffrey Richter & Christophe Nasarre
-******************************************************************************/
+
 
 
 #pragma once
@@ -160,15 +157,36 @@ inline BOOL CJob::SetBasicUIRestrictions(DWORD fdwLimits) {
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-
-
-inline BOOL CJob::SetEndOfJobInfo(DWORD fdwEndOfJobInfo) {
-
+inline BOOL CJob::SetEndOfJobInfo(DWORD fdwEndOfJobInfo) 
+{
    JOBOBJECT_END_OF_JOB_TIME_INFORMATION joeojti = { fdwEndOfJobInfo };
    joeojti.EndOfJobTimeAction = fdwEndOfJobInfo;
-   return(SetInformationJobObject(m_hJob, 
-      JobObjectEndOfJobTimeInformation, &joeojti, sizeof(joeojti)));
+
+   /* Sets limits for a job object. 
+    *
+    * hJob [in] 
+    *   A handle to the job whose limits are being set. 
+	*
+    * JobObjectInfoClass [in] 
+    *   The information class for the limits to be set. 
+	*   This parameter can be one of the following values:
+	*
+    *   JobObjectEndOfJobTimeInformation 6 
+    *   The lpJobObjectInfo parameter is a pointer to 
+	*   a JOBOBJECT_END_OF_JOB_TIME_INFORMATION structure
+    *   
+	* lpJobObjectInfo [in] 
+    *   The limits or job state to be set for the job. 
+	*   The format of this data depends on the value of JobObjectInfoClass.
+	*
+    * cbJobObjectInfoLength [in] 
+    *   The size of the job information being set, in bytes.
+    */
+   return(SetInformationJobObject(
+	        m_hJob, 
+            JobObjectEndOfJobTimeInformation, 
+			&joeojti, 
+			sizeof(joeojti)));
 }
 
 
@@ -201,8 +219,34 @@ inline BOOL CJob::QueryAssociatedCompletionPort(
 inline BOOL CJob::QueryBasicAccountingInfo(
    PJOBOBJECT_BASIC_AND_IO_ACCOUNTING_INFORMATION pjobai) {
 
-   return(QueryInformationJobObject(m_hJob, 
-      JobObjectBasicAndIoAccountingInformation, pjobai, sizeof(*pjobai), 
+   /* Retrieves limit and job state information from the job object.
+    * hJob [in, optional] 
+    *   A handle to the job whose information is being queried. 
+	*   The CreateJobObject or OpenJobObject function returns this handle
+	*
+    * JobObjectInfoClass [in] 
+    *   The information class for the limits to be queried. 
+	*   This parameter can be one of the following values.
+	*
+    *   JobObjectBasicAccountingInformation 1 
+    *   The lpJobObjectInfo parameter is a pointer 
+	*   to a JOBOBJECT_BASIC_ACCOUNTING_INFORMATION structure.
+    *
+	* lpJobObjectInfo [out] 
+    *   The limit or job state information. 
+	*   The format of this data depends on the value of the JobObjectInfoClass parameter.
+    *  
+	* cbJobObjectInfoLength [in] 
+    *   The count of the job information being queried, in bytes. 
+	*   This value depends on the value of the JobObjectInfoClass parameter.
+    *
+    */
+   return(
+	   QueryInformationJobObject(
+	     m_hJob, 
+         JobObjectBasicAndIoAccountingInformation, 
+		 pjobai, 
+		 sizeof(*pjobai), 
       NULL));
 }
 
@@ -213,42 +257,70 @@ inline BOOL CJob::QueryBasicAccountingInfo(
 inline BOOL CJob::QueryExtendedLimitInfo(
    PJOBOBJECT_EXTENDED_LIMIT_INFORMATION pjoeli) {
 
-   return(QueryInformationJobObject(m_hJob, JobObjectExtendedLimitInformation, 
-      pjoeli, sizeof(*pjoeli), NULL));
+   /* 
+    * JobObjectExtendedLimitInformation 9 
+    * The lpJobObjectInfo parameter is a pointer to 
+    * a JOBOBJECT_EXTENDED_LIMIT_INFORMATION structure
+	*
+    */
+   return(QueryInformationJobObject(
+	       m_hJob, 
+		   JobObjectExtendedLimitInformation, 
+           pjoeli, 
+		   sizeof(*pjoeli), 
+		   NULL));
 }
 
 
 ///////////////////////////////////////////////////////////////////////////////
 
 
-inline BOOL CJob::QueryBasicProcessIdList(DWORD dwMaxProcesses, 
-   PDWORD pdwProcessIdList, PDWORD pdwProcessesReturned) {
+inline BOOL CJob::QueryBasicProcessIdList(
+	DWORD dwMaxProcesses, 
+    PDWORD pdwProcessIdList, 
+	PDWORD pdwProcessesReturned) 
+{
+   /* Calculate the # of bytes necessary */
+   DWORD cb = 
+	      sizeof(JOBOBJECT_BASIC_PROCESS_ID_LIST) + 
+          (sizeof(DWORD) * (dwMaxProcesses - 1));
 
-   // Calculate the # of bytes necessary
-   DWORD cb = sizeof(JOBOBJECT_BASIC_PROCESS_ID_LIST) + 
-      (sizeof(DWORD) * (dwMaxProcesses - 1));
-
-   // Allocate those bytes from the stack
+   /* Allocate those bytes from the stack */
    PJOBOBJECT_BASIC_PROCESS_ID_LIST pjobpil = 
       (PJOBOBJECT_BASIC_PROCESS_ID_LIST) _alloca(cb);
 
-   // Were those bytes allocated OK? If so, keep going
+   /* Were those bytes allocated OK? If so, keep going */
    BOOL fOk = (pjobpil != NULL);
 
-   if (fOk) {
+   if (fOk) 
+   {
       pjobpil->NumberOfProcessIdsInList = dwMaxProcesses;
-      fOk = ::QueryInformationJobObject(m_hJob, JobObjectBasicProcessIdList, 
-         pjobpil, cb, NULL);
+      
+	  /* 
+	   * JobObjectBasicProcessIdList 3 
+       * The lpJobObjectInfo parameter is a pointer 
+	   * to a JOBOBJECT_BASIC_PROCESS_ID_LIST structure.
+       */
+      fOk = ::QueryInformationJobObject(
+		        m_hJob, 
+				JobObjectBasicProcessIdList, 
+                pjobpil, 
+				cb, 
+				NULL);
 
-      if (fOk) {
-         // We got the information, return it to the caller
+      if (fOk) 
+	  {
+         /* We got the information, return it to the caller */
          if (pdwProcessesReturned != NULL) 
             *pdwProcessesReturned = pjobpil->NumberOfProcessIdsInList;
 
-         CopyMemory(pdwProcessIdList, pjobpil->ProcessIdList, 
-            sizeof(DWORD) * pjobpil->NumberOfProcessIdsInList);
+         CopyMemory(
+			 pdwProcessIdList, 
+			 pjobpil->ProcessIdList, 
+             sizeof(DWORD) * pjobpil->NumberOfProcessIdsInList);
       }
    }
+
    return(fOk);
 }
 

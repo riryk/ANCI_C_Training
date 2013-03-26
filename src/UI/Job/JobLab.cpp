@@ -14,9 +14,10 @@
 
 
 
-
-CJob   g_job;           // Job object
-HWND   g_hwnd;          // Handle to dialog box (accessible by all threads)
+/* Job object */
+CJob   g_job;   
+/* Handle to dialog box (accessible by all threads) */
+HWND   g_hwnd;        
 
 /* Completion port that receives Job notifications */
 HANDLE g_hIOCP;        
@@ -24,7 +25,7 @@ HANDLE g_hIOCP;
 /* Completion port thread */
 HANDLE g_hThreadIOCP;   
 
-// Completion keys for the completion port
+/* Completion keys for the completion port */
 #define COMPKEY_TERMINATE  ((UINT_PTR) 0)
 #define COMPKEY_STATUS     ((UINT_PTR) 1)
 #define COMPKEY_JOBOBJECT  ((UINT_PTR) 2)
@@ -156,149 +157,230 @@ DWORD WINAPI JobNotify(PVOID)
              }
              break;
 
+             case JOB_OBJECT_MSG_ACTIVE_PROCESS_LIMIT:
+                  StringCchPrintf(
+					  psz, 
+					  _countof(sz) - _tcslen(sz), 
+                      TEXT("Too many active processes in job"));
+             break;
 
-         case JOB_OBJECT_MSG_ACTIVE_PROCESS_LIMIT:
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
-               TEXT("Too many active processes in job"));
-            break;
+             case JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO:
+                  StringCchPrintf(
+					  psz, 
+					  _countof(sz) - _tcslen(sz), 
+                      TEXT("Job contains no active processes"));
+             break;
 
-         case JOB_OBJECT_MSG_ACTIVE_PROCESS_ZERO:
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
-               TEXT("Job contains no active processes"));
-            break;
+             case JOB_OBJECT_MSG_NEW_PROCESS: 
+			 {
+                  TCHAR szProcessName[MAX_PATH];
+                  GetProcessName(
+					  PtrToUlong(po), 
+					  szProcessName, 
+					  MAX_PATH);
 
-         case JOB_OBJECT_MSG_NEW_PROCESS: {
-            TCHAR szProcessName[MAX_PATH];
-            GetProcessName(PtrToUlong(po), szProcessName, MAX_PATH);
+                  StringCchPrintf(
+					  psz, 
+					  _countof(sz) - _tcslen(sz), 
+                      TEXT("New process %s (Id=%d) in Job"), 
+					  szProcessName, 
+					  po);
+             }
+             break;
 
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
-               TEXT("New process %s (Id=%d) in Job"), szProcessName, po);
-         }
-         break;
+             case JOB_OBJECT_MSG_EXIT_PROCESS: 
+			 {
+                  TCHAR szProcessName[MAX_PATH];
+                  GetProcessName(
+					 PtrToUlong(po), 
+					 szProcessName, 
+					 MAX_PATH);
 
-         case JOB_OBJECT_MSG_EXIT_PROCESS: {
-            TCHAR szProcessName[MAX_PATH];
-            GetProcessName(PtrToUlong(po), szProcessName, MAX_PATH);
+                  StringCchPrintf(
+					  psz, 
+					  _countof(sz) - _tcslen(sz), 
+                      TEXT("Process %s (Id=%d) terminated"), 
+					  szProcessName, 
+					  po);
+             }
+             break;
 
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
-               TEXT("Process %s (Id=%d) terminated"), szProcessName, po);
-         }
-         break;
+             case JOB_OBJECT_MSG_ABNORMAL_EXIT_PROCESS: 
+			 {
+                 TCHAR szProcessName[MAX_PATH];
+                 GetProcessName(
+					 PtrToUlong(po), 
+					 szProcessName, 
+					 MAX_PATH);
 
-         case JOB_OBJECT_MSG_ABNORMAL_EXIT_PROCESS: {
-            TCHAR szProcessName[MAX_PATH];
-            GetProcessName(PtrToUlong(po), szProcessName, MAX_PATH);
+                 StringCchPrintf(
+					 psz, 
+					 _countof(sz) - _tcslen(sz), 
+                     TEXT("Process %s (Id=%d) terminated abnormally"), 
+                     szProcessName, 
+					 po);
+             }
+             break;
 
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
-               TEXT("Process %s (Id=%d) terminated abnormally"), 
-               szProcessName, po);
-         }
-         break;
+             case JOB_OBJECT_MSG_PROCESS_MEMORY_LIMIT: 
+		     {
+                 TCHAR szProcessName[MAX_PATH];
+                 GetProcessName(
+					 PtrToUlong(po), 
+					 szProcessName, 
+					 MAX_PATH);
 
-         case JOB_OBJECT_MSG_PROCESS_MEMORY_LIMIT: {
-            TCHAR szProcessName[MAX_PATH];
-            GetProcessName(PtrToUlong(po), szProcessName, MAX_PATH);
+                 StringCchPrintf(
+					 psz, 
+					 _countof(sz) - _tcslen(sz), 
+                     TEXT("Process (%s Id=%d) exceeded memory limit"), 
+                     szProcessName, 
+					 po);
+             }
+             break;
 
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz), 
-               TEXT("Process (%s Id=%d) exceeded memory limit"), 
-               szProcessName, po);
-         }
-         break;
+             case JOB_OBJECT_MSG_JOB_MEMORY_LIMIT: 
+			 {
+                 TCHAR szProcessName[MAX_PATH];
+                 GetProcessName(
+					 PtrToUlong(po), 
+					 szProcessName, 
+					 MAX_PATH);
 
-         case JOB_OBJECT_MSG_JOB_MEMORY_LIMIT: {
-            TCHAR szProcessName[MAX_PATH];
-            GetProcessName(PtrToUlong(po), szProcessName, MAX_PATH);
+                 StringCchPrintf(
+					 psz, 
+					 _countof(sz) - _tcslen(sz),
+                     TEXT("Process %s (Id=%d) exceeded job memory limit"), 
+                     szProcessName, 
+					 po);
+             }
+             break;
 
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz),
-               TEXT("Process %s (Id=%d) exceeded job memory limit"), 
-               szProcessName, po);
-         }
-         break;
-
-         default:
-            StringCchPrintf(psz, _countof(sz) - _tcslen(sz),
-               TEXT("Unknown notification: %d"), dwBytesXferred);
-            break;
+             default:
+                 StringCchPrintf(
+					 psz, 
+					 _countof(sz) - _tcslen(sz),
+                     TEXT("Unknown notification: %d"), 
+					 dwBytesXferred);
+             break;
          }
          ListBox_SetCurSel(hwndLB, ListBox_AddString(hwndLB, sz));
-         CompKey = 1;   // Force a status update when a notification arrives
+         /* Force a status update when a notification arrives */
+         CompKey = 1; 
       }
 
-
-      if (CompKey == COMPKEY_STATUS) {
-
+      if (CompKey == COMPKEY_STATUS) 
+	  {
          static int s_nStatusCount = 0;
-         StringCchPrintf(sz, _countof(sz), 
-            TEXT("--> Status Update (%u)"), s_nStatusCount++);
+
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+             TEXT("--> Status Update (%u)"), 
+			 s_nStatusCount++);
+
          ListBox_SetCurSel(hwndLB, ListBox_AddString(hwndLB, sz));
 
-         // Show the basic accounting information
+         /* Show the basic accounting information */
          JOBOBJECT_BASIC_AND_IO_ACCOUNTING_INFORMATION jobai;
+
          g_job.QueryBasicAccountingInfo(&jobai);
 
-         StringCchPrintf(sz, _countof(sz), 
-            TEXT("Total Time: User=%I64u, Kernel=%I64u        ")
-            TEXT("Period Time: User=%I64u, Kernel=%I64u"), 
-            jobai.BasicInfo.TotalUserTime.QuadPart, 
-            jobai.BasicInfo.TotalKernelTime.QuadPart,
-            jobai.BasicInfo.ThisPeriodTotalUserTime.QuadPart, 
-            jobai.BasicInfo.ThisPeriodTotalKernelTime.QuadPart);
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+             TEXT("Total Time: User=%I64u, Kernel=%I64u        ")
+             TEXT("Period Time: User=%I64u, Kernel=%I64u"), 
+             jobai.BasicInfo.TotalUserTime.QuadPart, 
+             jobai.BasicInfo.TotalKernelTime.QuadPart,
+             jobai.BasicInfo.ThisPeriodTotalUserTime.QuadPart, 
+             jobai.BasicInfo.ThisPeriodTotalKernelTime.QuadPart);
+
          ListBox_SetCurSel(hwndLB, ListBox_AddString(hwndLB, sz));
 
-         StringCchPrintf(sz, _countof(sz), 
-            TEXT("Page Faults=%u, Total Processes=%u, ")
-            TEXT("Active Processes=%u, Terminated Processes=%u"), 
-            jobai.BasicInfo.TotalPageFaultCount, 
-            jobai.BasicInfo.TotalProcesses, 
-            jobai.BasicInfo.ActiveProcesses, 
-            jobai.BasicInfo.TotalTerminatedProcesses);
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+             TEXT("Page Faults=%u, Total Processes=%u, ")
+             TEXT("Active Processes=%u, Terminated Processes=%u"), 
+             jobai.BasicInfo.TotalPageFaultCount, 
+             jobai.BasicInfo.TotalProcesses, 
+             jobai.BasicInfo.ActiveProcesses, 
+             jobai.BasicInfo.TotalTerminatedProcesses);
+
          ListBox_SetCurSel(hwndLB, ListBox_AddString(hwndLB, sz));
 
-         // Show the I/O accounting information
-         StringCchPrintf(sz, _countof(sz), 
-            TEXT("Reads=%I64u (%I64u bytes), ")
-            TEXT("Write=%I64u (%I64u bytes), Other=%I64u (%I64u bytes)"), 
-            jobai.IoInfo.ReadOperationCount,  jobai.IoInfo.ReadTransferCount, 
-            jobai.IoInfo.WriteOperationCount, jobai.IoInfo.WriteTransferCount, 
-            jobai.IoInfo.OtherOperationCount, jobai.IoInfo.OtherTransferCount);
+         /* Show the I/O accounting information */
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+             TEXT("Reads=%I64u (%I64u bytes), ")
+             TEXT("Write=%I64u (%I64u bytes), Other=%I64u (%I64u bytes)"), 
+             jobai.IoInfo.ReadOperationCount,  
+			 jobai.IoInfo.ReadTransferCount, 
+             jobai.IoInfo.WriteOperationCount, 
+			 jobai.IoInfo.WriteTransferCount, 
+             jobai.IoInfo.OtherOperationCount, 
+			 jobai.IoInfo.OtherTransferCount);
+
          ListBox_SetCurSel(hwndLB, ListBox_AddString(hwndLB, sz));
 
-         // Show the peak per-process and job memory usage
+         /* Show the peak per-process and job memory usage */
          JOBOBJECT_EXTENDED_LIMIT_INFORMATION joeli;
          g_job.QueryExtendedLimitInfo(&joeli);
-         StringCchPrintf(sz, _countof(sz), 
-            TEXT("Peak memory used: Process=%I64u, Job=%I64u"), 
-            (__int64) joeli.PeakProcessMemoryUsed, 
-            (__int64) joeli.PeakJobMemoryUsed);
+
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+             TEXT("Peak memory used: Process=%I64u, Job=%I64u"), 
+             (__int64)joeli.PeakProcessMemoryUsed, 
+             (__int64)joeli.PeakJobMemoryUsed);
          ListBox_SetCurSel(hwndLB, ListBox_AddString(hwndLB, sz));
 
-         // Show the set of Process IDs 
+         /* Show the set of Process IDs */
          DWORD dwNumProcesses = 50;
          DWORD dwProcessIdList[50];
-         g_job.QueryBasicProcessIdList(dwNumProcesses, 
-            dwProcessIdList, &dwNumProcesses);
-         StringCchPrintf(sz, _countof(sz), TEXT("PIDs: %s"), 
-            (dwNumProcesses == 0) ? TEXT("(none)") : TEXT(""));
+
+         g_job.QueryBasicProcessIdList(
+			 dwNumProcesses, 
+             dwProcessIdList, 
+			 &dwNumProcesses);
+
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+			 TEXT("PIDs: %s"), 
+             (dwNumProcesses == 0) ? TEXT("(none)") : TEXT(""));
+
          ListBox_SetCurSel(hwndLB, ListBox_AddString(hwndLB, sz));
+
          TCHAR szProcessName[MAX_PATH];
-         for (DWORD x = 0; x < dwNumProcesses; x++) {
-            GetProcessName(dwProcessIdList[x], 
-               szProcessName, _countof(szProcessName));
-            StringCchPrintf(sz, _countof(sz), TEXT("   %d - %s"), 
-               dwProcessIdList[x], szProcessName);
+
+         for (DWORD x = 0; x < dwNumProcesses; x++) 
+		 {
+            GetProcessName(
+				dwProcessIdList[x], 
+                szProcessName, 
+				_countof(szProcessName));
+
+            StringCchPrintf(
+				sz, 
+				_countof(sz), 
+				TEXT("   %d - %s"), 
+                dwProcessIdList[x], 
+				szProcessName);
+
             ListBox_SetCurSel(hwndLB, ListBox_AddString(hwndLB, sz));
          }
       }
    }
+
    return(0);
 }
 
 
-///////////////////////////////////////////////////////////////////////////////
-
-
-BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) {
-
+BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) 
+{
    chSETDLGICONS(hwnd, IDI_JOBLAB);
 
    // Save our window handle so that the completion port thread can access it
@@ -327,8 +409,6 @@ BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) {
    return(TRUE);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
 
 
 void Dlg_ApplyLimits(HWND hwnd) {
@@ -491,8 +571,6 @@ void Dlg_ApplyLimits(HWND hwnd) {
    chVERIFY(g_job.SetBasicUIRestrictions(jobuir));
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
 
 
 void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
