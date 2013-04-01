@@ -60,6 +60,8 @@ void GetProcessName(DWORD PID, PTSTR szProcessName, size_t cchSize)
    CloseHandle(hProcess);
 }
 
+
+
 /* This function is launched in a separate thread and waits for 
  * a message from a completion port associated with a job.
  */
@@ -379,6 +381,9 @@ DWORD WINAPI JobNotify(PVOID)
 }
 
 
+
+
+
 BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) 
 {
    chSETDLGICONS(hwnd, IDI_JOBLAB);
@@ -573,8 +578,8 @@ void Dlg_ApplyLimits(HWND hwnd) {
 
 
 
-void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
-
+void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) 
+{
    switch (id) {
       case IDCANCEL:
          // User is terminating our app, kill the job too.
@@ -731,10 +736,29 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int)
 
    DialogBox(hinstExe, MAKEINTRESOURCE(IDD_JOBLAB), NULL, Dlg_Proc);
 
-   // Post a special key that tells the completion port thread to terminate
+   /* Post a special key that tells the completion port thread to terminate 
+    * Posts an I/O completion packet to an I/O completion port.
+	*
+	* CompletionPort [in] 
+    *   A handle to an I/O completion port to which 
+	*   the I/O completion packet is to be posted.
+    * 
+	* dwNumberOfBytesTransferred [in] 
+    *   The value to be returned through the lpNumberOfBytesTransferred 
+	*   parameter of the GetQueuedCompletionStatus function.
+    *
+	* dwCompletionKey [in] 
+    *   The value to be returned through the lpCompletionKey parameter 
+	*   of the GetQueuedCompletionStatus function.
+    * 
+	* lpOverlapped [in, optional] 
+    *   The value to be returned through the lpOverlapped parameter 
+	*   of the GetQueuedCompletionStatus function.
+    *
+    */
    PostQueuedCompletionStatus(g_hIOCP, 0, COMPKEY_TERMINATE, NULL);
 
-   // Wait for the completion port thread to terminate
+   /* Wait for the completion port thread to terminate */
    WaitForSingleObject(g_hThreadIOCP, INFINITE);
    
    // Clean up everything properly
