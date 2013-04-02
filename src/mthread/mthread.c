@@ -585,5 +585,37 @@ void EnumProcessIdsInJob(HANDLE hjob)
     */
 }
 
+DWORD WINAPI FirstThread(PVOID pvParam)
+{
+   /* Initialize a stack-based variable */
+   int x = 0;
+   DWORD dwThreadID;
+   /* Create a new thread */
+   HANDLE hThread = 
+	   CreateThread(
+          NULL,
+		  0,
+		  SecondThread,
+          (PVOID)&x,
+          0,
+		  &dwThreadID);
+   /* We do not reference the new thread anymore,
+    * so close our handle to it.
+    */
+   CloseHandle(hThread);
+   /* Our thread is done.
+    * BUG: our stack will be destroyed, but Second thread
+	* might try to access it.
+    */
+   return (0);
+}
 
-
+DWORD WINAPI SecondThread(PVOID pvParam)
+{
+   /* Do something lengthing here. ... 
+    * Attempt to access the variable on the FirstThread's stack.
+	* NOTE: This may cause an access violation - it depends on timing!
+    */
+   int* xInt = (int*)pvParam;
+   *xInt = 5 // Access violation exception.
+}
