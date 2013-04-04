@@ -626,6 +626,8 @@ struct _MTidData
    unsigned long _thandle; /* thread handle */
    int _terrno; /* errno value */
    unsigned long _tdoserrno; /* _doerrno value */
+   void* _initaddr;
+   void* _initarg;
 };
 
 typedef struct _MTidData * _PMidData;
@@ -649,14 +651,35 @@ uintptr_t __cdecl _mBeginThread
       goto error_return;
    }
    /* Initialize the data block. */
-   initptd(ptd);
-
+   _initptd(ptd);
+   /* Save the desired thread function and the parameter
+    * we want it to get in the data block.
+    */
+   ptd->_initaddr = (void*)pfnStartAddr;
+   ptd->_initaddr = pvParam;
+   ptd->_thandle = (uintptr_t)(-1);
+   /* Create the new thread. */
+   thdl = (uintptr_t)CreateThread(
+	        (LPSECURITY_ATTRIBUTES)psa,
+             cbStackSize,
+			 _mThreadStartex,
+             (PVOID)ptd,
+			 dwCreateFlags,
+             pdwThreadID);
+     
+   if (thdl == 0)
+   {
+       /* Thread couldn't be created, cleanup and return failure. */
+	   goto error_return;
+   }
+   /* Thread created OK, return the handle as unsigned long. */ 
+   return (thdl);
 error_return:
    /* 
     * Error: data or thread couldn't be created.
 	* GetLastError() is mapped into errno corresponding values
 	* if something wrong happened in CreateThread.
     */
-   _free(ptd);
+   free(ptd);
    return ((uintptr_t)0L);
 }
