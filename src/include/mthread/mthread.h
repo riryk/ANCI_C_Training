@@ -1,7 +1,11 @@
+
+
 #include <windows.h>
 #include <tchar.h>
 #include <strsafe.h>
 #include <Shlobj.h>
+#include <malloc.h>
+
 
 /***
 * Purpose:

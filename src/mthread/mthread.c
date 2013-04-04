@@ -619,3 +619,44 @@ DWORD WINAPI FirstThread(PVOID pvParam)
     */
    return (0);
 }
+
+struct _MTidData
+{
+   unsigned long _tid; /* thread ID */  
+   unsigned long _thandle; /* thread handle */
+   int _terrno; /* errno value */
+   unsigned long _tdoserrno; /* _doerrno value */
+};
+
+typedef struct _MTidData * _PMidData;
+
+uintptr_t __cdecl _mBeginThread
+(
+  void* psa,
+  unsigned cbStackTrace,
+  unsigned (__stdcall *pfnStartAddr) (void*),
+  void* pvParam,
+  unsigned dwCreateFlags,
+  unsigned *pdwThreadID
+)
+{
+   _PMidData ptd; /* Pointer to thread's data block */
+   uintptr_t thdl; /* Thread's handle */
+   /* Allocate data block for the new thread */
+   ptd = (_PMidData)malloc(sizeof(_PMidData));
+   if (ptd == NULL)
+   {
+      goto error_return;
+   }
+   /* Initialize the data block. */
+   initptd(ptd);
+
+error_return:
+   /* 
+    * Error: data or thread couldn't be created.
+	* GetLastError() is mapped into errno corresponding values
+	* if something wrong happened in CreateThread.
+    */
+   _free(ptd);
+   return ((uintptr_t)0L);
+}
