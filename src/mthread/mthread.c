@@ -632,6 +632,63 @@ struct _MTidData
 
 typedef struct _MTidData * _PMidData;
 
+unsigned long WINAPI _mThreadStartex (void* ptd)
+{
+   /* Note: ptd is the address of this thread's tiddata block.
+    * Assosiate the tiddata block with this thread so
+	* _getptd() will be able to find it in _callthreadstartex.
+    */
+
+	/* Stores a value in the calling thread's thread 
+	 * local storage (TLS) slot for the specified TLS index. 
+	 * Each thread of a process has its own slot for each TLS index. 
+	 * 
+	 * dwTlsIndex [in] 
+     *   The TLS index that was allocated by the TlsAlloc function.
+     * 
+	 * lpTlsValue [in, optional] 
+     *   The value to be stored in the calling thread's TLS slot for the index.
+	 */
+	TlsSetValue(__tlsindex, ptd);
+	/* Save this thread ID in the _tiddata block */
+	((_MTidData)ptd)._tid = GetCurrentThreadId();
+   	/* Initialize floating-point support () 
+	 * call helper function.
+	 */
+	_mCallThreadStartex();
+	/* We never get here; the thread dies in _callthreadstartex() */
+}
+
+void _mThreadStartex (void* ptd)
+{
+	unsigned threadRetCode;
+	/* pointer to thread's _MTidData structure */
+	_MTidData* ptd;
+    /* get the pointer to thread data from TLS 
+	 * This function inside uses
+	 * LPVOID WINAPI TlsGetValue(_In_  DWORD dwTlsIndex);
+     * dwTlsIndex [in] 
+     *   The TLS index that was allocated by the TlsAlloc function.
+	 * If the function succeeds, the return value is 
+	 * the value stored in the calling thread's 
+	 * TLS slot associated with the specified index.
+	 */
+    ptd = _getptd();
+	/* Wrap desired thread function in SEH frame to
+	 * handle run-time errors and signal support
+	 */
+	__try
+	{
+       /* Call desired thread function, passing it the desired parameter. 
+	    * Pass thread's exit code value to _endthreadex.
+	    */
+
+		threadRetCode =  ((unsigned (WINAPI*)(void*))((_MTidData*)ptd)->_initaddr)()
+	   _mEndThreadEx();
+	}
+	__except()
+}
+
 uintptr_t __cdecl _mBeginThread
 (
   void* psa,
@@ -651,12 +708,22 @@ uintptr_t __cdecl _mBeginThread
       goto error_return;
    }
    /* Initialize the data block. */
+
+   /* DWORD WINAPI TlsAlloc(void); 
+    *
+    *  Allocates a thread local storage (TLS) index. 
+	*  Any thread of the process can subsequently use this index 
+	*  to store and retrieve values that are local to the thread, 
+	*  because each thread receives its own slot for the index.
+	*
+    */
+
    _initptd(ptd);
    /* Save the desired thread function and the parameter
     * we want it to get in the data block.
     */
    ptd->_initaddr = (void*)pfnStartAddr;
-   ptd->_initaddr = pvParam;
+   ptd->_initarg = pvParam;
    ptd->_thandle = (uintptr_t)(-1);
    /* Create the new thread. */
    thdl = (uintptr_t)CreateThread(
