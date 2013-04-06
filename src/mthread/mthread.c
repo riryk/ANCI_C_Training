@@ -632,38 +632,18 @@ struct _MTidData
 
 typedef struct _MTidData * _PMidData;
 
-unsigned long WINAPI _mThreadStartex (void* ptd)
+void _mEndThreadEx(unsigned Param)
 {
-   /* Note: ptd is the address of this thread's tiddata block.
-    * Assosiate the tiddata block with this thread so
-	* _getptd() will be able to find it in _callthreadstartex.
-    */
-
-	/* Stores a value in the calling thread's thread 
-	 * local storage (TLS) slot for the specified TLS index. 
-	 * Each thread of a process has its own slot for each TLS index. 
-	 * 
-	 * dwTlsIndex [in] 
-     *   The TLS index that was allocated by the TlsAlloc function.
-     * 
-	 * lpTlsValue [in, optional] 
-     *   The value to be stored in the calling thread's TLS slot for the index.
-	 */
-	TlsSetValue(__tlsindex, ptd);
-	/* Save this thread ID in the _tiddata block */
-	((_MTidData)ptd)._tid = GetCurrentThreadId();
-   	/* Initialize floating-point support () 
-	 * call helper function.
-	 */
-	_mCallThreadStartex();
-	/* We never get here; the thread dies in _callthreadstartex() */
+    
 }
 
-void _mThreadStartex (void* ptd)
+void _mCallThreadStartex()
 {
 	unsigned threadRetCode;
+	void* initArg;
+    unsigned (*func)(void*);
 	/* pointer to thread's _MTidData structure */
-	_MTidData* ptd;
+	_PMidData ptd;
     /* get the pointer to thread data from TLS 
 	 * This function inside uses
 	 * LPVOID WINAPI TlsGetValue(_In_  DWORD dwTlsIndex);
@@ -682,11 +662,50 @@ void _mThreadStartex (void* ptd)
        /* Call desired thread function, passing it the desired parameter. 
 	    * Pass thread's exit code value to _endthreadex.
 	    */
+		initArg = ptd->_initarg;
+		func = ptd->_initaddr;
+		threadRetCode = func(initArg);
 
-		threadRetCode =  ((unsigned (WINAPI*)(void*))((_MTidData*)ptd)->_initaddr)()
-	   _mEndThreadEx();
+	   _mEndThreadEx(threadRetCode);
+	   /* 
+	    * Retrieves a code that identifies the type of exception that occurs. 
+	    * The function can be called only from within the filter expression or exception-handler block of an exception handler.
+	    *
+	    */
 	}
-	__except()
+	__except(_XcptFilter(GetExceptionCode(), GetExceptionInformation()))
+	{
+
+	}
+}
+
+unsigned long WINAPI _mThreadStartex (void* ptd)
+{
+   /* Note: ptd is the address of this thread's tiddata block.
+    * Assosiate the tiddata block with this thread so
+	* _getptd() will be able to find it in _callthreadstartex.
+    */
+
+	/* Stores a value in the calling thread's thread 
+	 * local storage (TLS) slot for the specified TLS index. 
+	 * Each thread of a process has its own slot for each TLS index. 
+	 * 
+	 * dwTlsIndex [in] 
+     *   The TLS index that was allocated by the TlsAlloc function.
+     * 
+	 * lpTlsValue [in, optional] 
+     *   The value to be stored in the calling thread's TLS slot for the index.
+	 */
+
+	//TlsSetValue(__tlsindex, ptd);
+
+	/* Save this thread ID in the _tiddata block */
+	((_PMidData)ptd)->_tid = GetCurrentThreadId();
+   	/* Initialize floating-point support () 
+	 * call helper function.
+	 */
+	_mCallThreadStartex();
+	/* We never get here; the thread dies in _callthreadstartex() */
 }
 
 uintptr_t __cdecl _mBeginThread
@@ -728,7 +747,7 @@ uintptr_t __cdecl _mBeginThread
    /* Create the new thread. */
    thdl = (uintptr_t)CreateThread(
 	        (LPSECURITY_ATTRIBUTES)psa,
-             cbStackSize,
+             cbStackTrace,
 			 _mThreadStartex,
              (PVOID)ptd,
 			 dwCreateFlags,

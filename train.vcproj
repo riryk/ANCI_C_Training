@@ -235,13 +235,13 @@
 					</File>
 				</Filter>
 				<Filter
-				    Name="datastructures"
-				    >
-				    <File
-					    RelativePath="src\include\datastructures\datastructures.h"
+					Name="datastructures"
 					>
-				</File>
-			</Filter>
+					<File
+						RelativePath="src\include\datastructures\datastructures.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="memory"
@@ -271,7 +271,15 @@
 					>
 				</File>
 				<File
+					RelativePath="src\main\problem1.h"
+					>
+				</File>
+				<File
 					RelativePath="src\main\problem2.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem2.h"
 					>
 				</File>
 				<File
@@ -281,30 +289,22 @@
 				<File
 					RelativePath="src\main\problem4.c"
 					>
-				</File>	
+				</File>
 				<File
 					RelativePath="src\main\problem5.c"
-					>	
-				</File>
-				<File
-					RelativePath="src\main\problem6.c"
-					>	
-				</File>
-				<File
-					RelativePath="src\main\problem1.h"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem2.h"
+					RelativePath="src\main\problem6.c"
 					>
 				</File>
 				<File
 					RelativePath="src\main\problem7.c"
-					>	
+					>
 				</File>
 				<File
 					RelativePath="src\main\problem7.h"
-					>	
+					>
 				</File>
 			</Filter>
 			<Filter
