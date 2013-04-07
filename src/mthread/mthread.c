@@ -632,9 +632,19 @@ struct _MTidData
 
 typedef struct _MTidData * _PMidData;
 
-void _mEndThreadEx(unsigned Param)
+void _mEndThreadEx(unsigned retcode)
 {
-    
+	/* Pointer to thread's data block */
+    _PMidData ptd;
+	/* Clean up floating-point support (code not shown).
+	 * Get the address of this thread's tiddata block.
+   	 */
+	//ptd = _getptd_noexit();
+	/* Free the tiddata block. */
+    if (ptd != NULL)
+		//_freeptd(ptd);
+	/* Terminate the thread. */
+	ExitThread(retcode);
 }
 
 void _mCallThreadStartex()
@@ -668,14 +678,23 @@ void _mCallThreadStartex()
 
 	   _mEndThreadEx(threadRetCode);
 	   /* 
+        *  GetExceptionCode()
 	    * Retrieves a code that identifies the type of exception that occurs. 
-	    * The function can be called only from within the filter expression or exception-handler block of an exception handler.
-	    *
+	    * The function can be called only from within the filter expression 
+		* or exception-handler block of an exception handler.
+	    *  
+		*  GetExceptionInformation()
+        * Retrieves a computer-independent description of an exception, 
+		* and information about the computer state that exists for the thread when the exception occurs. 
+		* This function can be called only from within the filter expression of an exception handler.
 	    */
 	}
 	__except(_XcptFilter(GetExceptionCode(), GetExceptionInformation()))
 	{
-
+        /* The C run-time's exception handler deals with run-time errors
+		 * and signal support; we should never get it here.
+		 */ 
+		_exit(GetExceptionCode());
 	}
 }
 
@@ -769,3 +788,93 @@ error_return:
    free(ptd);
    return ((uintptr_t)0L);
 }
+
+DWORD WINAPI ChildThread(PVOID pvParam)
+{
+   HANDLE hThreadParent = (HANDLE)pvParam;
+   FILETIME ftCreationTime, ftExitTime, ftKernelTime, ftUserTime;
+   GetThreadTimes(hThreadParent,
+      &ftCreationTime, &ftExitTime, &ftKernelTime, &ftUserTime);
+   CloseHandle(hThreadParent);
+   // Function continues...
+}
+
+DWORD WINAPI ParentThread(PVOID pvParam)
+{
+   HANDLE hThreadParent;
+   /*
+     hSourceProcessHandle [in]
+        A handle to the process with the handle to be duplicated.
+        The handle must have the PROCESS_DUP_HANDLE access right. 
+		For more information, see Process Security and Access Rights.
+
+     hSourceHandle [in]
+        The handle to be duplicated. This is an open object handle 
+		that is valid in the context of the source process. 
+		For a list of objects whose handles can be duplicated, 
+		see the following Remarks section.
+
+     hTargetProcessHandle [in]
+        A handle to the process that is to receive the duplicated handle. 
+		The handle must have the PROCESS_DUP_HANDLE access right.
+
+     lpTargetHandle [out]
+        A pointer to a variable that receives the duplicate handle. 
+		This handle value is valid in the context of the target process.
+        If hSourceHandle is a pseudo handle returned 
+		by GetCurrentProcess or GetCurrentThread, 
+		DuplicateHandle converts it to a real handle to a process or thread, respectively.
+        If lpTargetHandle is NULL, the function duplicates the handle, 
+		but does not return the duplicate handle value to the caller. 
+		This behavior exists only for backward compatibility 
+		with previous versions of this function. 
+		You should not use this feature, as you will lose 
+		system resources until the target process terminates.
+
+     dwDesiredAccess [in]
+        The access requested for the new handle. 
+		For the flags that can be specified for each object type, 
+		see the following Remarks section.
+        This parameter is ignored if the dwOptions parameter specifies 
+		the DUPLICATE_SAME_ACCESS flag. 
+		Otherwise, the flags that can be specified depend on the type of 
+		object whose handle is to be duplicated.
+
+     bInheritHandle [in]
+        A variable that indicates whether the handle is inheritable. 
+		If TRUE, the duplicate handle can be inherited by 
+		new processes created by the target process. 
+		If FALSE, the new handle cannot be inherited.
+
+     dwOptions [in]
+        Optional actions. This parameter can be zero, 
+		or any combination of the following values.
+
+        Value	     Meaning
+        DUPLICATE_CLOSE_SOURCE
+        0x00000001   Closes the source handle. 
+		             This occurs regardless of any error status returned.
+
+        DUPLICATE_SAME_ACCESS
+        0x00000002    Ignores the dwDesiredAccess parameter. 
+		              The duplicate handle has the same 
+					  access as the source handle.
+    */
+   DuplicateHandle(
+	   GetCurrentProcess(), // Handle of process that thread
+	                        // pseudohandle is relative to
+
+	   GetCurrentThread(),  // Parent thread's pseudohandle
+       GetCurrentProcess(), // Handle of process that the new, real,
+	                        // thread handle is relative to
+	   &hThreadParent,      // Will receive the new, real, handle 
+	                        // identifying the parent thread
+	   0,                   // Ignored due to DUPLICATE_SAME_ACCESS
+	   FALSE,               // New thread handle is not inheritable
+       DUPLICATE_SAME_ACCESS); // New thread handle has same 
+                               // access as pseudohandle 
+
+   CreateThread(NULL, 0, ChildThread, (PVOID)hThreadParent, 0, NULL);
+   // Function continues...
+}
+
