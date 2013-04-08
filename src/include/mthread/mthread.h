@@ -5,7 +5,7 @@
 #include <strsafe.h>
 #include <Shlobj.h>
 #include <malloc.h>
-
+#include <TlHelp32.h>
 
 /***
 * Purpose:

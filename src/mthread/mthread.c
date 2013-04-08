@@ -878,3 +878,82 @@ DWORD WINAPI ParentThread(PVOID pvParam)
    // Function continues...
 }
 
+void SuspendProcess(DWORD dwProcessID, BOOL fSuspend)
+{
+    /* Get the list of threads in the system. */
+	/* Takes a snapshot of the specified processes, 
+	 * as well as the heaps, modules, and threads used by these processes. 
+	 *
+	 * dwFlags [in] 
+     *  The portions of the system to be included in the snapshot. 
+	 *  This parameter can be one or more of the following values.
+	 *
+     *  TH32CS_SNAPHEAPLIST 0x00000001 
+	 *  Includes all heaps of the process specified in th32ProcessID in the snapshot. 
+	 *  To enumerate the heaps, see Heap32ListFirst.
+	 *
+	 *  TH32CS_SNAPTHREAD 0x00000004
+	 *  Includes all threads in the system in the snapshot. 
+	 *  To enumerate the threads, see Thread32First.
+     *  To identify the threads that belong to a specific process, 
+	 *  compare its process identifier to the th32OwnerProcessID 
+	 *  member of the THREADENTRY32 structure when enumerating the threads
+	 * 
+	 * th32ProcessID [in] 
+     *  The process identifier of the process to be included in the snapshot. 
+	 *  This parameter can be zero to indicate the current process.
+     *
+	 */
+    HANDLE hSnapshot = CreateToolhelp32Snapshot(TH32CS_SNAPTHREAD, dwProcessID);
+	if (hSnapshot != INVALID_HANDLE_VALUE)
+	{
+		/* Walk the list of threads */
+		THREADENTRY32 te = { sizeof(te) };
+		/* Retrieves information about the first thread 
+		 * of any process encountered in a system snapshot. 
+		 * hSnapshot [in] 
+         *  A handle to the snapshot returned from a previous 
+		 *  call to the CreateToolhelp32Snapshot function.
+         * lpte [in, out] 
+         *  A pointer to a THREADENTRY32 structure.
+		 */
+		BOOL fOk = Thread32First(hSnapshot, &te);
+		for (; fOk; fOk = Thread32Next(hSnapshot, &te))
+		{
+            /* Is this thread in the desired process? */
+            if (te.th32OwnerProcessID == dwProcessID)
+			{
+				/* Attempt to convert the thread ID into a handle. */
+                /* Opens an existing thread object.
+				 *
+				 * dwDesiredAccess [in] 
+                 *  The access to the thread object. This access right is checked against 
+				 *  the security descriptor for the thread. 
+				 *  This parameter can be one or more of the thread access rights.
+				 *
+                 * bInheritHandle [in] 
+                 *  If this value is TRUE, processes created by this process will inherit the handle. 
+				 *  Otherwise, the processes do not inherit this handle.
+				 *
+                 * dwThreadId [in] 
+                 *   The identifier of the thread to be opened.
+				 */ 
+				HANDLE hThread = OpenThread(
+					THREAD_SUSPEND_RESUME,
+					FALSE,
+					te.th32ThreadID);
+
+				if (hThread != NULL)
+				{
+                    /* Suspend or resume the thread. */
+					if (fSuspend)
+						SuspendThread(hThread);
+					else
+                        ResumeThread(hThread);
+				}
+				CloseHandle(hThread);
+			}
+		}
+        CloseHandle(hSnapshot);
+	}
+}
