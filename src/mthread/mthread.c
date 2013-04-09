@@ -957,3 +957,72 @@ void SuspendProcess(DWORD dwProcessID, BOOL fSuspend)
         CloseHandle(hSnapshot);
 	}
 }
+
+DWORD GetCPUFrequencyInMHz()
+{
+	LARGE_INTEGER m_liPerfFreq;
+    LARGE_INTEGER m_liPerfStart;
+    LARGE_INTEGER m_liPerfNow;
+    LARGE_INTEGER m_liPerfEnd;
+
+	__int64 qwElapsedTime;
+	__int64 elapsedTime;
+    __int64 elapsedTimeEnd;
+	int currentPriority;
+    unsigned __int64 cyclesOnStart;
+    unsigned __int64 numberOfCycles;
+	DWORD dwCPUFrequency;
+
+	/* In the beginning we do a snapshot of CPU time 
+	 * Retrieves the current value of the high-resolution performance counter. 
+	 * lpPerformanceCount [out] 
+     *   Type: LARGE_INTEGER*
+     *   A pointer to a variable that receives 
+	 *   the current performance-counter value, in counts. 
+     *
+	 */
+    QueryPerformanceCounter(&m_liPerfFreq);
+    QueryPerformanceCounter(&m_liPerfStart);
+
+	/* Execute some complicated code */
+
+    /* Get how much time has elapsed up to now */
+    QueryPerformanceCounter(&m_liPerfNow);
+	qwElapsedTime = 
+		((m_liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1000) 
+		   / m_liPerfFreq.QuadPart;
+
+	/* Change the priority to ensure the thread will have more
+	 * chances to be scheduled when Sleep() ends.
+	 */
+	currentPriority = GetThreadPriority(GetCurrentThread());
+	SetThreadPriority(GetCurrentThread(), THREAD_PRIORITY_HIGHEST);
+	/* keep track of the elapsed time with the other timer */
+	elapsedTime = 0;
+
+	/* Create a stopwatch timer (which defaults to the current time) */
+	QueryPerformanceCounter(&m_liPerfNow);
+    elapsedTime = 
+	    ((m_liPerfNow.QuadPart - m_liPerfStart.QuadPart) * 1000000)
+		   / m_liPerfFreq.QuadPart;
+
+	/* Get the current number of cycles */
+	cyclesOnStart = ReadTimeStampCounter();
+	/* Wait for ~1 second */
+	Sleep(1000);
+	/* Get the number of cycles after  */
+	numberOfCycles = ReadTimeStampCounter() - cyclesOnStart;
+	/* Get how much time has elapsed with greater precision */
+    
+	/* Get time after sleep.  */
+	QueryPerformanceCounter(&m_liPerfEnd);
+    elapsedTimeEnd = 
+	    ((m_liPerfEnd.QuadPart - m_liPerfStart.QuadPart) * 1000000)
+		   / m_liPerfFreq.QuadPart;
+   
+    /* Restore the thread priority */
+    SetThreadPriority(GetCurrentThread(), currentPriority);
+	/* Compute the frequency in MHz */
+	dwCPUFrequency = (DWORD)(numberOfCycles / (elapsedTimeEnd - elapsedTime));
+	return (dwCPUFrequency);
+}
