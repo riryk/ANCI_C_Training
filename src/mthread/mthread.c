@@ -1026,3 +1026,42 @@ DWORD GetCPUFrequencyInMHz()
 	dwCPUFrequency = (DWORD)(numberOfCycles / (elapsedTimeEnd - elapsedTime));
 	return (dwCPUFrequency);
 }
+
+void GetCPUContext()
+{
+	HANDLE hThread;
+	/* Create a CONTEXT structure. */
+	CONTEXT Context;
+	/* Tell the system that we are interested in only 
+	 * the control registers.
+	 */
+	Context.ContextFlags = CONTEXT_CONTROL | CONTEXT_INTEGER;
+    /* Tell the system to get the registers 
+	 * associated with a thread.
+	 */
+	hThread = GetCurrentThread();
+	/* Stop the thread from running. */
+	SuspendThread(hThread);
+	GetThreadContext(hThread, &Context);
+
+    /* The control register members in the CONTEXT structure 
+	 * reflect the thread's control registers. The other members
+	 * are undefined.
+	 */
+
+    /* Make the instruction pointer point to the address of your choice.
+	 * Here I have arbitrarily set the address instruction pointer to
+	 * 0x0000000.
+	 */
+	Context.Eip = 0x00010000;
+    /* Set the thread's registers to reflect
+	 * the changed values. It's not really necessary to reset the ContextFlags 
+	 * member because it was set earlier.
+	 */   
+	Context.ContextFlags = CONTEXT_CONTROL;
+	SetThreadContext(hThread, &Context);
+	/* Resuming the thread will cause it ti begin execution
+	 * at address 0x00010000.
+	 */
+	ResumeThread(hThread);
+}
