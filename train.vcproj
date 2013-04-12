@@ -310,6 +310,10 @@
 					RelativePath="src\main\problem8.c"
 					>
 				</File>
+				<File
+					RelativePath="src\main\problem9.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="str"
