@@ -1065,3 +1065,33 @@ void GetCPUContext()
 	 */
 	ResumeThread(hThread);
 }
+
+/* Here we have some global variable */
+long g_x = 0;
+
+/* We need some explanation why this code is unsave 
+ * and why we may receive unpredictable results
+ * Let's translate this function into assembler code:
+ * 
+ * MOV EAX, [g_x] - this command reads the value of the g_x
+ *                  variable from memory into EAX processor register
+ * INC EAX        - processor increments EAX value 
+ * MOV [g_x], EAX - writes the value from EAX processor register
+ *                  into [g_x] operative memory address
+ * 
+ * If this code runs simultaneously we can anticipate 2 possible
+ * situations:
+ *
+ *
+ */
+DWORD WINAPI ThreadFunc1_UnSave(PVOID pvParam)
+{
+   g_x++;
+   return (0);
+}
+
+DWORD WINAPI ThreadFunc2_UnSave(PVOID pvParam)
+{
+   g_x++;
+   return (0);
+}

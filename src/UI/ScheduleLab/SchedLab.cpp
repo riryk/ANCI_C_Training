@@ -114,6 +114,14 @@ void Dlg_OnCommand (HWND hWnd, int id, HWND hWndCtl, UINT codeNotify) {
 
    switch (id) {
       case IDCANCEL:
+	     /* Indicates to the system that a thread 
+		  * has made a request to terminate (quit). 
+		  * It is typically used in response to a WM_DESTROY message. 
+		  * nExitCode [in]
+          *  Type: int
+          *  The application exit code. This value is used as 
+		  *  the wParam parameter of the WM_QUIT message.
+		  */
          PostQuitMessage(0);
          break;
 
