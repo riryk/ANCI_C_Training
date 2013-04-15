@@ -1081,8 +1081,26 @@ long g_x = 0;
  * 
  * If this code runs simultaneously we can anticipate 2 possible
  * situations:
+ * 1. When these operations executes consequently:
  *
+ *  Thread1 CPU1           Thread2 CPU2
  *
+ *  MOV EAX, [g_x]  0
+ *  INC EAX         1
+ *  MOV [g_x], EAX  1            
+ *                         MOV EAX, [g_x]  1
+ *                         INC EAX         2 
+ *                         MOV [g_x], EAX  2           
+ *  In this case the value will be 2
+ *
+ * 2. When operations are executed simultaneously 
+ *
+ *  Thread 1 CPU1         Thread2 CPU2
+ *  MOV EAX, [g_x]  0     
+ *  INC EAX         1     MOV EAX, [g_x]  0     
+ *  MOV [g_x], EAX  1     INC EAX         1
+ *                        MOV [g_x], EAX  1
+ *  The result of this operation will be 1
  */
 DWORD WINAPI ThreadFunc1_UnSave(PVOID pvParam)
 {
@@ -1094,4 +1112,92 @@ DWORD WINAPI ThreadFunc2_UnSave(PVOID pvParam)
 {
    g_x++;
    return (0);
+}
+
+DWORD WINAPI ThreadFunc1_Save(PVOID pvParam)
+{
+   InterlockedExchangeAdd(&g_x, 1);
+   return (0);
+}
+
+DWORD WINAPI ThreadFunc2_Save(PVOID pvParam)
+{
+   InterlockedExchangeAdd(&g_x, 1);
+   return (0);
+}
+
+/* Global variable indicating whether
+ * a shared resource is in use or not
+ */
+BOOL g_fResourceInUse = FALSE;
+
+void SpinLock()
+{
+   /* Sets a 32-bit variable to the specified value
+    * as an atomic operation. 
+	*
+	* Target [in, out] 
+    *    A pointer to the value to be exchanged. 
+	*	 The function sets this variable to Value, 
+	*    and returns its prior value.
+	*
+    * Value [in] 
+    *    The value to be exchanged with 
+	*    the value pointed to by Target.
+	*
+    * The function returns the initial 
+	* value of the Target parameter.
+	* 
+	*/
+
+   /* Wait to access the resource. 
+    * We need to explain how spin lock works:
+	* First thread:
+	*  g_fResourceInUse is set to false. Then the thread
+	*  atomically sets the variable to true and checks that
+	*  the previous value was false and break the loop. Then 
+	*  he does some work.
+	* Meantime the second thread sets the variable to true and 
+	* checks that the previous value was true and continue doing it
+	* until the value will be set into false by another thread.
+	* After accomplishing its work the first thread sets the variable
+	* to false and indicates to other threads that the resource is 
+	* free.
+    */  
+   while (InterlockedExchange(&g_fResourceInUse, TRUE) == TRUE)
+      Sleep(0);
+
+   /* Access the resource 
+    * ...
+    */
+
+   /* We no longer need to access the resource. */
+   InterlockedExchange(&g_fResourceInUse, FALSE);
+}
+
+LONG MInterlockedCompareExchange(
+   PLONG plDestination,
+   LONG lExchange,
+   LONG lComparand)
+{
+	/* Original value */
+	LONG lRet = *plDestination;
+    if (*plDestination == lCompared)   
+        *plDestination = lExchange;
+	return (0);
+}
+
+LONGLONG MInterlockedAnd64(
+   LONGLONG *Destination,
+   LONGLONG Value)
+{
+	LONGLONG Old;
+
+	do
+	{
+       Old = *Destination;
+	}
+	while (InterlockedCompareExchange64(Destination, Old & Value, Old) != Old);
+
+	return Old;
 }
