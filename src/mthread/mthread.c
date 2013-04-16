@@ -1201,3 +1201,98 @@ LONGLONG MInterlockedAnd64(
 
 	return Old;
 }
+
+struct CUSTINFO
+{
+	DWORD dwCustomerID;  // Mostly read-only
+	int nBalanceDue;     // Read-write
+	wchar_t szName[100]; // Mostly read-only
+	FILETIME ftLastOrderDate; // Read-write
+}
+
+#define CACHE_ALIGN 64
+
+/* Force each structure to be in a different cache line. */
+struct __declspec(align(CACHE_ALIGN)) CUSTINFO_ALIGNED
+{
+	DWORD dwCustomerInfo;  // Mostly read-only
+	wchar_t szName[100];   // Mostly read-only
+
+	// Force the following members to be in a different cache line.
+    __declspec(align(CACHE_ALIGN))
+	int nBalanceDue;       // Read-write
+	FILETIME ftLastOrderDate; // Read-write
+}
+
+/* Why do we need a volatile keyword here? 
+ * The compiler can optimize code and translate
+ * a simple cycle into 
+ *
+ *    while (!g_fFinishedCalculation)
+ * 		     ;
+ * 
+ *    MOV Reg0, [g_fFinishedCalculation]    ; Copy the value into a register
+ *    Label: TEST Reg0, 0                   ; Is the value 0?
+ *    JMP Reg0 == 0, Label                  ; The register is 0, try again
+ *                                          ; The register is not 0 (end of loop)
+ *
+ * The compiler can generate a cycle which reads the variable from the CPU cache 
+ * and it may cause an infinite loop. Volatile makes compile to generate 
+ * a code which always reads the value from RAM
+ */
+volatile BOOL g_fFinishedCalculation = FALSE;
+
+DWORD WINAPI RecalcFunc(PVOID pvParam)
+{
+	// Perform the recalculation.
+	g_fFinishedCalculation = TRUE;
+	return (0);
+}
+
+int WINAPI MainFunction()
+{
+	// CreateThread( ... , RecalcFunc, ... );
+	// ...
+	// Wait for the recalculation to complete.
+	while (!g_fFinishedCalculation)
+		;
+}
+
+const int COUNT = 1000;
+int g_nSum = 0;
+
+DWORD WINAPI FirstThread(PVOID pvParam)
+{
+	int n;
+
+	EnterCriticalSection(&g_nSum);
+
+	g_nSum = 0;
+
+	for (n = 1; n <= COUNT; n++)
+	{
+		g_nSum += n;
+	}
+
+	LeaveCriticalSection(&g_nSum);
+
+	return (g_nSum);
+}
+
+DWORD WINAPI SecondThread(PVOID pvParam)
+{
+	int n;
+
+	EnterCriticalSection(&g_nSum);
+
+	g_nSum = 0;
+
+	for (n = 1; n <= COUNT; n++)
+	{
+		g_nSum += n;
+	}
+
+	LeaveCriticalSection(&g_nSum);
+
+	return (g_nSum);
+}
