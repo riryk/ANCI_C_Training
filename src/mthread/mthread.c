@@ -1182,7 +1182,7 @@ LONG MInterlockedCompareExchange(
 {
 	/* Original value */
 	LONG lRet = *plDestination;
-    if (*plDestination == lCompared)   
+    if (*plDestination == lComparand)   
         *plDestination = lExchange;
 	return (0);
 }
@@ -1208,21 +1208,21 @@ struct CUSTINFO
 	int nBalanceDue;     // Read-write
 	wchar_t szName[100]; // Mostly read-only
 	FILETIME ftLastOrderDate; // Read-write
-}
+};
 
 #define CACHE_ALIGN 64
 
 /* Force each structure to be in a different cache line. */
-struct __declspec(align(CACHE_ALIGN)) CUSTINFO_ALIGNED
-{
-	DWORD dwCustomerInfo;  // Mostly read-only
-	wchar_t szName[100];   // Mostly read-only
-
-	// Force the following members to be in a different cache line.
-    __declspec(align(CACHE_ALIGN))
-	int nBalanceDue;       // Read-write
-	FILETIME ftLastOrderDate; // Read-write
-}
+//struct __declspec(align(CACHE_ALIGN)) CUSTINFO_ALIGNED
+//{
+//	DWORD dwCustomerInfo;  // Mostly read-only
+//	wchar_t szName[100];   // Mostly read-only
+//
+//	// Force the following members to be in a different cache line.
+//    __declspec(align(CACHE_ALIGN))
+//	int nBalanceDue;       // Read-write
+//	FILETIME ftLastOrderDate; // Read-write
+//}
 
 /* Why do we need a volatile keyword here? 
  * The compiler can optimize code and translate
@@ -1240,12 +1240,13 @@ struct __declspec(align(CACHE_ALIGN)) CUSTINFO_ALIGNED
  * and it may cause an infinite loop. Volatile makes compile to generate 
  * a code which always reads the value from RAM
  */
-volatile BOOL g_fFinishedCalculation = FALSE;
+//BOOL g_fFinishedCalculation = FALSE;
+BOOL g_fResourceInUse1 = FALSE;
 
 DWORD WINAPI RecalcFunc(PVOID pvParam)
 {
 	// Perform the recalculation.
-	g_fFinishedCalculation = TRUE;
+	g_fResourceInUse1 = TRUE;
 	return (0);
 }
 
@@ -1254,14 +1255,14 @@ int WINAPI MainFunction()
 	// CreateThread( ... , RecalcFunc, ... );
 	// ...
 	// Wait for the recalculation to complete.
-	while (!g_fFinishedCalculation)
+	while (!g_fResourceInUse1)
 		;
 }
 
 const int COUNT = 1000;
 int g_nSum = 0;
 
-DWORD WINAPI FirstThread(PVOID pvParam)
+DWORD WINAPI FirstThread1(PVOID pvParam)
 {
 	int n;
 
@@ -1279,7 +1280,7 @@ DWORD WINAPI FirstThread(PVOID pvParam)
 	return (g_nSum);
 }
 
-DWORD WINAPI SecondThread(PVOID pvParam)
+DWORD WINAPI SecondThread1(PVOID pvParam)
 {
 	int n;
 
