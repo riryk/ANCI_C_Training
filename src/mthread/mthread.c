@@ -1182,7 +1182,7 @@ LONG MInterlockedCompareExchange(
 {
 	/* Original value */
 	LONG lRet = *plDestination;
-    if (*plDestination == lCompared)   
+    if (*plDestination == lComparand)   
         *plDestination = lExchange;
 	return (0);
 }
@@ -1208,12 +1208,12 @@ struct CUSTINFO
 	int nBalanceDue;     // Read-write
 	wchar_t szName[100]; // Mostly read-only
 	FILETIME ftLastOrderDate; // Read-write
-}
+};
 
 #define CACHE_ALIGN 64
 
 /* Force each structure to be in a different cache line. */
-struct __declspec(align(CACHE_ALIGN)) CUSTINFO_ALIGNED
+__declspec(align(CACHE_ALIGN)) struct CUSTINFO_ALIGNED
 {
 	DWORD dwCustomerInfo;  // Mostly read-only
 	wchar_t szName[100];   // Mostly read-only
@@ -1222,7 +1222,7 @@ struct __declspec(align(CACHE_ALIGN)) CUSTINFO_ALIGNED
     __declspec(align(CACHE_ALIGN))
 	int nBalanceDue;       // Read-write
 	FILETIME ftLastOrderDate; // Read-write
-}
+};
 
 /* Why do we need a volatile keyword here? 
  * The compiler can optimize code and translate
@@ -1261,7 +1261,7 @@ int WINAPI MainFunction()
 const int COUNT = 1000;
 int g_nSum = 0;
 
-DWORD WINAPI FirstThread(PVOID pvParam)
+DWORD WINAPI FirstThread1(PVOID pvParam)
 {
 	int n;
 
@@ -1279,7 +1279,7 @@ DWORD WINAPI FirstThread(PVOID pvParam)
 	return (g_nSum);
 }
 
-DWORD WINAPI SecondThread(PVOID pvParam)
+DWORD WINAPI SecondThread1(PVOID pvParam)
 {
 	int n;
 
@@ -1295,4 +1295,260 @@ DWORD WINAPI SecondThread(PVOID pvParam)
 	LeaveCriticalSection(&g_nSum);
 
 	return (g_nSum);
+}
+
+
+//  ####################          QUEUE                 ##################################
+
+struct QueueItem
+{
+   int m_nThreadNum;
+   int m_nRequestNum;
+   // Other element data should go here
+};
+
+struct InnerQueueItem
+{
+   int m_nStamp; // o means empty
+   struct QueueItem m_element;
+};
+
+/* Array of elements to be processed */
+struct InnerQueueItem* m_pElements;
+/* Maximum # of elements in the array */
+int m_nMaxElements;
+/* Keep track of the # of added elements */
+int m_nAddedElements;
+
+int GetFreeSlot()
+{
+	int current;
+	/* Look for the first element with a 0 stamp 
+	 * We are looking for the first element with 0 which means 
+	 * that this slot is free or empty or has been already read
+	 * by a processing thread.
+	 * This function returns 0 when it is not possible to find 
+	 * a free slot in the array.
+	 */
+    for (current = 0; current < m_nMaxElements; current++)
+	{
+		if (m_pElements[current].m_nStamp == 0)
+		{
+			return (current);
+		}
+	}
+	/* No free slot found */
+	return (-1);
+}
+
+int GetNextSlot(int nThreadNum)
+{
+	int current;
+    /* By default, there is no slot for this thread */
+    int firstSlot = -1;
+	/* The element can't have a stamp higher than the last added */
+	int firstStamp = m_nAddedElements + 1;
+	/* Look for the even (thread 0) / odd (thread 1) 
+	 * element that is not free */
+	for (current = 0; current < m_nMaxElements; current++)
+	{
+        /* Keep track of the first added (lowest stamp) in the queue
+	     * so that "first in first out" behaviour is ensured
+	     */ 
+		if (m_pElements[current].m_nStamp != 0 && // free element
+			m_pElements[current].m_element.m_nRequestNum % 2 == nThreadNum &&
+			m_pElements[current].m_nStamp < firstStamp)
+		{
+			firstStamp = m_pElements[current].m_nStamp;
+			firstSlot = current;
+		}
+	}
+}
+
+void AddElement(struct QueueItem e)
+{
+	/* Do nothing if the queue is full */
+	int nFreeSlot = GetFreeSlot();
+	if (nFreeSlot == -1)
+		return;
+
+    /* Copy the content of the element */
+	m_pElements[nFreeSlot].m_element = e;
+
+	/* Mark the element with the new stamp */
+	m_pElements[nFreeSlot].m_nStamp = ++m_nAddedElements;
+}
+
+/* This method is used by a server thread and it
+ * retrieves the next element in queue to process
+ */
+BOOL GetNewElement(int nThreadNum, struct QueueItem* e)
+{
+   int nNewSlot = GetNextSlot(nThreadNum);
+   if (nNewSlot == -1)
+	   return (FALSE);
+
+   /* Copy the content of the element */
+   e = &m_pElements[nNewSlot].m_element;
+   /* Mark the elements as read */
+   m_pElements[nNewSlot].m_nStamp = 0;
+
+   return (TRUE);
+}
+
+/* Here we need to illustrate how this queue works 
+ *
+ * 1. Adding a certain number of new elements:
+ *
+ *    Queue from the start looks like:  00000...000  (m_nMaxElements) times
+ *    call AddElement firstly:
+ *    GetFreeSlot() returns 0 and then we fill in this slot by a new element
+ *    and increment m_nAddedElements variable 
+ *
+ *    m_nAddedElements :  1
+ *    m_pElements      :  [1][0][0]....[0]  m_nMaxElements is the length
+ *    
+ *    Add a new element
+ *        
+ *    m_nAddedElements :  2
+ *    m_pElements      :  [1][2][0]....[0]  m_nMaxElements is the length
+ *
+ *    Add a new element
+ *    
+ *    m_nAddedElements :  3
+ *    m_pElements      :  [1][2][3]....[0]  m_nMaxElements is the length
+ *
+ *    ...   
+ * 
+ *    Lets suppose the we have added k elements into the queue:
+ *    
+ *    m_nAddedElements :  k
+ *    m_pElements      :  [1][2][3]...[k-1][k]...[0]  m_nMaxElements is the length
+ * 
+ * 2. Processing items from the queue or dequeue operations:
+ *    
+ *    Dequeue. We need to find the next queue item 
+ *             which has the smallest stamp. The smallest means that this item
+ *             has been firstly added into the queue and must be processed first.
+ *             and set stamp to 0
+ *         
+ *    m_nAddedElements :  k
+ *    m_pElements      :  [0][2][3]...[k-1][k]...[0]  m_nMaxElements is the length
+ *    
+ *    Dequeue again
+ *     
+ *    m_nAddedElements :  k
+ *    m_pElements      :  [0][0][3]...[k-1][k]...[0]  m_nMaxElements is the length
+ *    
+ *    Let's suppose that we have dequeued m elements and m < k. Our queue looks like
+ *
+ *    m_nAddedElements :  k
+ *    m_pElements      :  [0][0][0]...[m-1][m]...[k-1][k]...[0][0][0]
+ *    
+ * 3. Adding items again:  
+ *     
+ *    m_nAddedElements :  k + 1
+ *    m_pElements      :  [k + 1][0][0]...[m-1][m]...[k-1][k]...[0][0][0]
+ *    
+ *    m_nAddedElements :  k + 2
+ *    m_pElements      :  [k + 1][k + 2][0]...[m-1][m]...[k-1][k]...[0][0][0]
+ */   
+
+/* Reader/writer lock to protect the queue */
+SRWLOCK g_srwLock; 
+/* Signalled by writes 
+ * If a reader thread tries to read from the empty
+ * queue, it will wait for at least one item being 
+ * enqueued into the queue.
+ */
+CONDITION_VARIABLE g_cvReadyToConsume;
+/* Signalled by readers 
+ * Reader signals this variable after reading 
+ * which indicates that a new empty slot has just been freed
+ * and the queue is ready to enqueing new items
+ */
+CONDITION_VARIABLE g_cvReadyToProduce;
+/* A variable that indicates the end of the application */
+BOOL g_fShutdown = FALSE;
+
+/* Client thread is a writer thread  */
+DWORD WINAPI WriterThread(PVOID pvParam)
+{
+   int nThreadNum = PtrToUlong(pvParam);
+   int nRequestNum;
+
+   for (nRequestNum = 1; !g_fShutdown; nRequestNum++)
+   {
+	   struct QueueItem elem = { nThreadNum, nRequestNum };
+	   /* Require access for writing 
+	    * Acquires a slim reader/writer (SRW) lock in exclusive mode.
+		* SRWLock [in, out]
+        *   A pointer to the SRW lock.
+	    */
+       AcquireSRWLockExclusive(&g_srwLock);
+	   /* If the queue is full, fall asleep as long as 
+	    * the condition variable is not signaled
+		* Note: During the wait for acquiring the lock,
+		*       a stop might have been received
+	    */
+       if (GetFreeSlot() == -1 & !g_fShutdown)
+	   {
+           /* Need to wait for a reader to empty a slot 
+		    * before acquiring the lock again
+			*
+			* Sleeps on the specified condition variable 
+			* and releases the specified lock as an atomic operation.
+			*
+			* ConditionVariable [in, out]
+            *  A pointer to the condition variable. 
+			*  This variable must be initialized using the 
+			*  InitializeConditionVariable function.
+			*
+            * SRWLock [in, out]
+            *  A pointer to the lock. This lock must be held in 
+			*  the manner specified by the Flags parameter.
+		    */ 
+           SleepConditionVariableSRW(
+			   &g_cvReadyToProduce,
+			   &g_srwLock,
+			   INFINITE,
+			   0);
+		   /* We have just received a message that the queue has 
+		    * free slots
+		    */
+	   }
+
+	   /* It there are no request for quitting  */
+	   if (!g_fShutdown)
+	   {
+           /* Add the element into the queue */
+           AddElement(elem);
+		   /* Now we need to release the SRW lock 
+		    * Releases a slim reader/writer (SRW) lock 
+			* that was acquired in exclusive mode.
+		    */
+		   ReleaseSRWLockExclusive(&g_srwLock);
+		   /* Signal all reader threads that there is an
+		    * element to consume.
+		    */
+           WakeAllConditionVariable(&g_cvReadyToConsume);
+		   /* Wait before adding a new element */
+		   Sleep(1500);
+
+		   continue;
+	   }
+
+	   /* Here g_fShutdown variable is set to true
+	    * so we need to quit properly
+	    */
+       ReleaseSRWLockExclusive(&g_srwLock);
+	   /* Signal other blocked writer threads that 
+	    * it is time to exit
+		*/
+       WakeAllConditionVariable(&g_cvReadyToProduce);
+
+	   return (0);
+   }
+
+   return (0);
 }
