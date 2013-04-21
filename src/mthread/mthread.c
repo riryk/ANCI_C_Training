@@ -1491,7 +1491,7 @@ DWORD WINAPI WriterThread(PVOID pvParam)
 		* Note: During the wait for acquiring the lock,
 		*       a stop might have been received
 	    */
-       if (GetFreeSlot() == -1 & !g_fShutdown)
+       if (GetFreeSlot() == -1 && !g_fShutdown)
 	   {
            /* Need to wait for a reader to empty a slot 
 		    * before acquiring the lock again
@@ -1552,3 +1552,117 @@ DWORD WINAPI WriterThread(PVOID pvParam)
 
    return (0);
 }
+
+BOOL ConsumeElement(int nThreadNum, int nRequestNum, HWND hWndLB)
+{
+	/* Get the first new element */
+    struct QueueItem e;
+    /* Get access to the queue to consume a new element 
+	 * Acquires a slim reader/writer 
+	 * (SRW) lock in shared mode.
+	 * SHARED MODE
+	 *    grants shared read-only access to multiple reader threads,
+	 *    which enables them to read data from 
+	 *    the shared resource concurrently.
+	 */
+    AcquireSRWLockShared(&g_srwLock);
+	/* Fall asleep until there is something to read.
+	 * Check if, while it was asleep,
+	 * it was not decided that the thread should stop
+	 */
+	while (GetNextSlot(nThreadNum) == -1 && !g_fShutdown)
+	{
+        /* There was not a readable element 
+		 * The queue is empty
+		 * Wait until a writer adds a new element to read
+		 * and come back with the lock acquired in shared mode
+		 * 
+		 * Flags [in]
+         *  If this parameter is CONDITION_VARIABLE_LOCKMODE_SHARED, 
+         *  the SRW lock is in shared mode. Otherwise, 
+		 *  the lock is in exclusive mode.
+		 */
+		SleepConditionVariableSRW(
+			&g_cvReadyToConsume, 
+			&g_srwLock,
+			INFINITE,
+			CONDITION_VARIABLE_LOCKMODE_SHARED);
+	}
+	/* When thread is existing, the lock should be released for writers
+	 * and readers should be signaled through the condition variable
+	 */
+	if (g_fShutdown)
+	{
+		/* Show that the current thread is existing
+		 * Another writer thread might still be blocked 
+		 * on the lock --> release it before exiting
+		 */
+        ReleaseSRWLockShared(&g_srwLock);
+		/* Notify other readers that it is time to exit
+		 * --> release readers
+		 */
+		WakeConditionVariable(&g_cvReadyToConsume);
+
+		return (FALSE);
+	}
+    /* Note: No need to test the return value since
+	 * IsEmpty returned FALSE
+	 */
+    GetNewElement(nThreadNum, &e);
+    /* No need to keep the lock any longer */
+	ReleaseSRWLockShared(&g_srwLock);
+	/* A free slot is now available for writer threads to produce
+	 * --> wake up a writer thread
+	 */
+	WakeConditionVariable(&g_cvReadyToProduce);
+
+	return (TRUE);
+}
+
+/* Now we need to explain what happens when share and exclusive locks are 
+ * acquired
+ *
+ * 1. Shared locks are acquired simultaneously:
+ *   1.1 Firstly if the shared resource is free and 
+ *       we try to acquire a shared lock we will succeed 
+ *       bacause the shared resource is free.
+ *
+ *   1.2 Then while the first thread is reading the resource,
+ *       the second thread is trying to acquire a shared lock.
+ *       he will succeed because the system allows multiply
+ *       concurrent readers.
+ *  
+ * 2. Exclusive locks are acquired simultaneously:
+ *   2.1 Firstly if the shared resource is free and 
+ *       we try to acquire an exclusive lock we will succeed 
+ *       bacause the shared resource is free.
+ *     
+ *   2.2 Then while the first thread is modifying the resource,
+ *       the second thread is trying to acquire an exclusive lock
+ *       it will be blocked until the first thread finishes 
+ *       modifying the resource.
+ *   
+ * 3. Shared and exclusive locks are acquired simultaneously 
+ *    (exclusive after shared)
+ *   3.1 Firstly the shared resource is free and 
+ *       we try to acquire a shared lock, we will succeed 
+ *       bacause the shared resource is free.    
+ *   
+ *   3.2 Then while the first thread is reading the shared resource
+ *       value, the second thread is trying to acquire an exclusive 
+ *       lock. It will be blocked until the first thread finishes 
+ *       reading. Why it is true?
+ *       To avoid data corruption - the reader thread may read data
+ *       only partially and then read the new version od data which is
+ *       unacceptable.
+ *   
+ * 4. Shared and exclusive locks are acquired simultaneously   
+ *    (shared after exclusive)
+ *   4.1 Firstly the shared resource is free and 
+ *       we try to acquire an exclusive lock, we will succeed 
+ *       bacause the shared resource is free.     
+ *   
+ *   4.2 Then while the first thread is modifying the shared resource
+ *       value, the second thread is trying to acquire a shared lock.
+ *       It will be blocked until the first finishes writing.
+ */
