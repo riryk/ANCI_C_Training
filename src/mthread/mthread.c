@@ -1665,3 +1665,49 @@ BOOL ConsumeElement(int nThreadNum, int nRequestNum, HWND hWndLB)
  *       value, the second thread is trying to acquire a shared lock.
  *       It will be blocked until the first finishes writing.
  */
+
+void StopProcessing()
+{
+	if (!g_fShutdown)
+	{
+		/* Ask all threads to end */
+		InterlokedExchangePointer((PLONG*)&g_fShutdown), (LONG)TRUE);
+		/* Free all threads waiting on condition variables */
+		WakeAllConditionVariable(&g_cvReadyToConsume);
+        WakeAllConditionVariable(&g_cvReadyToProduce);
+		/* Wait for all the threads to terminate & then clean up */
+		//WaitForMultipleObjects(
+	}
+}
+
+/* Deadlock example 
+ * 1. The first thread has got ownership for the resource1
+ * 2. The second thread has got ownership for the resource2
+ * 3. The first thread tries to get ownership on the resource 2
+ *    and it is blocked because the thread2 has put a critical section
+ *    on it.
+ * 4. The second thread tries to get ownership on the resource 1
+ *    and it gets blocked because the resource 1 is hold by the thread 1
+ *    So a deadlock has occured.
+ */
+
+int g_Resource1;
+int g_Resource2;
+
+void ThreadFunc1()
+{
+   EnterCriticalSection(&g_Resource1);
+   EnterCriticalSection(&g_Resource2);
+
+   LeaveCriticalSection(&g_Resource1);
+   LeaveCriticalSection(&g_Resource2);
+}
+
+void ThreadFunc2()
+{
+   EnterCriticalSection(&g_Resource2);
+   EnterCriticalSection(&g_Resource1);
+
+   LeaveCriticalSection(&g_Resource2);
+   LeaveCriticalSection(&g_Resource1);
+}
