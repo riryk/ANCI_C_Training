@@ -1711,3 +1711,122 @@ void ThreadFunc2()
    LeaveCriticalSection(&g_Resource2);
    LeaveCriticalSection(&g_Resource1);
 }
+
+void WaitForSingleObjectTest()
+{
+	HANDLE hProcess;
+	DWORD dw = WaitForSingleObject(hProcess, 5000);
+	switch (dw)
+	{
+	case WAIT_OBJECT_0:
+		//The process terminated.
+		break;
+	case WAIT_TIMEOUT:
+		//The process did not terminate within 5000 milliseconds
+		break;
+	case WAIT_FAILED:
+		//Bas call to function (invalid handle)
+		break;
+	}
+}
+
+void WaitForMultipleObjectsTest()
+{
+	HANDLE hProcess1;
+    HANDLE hProcess2;
+    HANDLE hProcess3;
+
+	HANDLE h[3];
+    h[0] = hProcess1;
+    h[1] = hProcess2;
+    h[2] = hProcess3;
+
+	DWORD dw = WaitForMultipleObjects(3, h, FALSE, 5000);
+
+    switch (dw)
+	{
+	case WAIT_FAILED:
+        //Bad call to function (invalid handle)
+		break;
+	case WAIT_TIMEOUT:
+		//None of the objects became signalled within 5000 milliseconds.
+		break;
+	case WAIT_OBJECT_0 + 0:
+		//The process identified by h[0] (hProcess1) terminated.
+		break;
+	case WAIT_OBJECT_0 + 1:
+		//The process identified by h[1] (hProcess2) terminated.
+		break;
+    case WAIT_OBJECT_0 + 2:
+		//The process identified by h[2] (hProcess3) terminated.
+		break;
+	}
+}
+
+/* Create a global handle to a manual-reset, nonsignalled event. */
+HANDLE g_hEvent;
+
+void WordCount()
+{
+    /* Wait until the file's data is in memory. */
+    WaitForSingleObject(g_hEvent, INFINITE);
+    /* Access the memory block. 
+	 * ...
+	 */ 
+	return (0);
+}
+
+void SpellCheck()
+{
+    /* Wait until the file's data is in memory. */
+    WaitForSingleObject(g_hEvent, INFINITE);
+    /* Access the memory block. 
+	 * ...
+	 */ 
+	return (0);
+}
+
+void GrammarCheck()
+{
+    /* Wait until the file's data is in memory. */
+    WaitForSingleObject(g_hEvent, INFINITE);
+    /* Access the memory block. 
+	 * ...
+	 */ 
+	return (0);
+}
+
+void AutoResentEventTest()
+{
+	HANDLE hThread[3];
+	DWORD dwThreadID;
+    /* Create the manual-reset, nonsignalled event. 
+	 * From the start the event state is nonsignalled
+	 * So if some thread call WallForSingleObject - 
+	 * It will be not scheduled util the state of the manual-
+	 * reset event changes to signalled.
+	 */
+    g_hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+	/* Spawn 3 new threads. */
+    hThread[0] = _beginthreadex(NULL, 0, WordCount, NULL, 0, &dwThreadID);
+	hThread[1] = _beginthreadex(NULL, 0, SpellCheck, NULL, 0, &dwThreadID);
+    hThread[2] = _beginthreadex(NULL, 0, GrammarCheck, NULL, 0, &dwThreadID);
+
+	/* Open file and read contents into memory (...) 
+	 * This operation is time-consuming and all other threads 
+	 * are wailting this operation to complete.
+	 */
+    
+	/* Allow all 3 threads to access the memory 
+	 * Set the event to signalled state. Now all threads 
+	 * are resumed and continue working.
+	 * We need to describe a difference between AutoResetEvent
+	 * and ManualResetEvent. 
+	 * ManualResetEvent does not have any side effects. Afrer the 
+	 * object become signalled, all threads which wait for it become 
+	 * schedulable. 
+	 * AutoResetEvent has a side effect that after it gets signalled
+	 * only one thread become schedulable and then it becomes unsignalled
+	 */
+	SetEvent(g_hEvent);
+}
