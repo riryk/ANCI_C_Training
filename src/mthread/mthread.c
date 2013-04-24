@@ -1796,7 +1796,7 @@ void GrammarCheck()
 	return (0);
 }
 
-void AutoResentEventTest()
+void ManualResentEventTest()
 {
 	HANDLE hThread[3];
 	DWORD dwThreadID;
@@ -1827,6 +1827,67 @@ void AutoResentEventTest()
 	 * schedulable. 
 	 * AutoResetEvent has a side effect that after it gets signalled
 	 * only one thread become schedulable and then it becomes unsignalled
+	 */
+	SetEvent(g_hEvent);
+}
+
+/* Create a global handle to a auto-reset, nonsignalled event. 
+ * This is a handle to a auto-reset event.
+ */
+HANDLE g_hAutoResetEvent;
+
+void WordCountAuto()
+{
+    /* Wait until the file's data is in memory. */
+    WaitForSingleObject(g_hAutoResetEvent, INFINITE);
+    /* Access the memory block. 
+	 * ...
+	 */ 
+	/* After set AutoReset event windows runs successful side-effect:
+	 * Windows runs only one thread which has been waiting for before
+	 * and sets the object to nonsignalled mode. Windows chooses the first
+	 * arbitrarily. The two other threads are left in non-scheduling mode
+	 * and they are left waiting for the auto reset event.
+	 */
+    SetEvent(g_hAutoResetEvent);
+	return (0);
+}
+
+void SpellCheckAuto()
+{
+    /* Wait until the file's data is in memory. */
+    WaitForSingleObject(g_hAutoResetEvent, INFINITE);
+    /* Access the memory block. 
+	 * ...
+	 */ 
+	SetEvent(g_hAutoResetEvent);
+	return (0);
+}
+
+void GrammarCheckAuto()
+{
+    /* Wait until the file's data is in memory. */
+    WaitForSingleObject(g_hEvent, INFINITE);
+    /* Access the memory block. 
+	 * ...
+	 */ 
+	SetEvent(g_hAutoResetEvent);
+	return (0);
+}
+
+void AutoResentEventTest()
+{
+	HANDLE hThread[3];
+	DWORD dwThreadID;
+
+    g_hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+	/* Spawn 3 new threads. */
+    hThread[0] = _beginthreadex(NULL, 0, WordCountAuto, NULL, 0, &dwThreadID);
+	hThread[1] = _beginthreadex(NULL, 0, SpellCheckAuto, NULL, 0, &dwThreadID);
+    hThread[2] = _beginthreadex(NULL, 0, GrammarCheckAuto, NULL, 0, &dwThreadID);
+
+	/* Using an auto-reset event puts all thread into queue.
+	 * All thread are executed consequentially
 	 */
 	SetEvent(g_hEvent);
 }

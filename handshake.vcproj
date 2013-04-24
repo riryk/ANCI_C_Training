@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="errorshow"
-	ProjectGUID="{1F169C3B-A907-402D-B2EF-C0BB21E90AF9}"
-	RootNamespace="My01ErrorShow"
+	Name="handshake"
+	ProjectGUID="{C7B18A04-9AA0-4B6B-8700-BA3DD122122E}"
+	RootNamespace="My09Handshake"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -323,20 +323,20 @@
 	<References>
 	</References>
 	<Files>
-	    <File
-			RelativePath="src\UI\ErrorShow\CmnHdr.h"
+		<File
+			RelativePath="src\UI\HandShake\Handshake.cpp"
 			>
 		</File>
 		<File
-			RelativePath="src\UI\ErrorShow\ErrorShow.cpp"
+			RelativePath="src\UI\HandShake\Handshake.rc"
 			>
 		</File>
 		<File
-			RelativePath="src\UI\ErrorShow\ErrorShow.rc"
+			RelativePath="src\UI\HandShake\Resource.h"
 			>
 		</File>
 		<File
-			RelativePath="src\UI\ErrorShow\Resource.h"
+			RelativePath="src\UI\HandShake\CmnHdr.h"
 			>
 		</File>
 	</Files>
