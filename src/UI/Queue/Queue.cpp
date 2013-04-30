@@ -103,11 +103,15 @@ BOOL CQueue::Append(PELEMENT pElement, DWORD dwTimeout)
 	* If the thread ID is not 0 - the mutex is in nonsijgnalled state.
 	* The difference between mutex and critical section is the mutex possibility
 	* to set timeout
+	* This wait function simply checks ID value for the mutex
+	* If ID = 0 - it processes futher but when ID != 0 - it waits
 	*/
    DWORD dw = WaitForSingleObject(m_hmtxQ, dwTimeout);
 
    /* If the state of the mutex becomes signaled the queue is available to use.
-    * The other thread which was working the queue has just finished it work */
+    * The other thread which was working the queue has just finished it work 
+	* WAIT_OBJECT_0 indicates the successful state of the wait function.
+	*/
    if (dw == WAIT_OBJECT_0) 
    {
       /* This thread has exclusive access to the queue
@@ -129,41 +133,67 @@ BOOL CQueue::Append(PELEMENT pElement, DWORD dwTimeout)
 	   *  the count is not changed and the function returns FALSE.
        * 
 	   * lpPreviousCount [out, optional] 
-       *  A pointer to a variable to receive the previous count for the semaphore. This parameter can be NULL if the previous count is not required.
+       *  A pointer to a variable to receive the previous count for the semaphore. 
+	   *  This parameter can be NULL if the previous count is not required.
        *
+	   * This function puts a new elements into queue. So read method should wait 
+	   * until there is at least one element in the queue. Initially semafore
+	   * has usage count 0 and it is in nonsignalled state. All reader threads 
+	   * are waiting for the semafore to become signalled.
+	   * The semafore keeps the total number of simultaneous request in queue.
+	   * If the total number is the max possible value and we try to increment 
+	   * this value - the function fails. It shows that the semafore is full
+	   * and we send to client a message: The queue is full. Try, please, later.
 	   */
       fOk = ReleaseSemaphore(m_hsemNumElements, 1, &lPrevCount);
-      if (fOk) {
-         // The queue is not full, append the new element
+      if (fOk) 
+	  {
+         /* The queue is not full, append the new element */
          m_pElements[lPrevCount] = *pElement;
-      } else {
-
-         // The queue is full, set the error code and return failure
+      } 
+	  else 
+	  {
+         /* The queue is full, set the error code and return failure */
          SetLastError(ERROR_DATABASE_FULL);
       }
 
-      // Allow other threads to access the queue
+      /* Allow other threads to access the queue 
+	   * We have just made all needed work with queue and we can release the mutex.
+	   * After releasing ID = 0 and one of the waiting threads gains access.
+	   */
       ReleaseMutex(m_hmtxQ);
-
-   } else {
-      // Timeout, set error code and return failure
+   } 
+   /* Some error has happened, possibly timeout has expired.
+    * In comparison to critical sections, mutex allows  
+	* to set timeout. */
+   else 
+   {
+      /* Timeout, set error code and return failure */
       SetLastError(ERROR_TIMEOUT);
    }
 
-   return(fOk);   // Call GetLastError for more info
+   return(fOk);   /* Call GetLastError for more info */
 }
 
+/* This is a reader function which extracts elements from the queue */
+BOOL CQueue::Remove(PELEMENT pElement, DWORD dwTimeout) 
+{
+   /* Wait for exclusive access to queue and for queue to have element. 
+    * First of all we wait for the semafore to become signalled, to have 
+	* total count more than 0. 
+	* And we also wait for the mutex to become signalled. Using this way we 
+	* guarantee exclusive access to the queue. When the queue is being read or
+	* being modified the mutex is non-signalled. It becomes signalled when one of 
+	* threads releases the mutex.
+	* The semafore total count is 0 - This thread waits for at least one item.
+	* After an item has been added into queue, the semafore becomes signalled
+	* and WaitForMultipleObjects decrements the total count in semafore.
+    */
+   BOOL fOk = 
+	   (WaitForMultipleObjects(_countof(m_h), m_h, TRUE, dwTimeout) == WAIT_OBJECT_0);
 
-///////////////////////////////////////////////////////////////////////////////
-
-
-BOOL CQueue::Remove(PELEMENT pElement, DWORD dwTimeout) {
-
-   // Wait for exclusive access to queue and for queue to have element.
-   BOOL fOk = (WaitForMultipleObjects(_countof(m_h), m_h, TRUE, dwTimeout) 
-      == WAIT_OBJECT_0);
-
-   if (fOk) {
+   if (fOk) 
+   {
       // The queue has an element, pull it from the queue
       *pElement = m_pElements[0];
 
@@ -174,7 +204,8 @@ BOOL CQueue::Remove(PELEMENT pElement, DWORD dwTimeout) {
       // Allow other threads to access the queue
       ReleaseMutex(m_hmtxQ);
 
-   } else {
+   } else 
+   {
       // Timeout, set error code and return failure
       SetLastError(ERROR_TIMEOUT);
    }
