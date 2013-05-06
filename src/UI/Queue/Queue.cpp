@@ -192,30 +192,48 @@ BOOL CQueue::Remove(PELEMENT pElement, DWORD dwTimeout)
    BOOL fOk = 
 	   (WaitForMultipleObjects(_countof(m_h), m_h, TRUE, dwTimeout) == WAIT_OBJECT_0);
 
+   /* If we have come here - the semafore has at least one item and mutex is signalled
+    * The queue is available. 
+	* If the wait result has been successful, the mutex state becomes unsignalled */
    if (fOk) 
    {
-      // The queue has an element, pull it from the queue
+      /* The queue has an element, pull it from the queue 
+	   * The top element in the queue is at 0 position */
       *pElement = m_pElements[0];
 
-      // Shift the remaining elements down
-      MoveMemory(&m_pElements[0], &m_pElements[1], 
-         sizeof(ELEMENT) * (m_nMaxElements - 1));
+      /* Shift the remaining elements down 
+	   * Moves a block of memory from one location to another.
+	   * Destination [in]
+       *   A pointer to the starting address of the move destination. 
+       * Source [in]
+       *   A pointer to the starting address of the block of memory to be moved.
+       * Length [in]
+       *   The size of the block of memory to move, in bytes. 
+	   * For example if we have 
+	   *   m_pElements = [5, 6, 7, 8, 1, -1] 
+	   *   m_pElements[0] = 5 is the top of the queue
+	   * After we have moved the queue: dequeue operation
+	   *   m_pElements = [6, 7, 8, 1, -1, #]
+	   * The next top element is 6 
+	   */
+      MoveMemory(
+		  &m_pElements[0], 
+		  &m_pElements[1], 
+          sizeof(ELEMENT) * (m_nMaxElements - 1));
 
-      // Allow other threads to access the queue
+      /* Allow other threads to access the queue 
+	   * ReleaseMutex makes the mutex signalled */
       ReleaseMutex(m_hmtxQ);
 
-   } else 
+   } 
+   else 
    {
-      // Timeout, set error code and return failure
+      /* Timeout, set error code and return failure */
       SetLastError(ERROR_TIMEOUT);
    }
 
    return(fOk);   // Call GetLastError for more info
 }
-
-
-///////////////////////////////////////////////////////////////////////////////
-
 
 CQueue g_q(10);                     // The shared queue
 volatile LONG g_fShutdown = FALSE;  // Signals client/server threads to die
@@ -227,17 +245,16 @@ HANDLE g_hThreads[MAXIMUM_WAIT_OBJECTS];
 int    g_nNumThreads = 0;
 
 
-///////////////////////////////////////////////////////////////////////////////
-
-
-DWORD WINAPI ClientThread(PVOID pvParam) {
-
+DWORD WINAPI ClientThread(PVOID pvParam) 
+{
    int nThreadNum = PtrToUlong(pvParam);
    HWND hwndLB = GetDlgItem(g_hwnd, IDC_CLIENTS);
 
    int nRequestNum = 0;
-   while (1 != InterlockedCompareExchange(&g_fShutdown, 0, 0)) {
-
+   
+   /* Always check if there is a request for shutting down */
+   while (1 != InterlockedCompareExchange(&g_fShutdown, 0, 0)) 
+   {
       // Keep track of the current processed element
       nRequestNum++;
       
@@ -245,17 +262,26 @@ DWORD WINAPI ClientThread(PVOID pvParam) {
       CQueue::ELEMENT e = { nThreadNum, nRequestNum };
 
       // Try to put an element on the queue
-      if (g_q.Append(&e, 200)) {
-
+      if (g_q.Append(&e, 200)) 
+	  {
          // Indicate which thread sent it and which request
-         StringCchPrintf(sz, _countof(sz), TEXT("Sending %d:%d"), 
-            nThreadNum, nRequestNum);
-      } else {
-
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+			 TEXT("Sending %d:%d"), 
+             nThreadNum, 
+			 nRequestNum);
+      } 
+	  else 
+	  {
          // Couldn't put an element on the queue
-         StringCchPrintf(sz, _countof(sz), TEXT("Sending %d:%d (%s)"), 
-            nThreadNum, nRequestNum, (GetLastError() == ERROR_TIMEOUT) 
-               ? TEXT("timeout") : TEXT("full"));
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+			 TEXT("Sending %d:%d (%s)"), 
+             nThreadNum, 
+			 nRequestNum, 
+			 (GetLastError() == ERROR_TIMEOUT) ? TEXT("timeout") : TEXT("full"));
       }
 
       // Show result of appending element
@@ -266,32 +292,33 @@ DWORD WINAPI ClientThread(PVOID pvParam) {
    return(0);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-DWORD WINAPI ServerThread(PVOID pvParam) {
-
+DWORD WINAPI ServerThread(PVOID pvParam) 
+{
    int nThreadNum = PtrToUlong(pvParam);
    HWND hwndLB = GetDlgItem(g_hwnd, IDC_SERVERS);
 
-   while (1 != InterlockedCompareExchange(&g_fShutdown, 0, 0)) {
-
+   /* Always check if there is a request for shutting down */
+   while (1 != InterlockedCompareExchange(&g_fShutdown, 0, 0)) 
+   {
       TCHAR sz[1024];
       CQueue::ELEMENT e;
 
       // Try to get an element from the queue
-      if (g_q.Remove(&e, 5000)) {
-
+      if (g_q.Remove(&e, 5000)) 
+	  {
          // Indicate which thread is processing it, which thread
          // sent it and which request we're processing
-         StringCchPrintf(sz, _countof(sz), TEXT("%d: Processing %d:%d"), 
-            nThreadNum, e.m_nThreadNum, e.m_nRequestNum);
+         StringCchPrintf(
+			 sz, 
+			 _countof(sz), 
+			 TEXT("%d: Processing %d:%d"), 
+             nThreadNum, e.m_nThreadNum, e.m_nRequestNum);
 
          // The server takes some time to process the request
          Sleep(2000 * e.m_nThreadNum);
-
-      } else {
+      } 
+	  else 
+	  {
          // Couldn't get an element from the queue
          StringCchPrintf(sz, _countof(sz), TEXT("%d: (timeout)"), nThreadNum);
       }
@@ -303,12 +330,8 @@ DWORD WINAPI ServerThread(PVOID pvParam) {
    return(0);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) {
-
+BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) 
+{
    chSETDLGICONS(hwnd, IDI_QUEUE);
 
    g_hwnd = hwnd; // Used by client/server threads to show status
@@ -318,51 +341,53 @@ BOOL Dlg_OnInitDialog(HWND hwnd, HWND hwndFocus, LPARAM lParam) {
    // Create the client threads
    for (int x = 0; x < 4; x++)
       g_hThreads[g_nNumThreads++] = 
-         chBEGINTHREADEX(NULL, 0, ClientThread, (PVOID) (INT_PTR) x, 
-            0, &dwThreadID);
+         chBEGINTHREADEX(
+		       NULL, 
+			   0, 
+			   ClientThread, 
+			   (PVOID)(INT_PTR)x, 
+               0, 
+			   &dwThreadID);
 
    // Create the server threads
    for (int x = 0; x < 2; x++)
       g_hThreads[g_nNumThreads++] = 
-         chBEGINTHREADEX(NULL, 0, ServerThread, (PVOID) (INT_PTR) x, 
-            0, &dwThreadID);
+         chBEGINTHREADEX(
+		       NULL, 
+			   0, 
+			   ServerThread, 
+			   (PVOID)(INT_PTR)x, 
+               0, 
+			   &dwThreadID);
 
    return(TRUE);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
-
-   switch (id) {
+void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) 
+{
+   switch (id) 
+   {
       case IDCANCEL:
          EndDialog(hwnd, id);
          break;
    }
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-INT_PTR WINAPI Dlg_Proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
-   
-   switch (uMsg) {
+INT_PTR WINAPI Dlg_Proc(HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam) 
+{   
+   switch (uMsg) 
+   {
       chHANDLE_DLGMSG(hwnd, WM_INITDIALOG, Dlg_OnInitDialog);
       chHANDLE_DLGMSG(hwnd, WM_COMMAND,    Dlg_OnCommand);
    }
    return(FALSE);
 }
 
-
-///////////////////////////////////////////////////////////////////////////////
-
-
-int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int) {
-
+int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int) 
+{
    DialogBox(hinstExe, MAKEINTRESOURCE(IDD_QUEUE), NULL, Dlg_Proc);
+   /* After closing dialog box we need to close all working threads 
+    * Set Shutdown variable to true */
    InterlockedExchange(&g_fShutdown, TRUE);
 
    // Wait for all the threads to terminate & then cleanup
@@ -373,5 +398,3 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int) {
    return(0);
 }
 
-
-//////////////////////////////// End of File //////////////////////////////////

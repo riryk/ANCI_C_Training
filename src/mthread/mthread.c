@@ -1671,7 +1671,7 @@ void StopProcessing()
 	if (!g_fShutdown)
 	{
 		/* Ask all threads to end */
-		InterlokedExchangePointer((PLONG*)&g_fShutdown), (LONG)TRUE);
+		InterlockedExchangePointer((PLONG*)&g_fShutdown, (LONG)TRUE);
 		/* Free all threads waiting on condition variables */
 		WakeAllConditionVariable(&g_cvReadyToConsume);
         WakeAllConditionVariable(&g_cvReadyToProduce);
@@ -1735,13 +1735,14 @@ void WaitForMultipleObjectsTest()
 	HANDLE hProcess1;
     HANDLE hProcess2;
     HANDLE hProcess3;
+    DWORD dw;
 
 	HANDLE h[3];
     h[0] = hProcess1;
     h[1] = hProcess2;
     h[2] = hProcess3;
 
-	DWORD dw = WaitForMultipleObjects(3, h, FALSE, 5000);
+	dw = WaitForMultipleObjects(3, h, FALSE, 5000);
 
     switch (dw)
 	{
@@ -1891,3 +1892,38 @@ void AutoResentEventTest()
 	 */
 	SetEvent(g_hEvent);
 }
+
+HANDLE hEventWorkerThreadDone;
+HANDLE hEventMoreWorkToBeDone;
+
+void TestWithoutSignalAndWait_Thread1()
+{
+	/* Perform some work. ...  
+	 * there are many threads which are waiting
+	 * for this work to be done. After that we notify 
+	 * these threads about completed work. */
+	SetEvent(hEventWorkerThreadDone);
+	/* Wait for event - moreWorkToBeDone */
+    WaitForSingleObject(hEventMoreWorkToBeDone, INFINITE);
+	/* Perform more work. ... */
+}
+
+void TestWithoutSignalAndWait_Thread2()
+{
+	/* Wait for the thread 1 to perform some work  */
+    WaitForSingleObject(hEventWorkerThreadDone, INFINITE);
+	/* After that do some work and pulse event MoreWorkToDo */
+    PulseEvent(hEventMoreWorkToBeDone);
+}
+
+/* Why this approach is not reliable?
+ * The first thread set event: WorkerThreadDone
+ * And after that the second thread might resume
+ * almost immediately and pulse event MoreWorkToBeDone
+ * before the first thread starts waiting for it.
+ * So that we miss the event order.
+ * We need to substitute SetEvent and WaitForSingleObject
+ * by SignalObject and wait to make this two operations atomic
+ */
+
+
