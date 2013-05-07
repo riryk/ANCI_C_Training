@@ -1927,3 +1927,73 @@ void TestWithoutSignalAndWait_Thread2()
  */
 
 
+/* ############################# Asyncronous IO device operations  ########################################## */
+
+void AsyncIOUsingSignallingDeviceKernelObject()
+{
+	BYTE bBuffer[100];
+	OVERLAPPED o = { 0 };
+    BOOL bReadDone;
+
+	o.Offset = 345;
+
+    HANDLE hFile = CreateFile("path to file",          // name of the write
+                             GENERIC_WRITE,           // open for writing
+                             0,                       // do not share
+                             NULL,                    // default security
+                             CREATE_NEW,              // create new file only
+                             FILE_ATTRIBUTE_NORMAL,   // normal file
+                             NULL);                   // no attr. template
+
+	/* If we add the latest overlapped parameter, we do an asyncronous request */
+	bReadDone = ReadFile(hFile, bBuffer, 100, NULL, &o);
+    /* Function returns immediately */
+	DWORD dwError = GetLastError();
+
+	if (!bReadDone && (dwError == ERROR_IO_PENDING))
+	{
+		/* We have successfully posted an asyncronous request
+		 * and now the I/O is being performed asyncronously; We can do 
+		 * some work and after that wait for the operation to complete.
+		 * ReadFile sets the state of file handler to nonsignalled and after 
+		 * accomplishing operation it becomes signalled. */
+        WaitForSingleObject(hFile, INFINITE);
+		bReadDone = TRUE;
+	}
+	
+	if (bReadDone)
+	{
+		// o.Internal contains the I/O error
+		// o.InternalHigh contains the number of bytes transferred
+		// bBuffer contains the read data
+	}
+	else
+	{
+		// An error occured; see dwError
+	}
+}
+
+void SimultaneousReadAndWrite()
+{
+    BYTE bReadBuffer[10];
+	OVERLAPPED oRead = { 0 };
+       
+	BYTE bWriteBuffer[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    OVERLAPPED oWrite = { 0 };
+	oWrite.Offset = 10;
+
+    HANDLE hFile = CreateFile("path to file",          // name of the write
+                             GENERIC_WRITE,           // open for writing
+                             0,                       // do not share
+                             NULL,                    // default security
+                             CREATE_NEW,              // create new file only
+                             FILE_ATTRIBUTE_NORMAL,   // normal file
+                             NULL);                   // no attr. template
+
+	ReadFile(hFile, bReadBuffer, 10, NULL, &oRead);
+	WriteFile(hFile, bWriteBuffer, _countof(bWriteBuffer), NULL, &oWrite);
+	//... do some additional work
+	WaitForSingleObject(hFile, INFINITE);
+	/* If one of the read or write operations has completed, the state of the object becomes signalled
+	 * but we do not know what operation has completed: read or write. */
+}

@@ -322,20 +322,22 @@
 					RelativePath="src\main\problem11.c"
 					>
 				</File>
-                        <File
+                <File
 					RelativePath="src\main\problem12.c"
 					>
 				</File>
-                       <File
+                <File
 					RelativePath="src\main\problem13.c"
 					>
 				</File>
-                       <File
+                <File
 					RelativePath="src\main\problem14.c"
 					>
 				</File>
-
-
+                <File
+					RelativePath="src\main\problem15.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="str"
