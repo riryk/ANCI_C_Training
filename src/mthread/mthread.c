@@ -1125,6 +1125,32 @@ DWORD WINAPI ThreadFunc2_Save(PVOID pvParam)
    return (0);
 }
 
+/* Another example with volatile keyword. Infinite loop 
+ * Assembler code:
+ * 
+ * mov    ptr, #0x1234     
+   mov    a, @ptr 
+   loop     
+   bz    
+   loop
+ * read a value from RAM into register and loop after that
+ * With volatile this code will be:
+ *  mov     ptr, #0x1234
+    loop    mov    a, @ptr        
+    bz      loop
+ * the value will be read from RAM into register for every loop step.
+ * 
+ */
+void BadLoop()
+{
+	/* We have a pointer to some ram memory */
+	int* ptr = (int*)0x1234;
+    /* Wait for register to become non-zero. 
+	 * This code is executed in one thread.
+	 * The other simultaneous thread can set this variable to 0 */
+    while (*ptr == 0);
+}
+
 /* Global variable indicating whether
  * a shared resource is in use or not
  */
