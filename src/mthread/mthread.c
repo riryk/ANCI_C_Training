@@ -1997,3 +1997,89 @@ void SimultaneousReadAndWrite()
 	/* If one of the read or write operations has completed, the state of the object becomes signalled
 	 * but we do not know what operation has completed: read or write. */
 }
+
+void SimultaneousReadAndWriteWithEvents()
+{
+	HANDLE h[2];
+    DWORD dw;
+
+    BYTE bReadBuffer[10];
+	OVERLAPPED oRead = { 0 };
+
+    BYTE bWriteBuffer[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
+    OVERLAPPED oWrite = { 0 };
+
+	oRead.Offset = 0;
+	oRead.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+	oWrite.Offset = 10;
+	oWrite.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
+
+
+    HANDLE hFile = CreateFile("path to file",          // name of the write
+                             GENERIC_WRITE,           // open for writing
+                             0,                       // do not share
+                             NULL,                    // default security
+                             CREATE_NEW,              // create new file only
+                             FILE_ATTRIBUTE_NORMAL,   // normal file
+                             NULL);              
+
+	ReadFile(hFile, bReadBuffer, 10, NULL, &oRead);
+	WriteFile(hFile, bWriteBuffer, _countof(bWriteBuffer), NULL, &oWrite);
+
+	h[0] = oRead.hEvent;
+	h[1] = oWrite.hEvent;
+ 
+	/* We wait until the both objects become signalled
+	 * When asyncronous read operation finishes, it will set oRead event to signalled
+	 * When asyncronous write operation completes, it will set oWrite event to signalled
+	 * And only after this we finish waiting. */
+    dw = WaitForMultipleObjects(2, h, FALSE, INFINITE);
+	switch (dw - WAIT_OBJECT_0)
+	{
+	case 0: //Read completed
+       break;
+	case 1: // Write completed
+	   break;
+	}
+}
+
+BOOL GetOverlappedResult1(
+    HANDLE hFile,
+	OVERLAPPED* po,
+	PDWORD pdwNumBytes,
+    BOOL bWait
+)
+{
+	if (po->Internal == STATUS_PENDING)
+	{
+		DWORD dwWaitResult = WAIT_TIMEOUT;
+		if (bWait)
+		{
+		   /* Wait for the I/O to complete */
+		   dwWaitRet = WaitForSingleObject(
+			(po->hEvent != NULL) ? po->hEvent : hFile, INFINITE);
+		}
+         
+        if (dwWaitResult == WAIT_TIMEOUT)
+		{
+           /* I/O not complete and we are not supposed to wait */  
+           SetLastError(ERROR_IO_INCOMPLETE);
+		   return (FALSE);
+		}
+
+		if (dwWaitResult == WAIT_OBJECT_0)
+		{
+		   /* Error calling WaitForSingleObject */
+			return (FALSE);
+		}
+		/* I/O is complete; return number of bytes transferred */
+		*pdwNumBytes = po->InternalHigh;
+		if (SUCCEEDED(po->Internal)) {
+			return (TRUE); // No I/O error
+		}
+		/* Set last error to I/O error */
+		SetLastError(po->Internal);
+		return (FALSE);
+	}
+}
