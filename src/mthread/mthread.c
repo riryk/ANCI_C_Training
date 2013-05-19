@@ -1958,12 +1958,14 @@ void TestWithoutSignalAndWait_Thread2()
 void AsyncIOUsingSignallingDeviceKernelObject()
 {
 	BYTE bBuffer[100];
+	DWORD dwError;
 	OVERLAPPED o = { 0 };
     BOOL bReadDone;
+    HANDLE hFile;
 
 	o.Offset = 345;
 
-    HANDLE hFile = CreateFile("path to file",          // name of the write
+    hFile = CreateFile("path to file",          // name of the write
                              GENERIC_WRITE,           // open for writing
                              0,                       // do not share
                              NULL,                    // default security
@@ -1974,7 +1976,7 @@ void AsyncIOUsingSignallingDeviceKernelObject()
 	/* If we add the latest overlapped parameter, we do an asyncronous request */
 	bReadDone = ReadFile(hFile, bBuffer, 100, NULL, &o);
     /* Function returns immediately */
-	DWORD dwError = GetLastError();
+	dwError = GetLastError();
 
 	if (!bReadDone && (dwError == ERROR_IO_PENDING))
 	{
@@ -2003,12 +2005,13 @@ void SimultaneousReadAndWrite()
 {
     BYTE bReadBuffer[10];
 	OVERLAPPED oRead = { 0 };
+    HANDLE hFile;
        
 	BYTE bWriteBuffer[10] = { 0, 1, 2, 3, 4, 5, 6, 7, 8, 9 };
     OVERLAPPED oWrite = { 0 };
 	oWrite.Offset = 10;
 
-    HANDLE hFile = CreateFile("path to file",          // name of the write
+    hFile = CreateFile("path to file",          // name of the write
                              GENERIC_WRITE,           // open for writing
                              0,                       // do not share
                              NULL,                    // default security
@@ -2028,6 +2031,7 @@ void SimultaneousReadAndWriteWithEvents()
 {
 	HANDLE h[2];
     DWORD dw;
+	HANDLE hFile;
 
     BYTE bReadBuffer[10];
 	OVERLAPPED oRead = { 0 };
@@ -2042,7 +2046,7 @@ void SimultaneousReadAndWriteWithEvents()
 	oWrite.hEvent = CreateEvent(NULL, FALSE, FALSE, NULL);
 
 
-    HANDLE hFile = CreateFile("path to file",          // name of the write
+    hFile = CreateFile("path to file",          // name of the write
                              GENERIC_WRITE,           // open for writing
                              0,                       // do not share
                              NULL,                    // default security
@@ -2077,6 +2081,8 @@ BOOL GetOverlappedResult1(
     BOOL bWait
 )
 {
+	DWORD dwWaitRet;
+
 	if (po->Internal == STATUS_PENDING)
 	{
 		DWORD dwWaitResult = WAIT_TIMEOUT;
@@ -2108,4 +2114,124 @@ BOOL GetOverlappedResult1(
 		SetLastError(po->Internal);
 		return (FALSE);
 	}
+}
+
+/* #################################  Alertable I/O ################################## */
+
+// The APC callback function has nothing to do
+VOID WINAPI APCFunc(ULONG_PTR dwParam) 
+{
+   // Nothing to do in here
+}
+
+UINT WINAPI APCThreadFunc(PVOID pvParam) 
+{
+   HANDLE hEvent = (HANDLE) pvParam; // Handle is passed to this thread
+   // Wait in an alertable state so that we can be forced to exit cleanly
+   DWORD dw = WaitForSingleObjectEx(hEvent, INFINITE, TRUE); 
+   if (dw == WAIT_OBJECT_0) 
+   {
+      // Object became signaled
+   }
+   if (dw == WAIT_IO_COMPLETION) 
+   {
+      // QueueUserAPC forced us out of a wait state
+      return(0); // Thread dies cleanly
+   }
+   ///...
+   return(0);
+}
+
+void APCMain() 
+{
+   HANDLE hEvent =  CreateEvent(NULL, FALSE, FALSE, NULL);
+   HANDLE hThread = 
+	   (HANDLE)_beginthreadex(
+	       NULL, 
+		   0,
+           APCThreadFunc, 
+		   (PVOID)hEvent, 
+		   0, 
+		   NULL);
+
+   // Force the secondary thread to exit cleanly
+   QueueUserAPC(APCFunc, hThread, NULL);
+   WaitForSingleObject(hThread, INFINITE);
+   CloseHandle(hThread);
+   CloseHandle(hEvent);
+}
+
+/* #################################  Com port thread pool  ################################## */
+
+LONG g_nThreadsMin;    // Minimum number of threads in pool
+LONG g_nThreadsMax;    // Maximum number of threads in pool
+LONG g_nThreadsCrnt;   // Current number of threads in pool
+LONG g_nThreadsBusy;   // Number of busy threads in pool
+
+DWORD GetCPUUsage()
+{
+   return 0; 
+}
+
+DWORD WINAPI ThreadPoolFunc(PVOID pv) 
+{
+   BOOL bStayInPool;
+   // Thread is entering pool
+   InterlockedIncrement(&g_nThreadsCrnt);
+   InterlockedIncrement(&g_nThreadsBusy);
+
+   for (bStayInPool = TRUE; bStayInPool;) 
+   {
+       BOOL bOk;
+	   DWORD dwIOError;
+       int nThreadsBusy;
+	   // Thread stops executing and waits for something to do
+       InterlockedDecrement(&g_nThreadsBusy);
+	   bOk = GetQueuedCompletionStatus(NULL, NULL, NULL, NULL, 0);
+	   dwIOError = GetLastError();
+	   // Thread has something to do, so it's busy
+       nThreadsBusy = InterlockedIncrement(&g_nThreadsBusy);
+	   // Should we add another thread to the pool?
+       if (nThreadsBusy == g_nThreadsCrnt) 
+	   { 
+		   // All threads are busy
+           if (nThreadsBusy < g_nThreadsMax) 
+		   { 
+			   // The pool isn't full
+               if (GetCPUUsage() < 75) 
+			   { 
+				   // CPU usage is below 75%
+                   // Add thread to pool
+                   //CloseHandle(chBEGINTHREADEX(...));
+               }
+           }
+       }
+	   if (!bOk && (dwIOError == WAIT_TIMEOUT)) 
+	   { 
+		   // Thread timed out
+           // There isn't much for the server to do, and this thread
+           // can die even if it still has outstanding I/O requests
+           bStayInPool = FALSE;
+       }
+       if (bOk) 
+	   {
+          // Thread woke to process something; process it
+          //...
+          if (GetCPUUsage() > 90) 
+		  { 
+			  // CPU usage is above 90%
+              if (g_nThreadsCrnt > g_nThreadsMin) 
+			  { 
+				  // Pool above min
+                  bStayInPool = FALSE; 
+				  // Remove thread from pool
+              }
+          }
+       }
+   }
+
+   // Thread is leaving pool
+   InterlockedDecrement(&g_nThreadsBusy);
+   InterlockedDecrement(&g_nThreadsCrnt);
+   return(0);
 }

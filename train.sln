@@ -18,6 +18,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "queue", "queue.vcproj", "{9
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lockcop", "lockcop.vcproj", "{868FE6EF-6077-45F7-990A-2EF06D3332DE}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "filecopy", "filecopy.vcproj", "{6BF7A805-9654-4850-B391-DA91D5084448}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -60,6 +62,10 @@ Global
 		{868FE6EF-6077-45F7-990A-2EF06D3332DE}.Debug|Win32.Build.0 = Debug|Win32
 		{868FE6EF-6077-45F7-990A-2EF06D3332DE}.Release|Win32.ActiveCfg = Release|Win32
 		{868FE6EF-6077-45F7-990A-2EF06D3332DE}.Release|Win32.Build.0 = Release|Win32
+		{6BF7A805-9654-4850-B391-DA91D5084448}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6BF7A805-9654-4850-B391-DA91D5084448}.Debug|Win32.Build.0 = Debug|Win32
+		{6BF7A805-9654-4850-B391-DA91D5084448}.Release|Win32.ActiveCfg = Release|Win32
+		{6BF7A805-9654-4850-B391-DA91D5084448}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
