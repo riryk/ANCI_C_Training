@@ -110,16 +110,46 @@ public:
 	   DWORD dwNumBytes = 0, 
        OVERLAPPED* po = NULL) 
    {
+      /* Posts an I/O completion packet to an I/O completion port.
+	   *
+	   * CompletionPort [in]
+       *   A handle to an I/O completion port to which 
+	   *   the I/O completion packet is to be posted.
+	   * 
+	   * dwNumberOfBytesTransferred [in]
+       *   The value to be returned through the lpNumberOfBytesTransferred parameter 
+	   *   of the GetQueuedCompletionStatus function.
+	   * 
+	   * dwCompletionKey [in]
+       *   The value to be returned through the lpCompletionKey parameter 
+	   *   of the GetQueuedCompletionStatus function.
+	   *
+	   * lpOverlapped [in, optional]
+       *   The value to be returned through the lpOverlapped parameter 
+	   *   of the GetQueuedCompletionStatus function.  
+	   */
       BOOL fOk = PostQueuedCompletionStatus(m_hIOCP, dwNumBytes, CompKey, po);
       chASSERT(fOk);
       return(fOk);
    }
 
-   BOOL GetStatus(ULONG_PTR* pCompKey, PDWORD pdwNumBytes,
-      OVERLAPPED** ppo, DWORD dwMilliseconds = INFINITE) {
-
-      return(GetQueuedCompletionStatus(m_hIOCP, pdwNumBytes, 
-         pCompKey, ppo, dwMilliseconds));
+   BOOL GetStatus(
+	   ULONG_PTR* pCompKey, 
+	   PDWORD pdwNumBytes,
+       OVERLAPPED** ppo, 
+	   DWORD dwMilliseconds = INFINITE) 
+   {
+      /* Attempts to dequeue an I/O completion packet 
+	   * from the specified I/O completion port. 
+	   * If there is no completion packet queued, 
+	   * the function waits for a pending I/O operation associated with 
+	   * the completion port to complete. */
+      return (GetQueuedCompletionStatus(
+		        m_hIOCP, 
+				pdwNumBytes, 
+                pCompKey, 
+				ppo, 
+				dwMilliseconds));
    }
 
 private:

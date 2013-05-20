@@ -222,16 +222,18 @@ BOOL FileCopy(PCTSTR pszFileSrc, PCTSTR pszFileDst) {
       BOOL bResult = FALSE;
       
       // Loop while outstanding I/O requests still exist
-      while ((nReadsInProgress > 0) || (nWritesInProgress > 0)) {
-
+      while ((nReadsInProgress > 0) || (nWritesInProgress > 0)) 
+	  {
          // Suspend the thread until an I/O completes
          ULONG_PTR CompletionKey;
          DWORD dwNumBytes;
          CIOReq* pior;
          bResult = iocp.GetStatus(&CompletionKey, &dwNumBytes, (OVERLAPPED**) &pior, INFINITE);
 
-         switch (CompletionKey) {
-         case CK_READ:  // Read completed, write to destination
+         switch (CompletionKey) 
+		 {
+         case CK_READ:  
+			// Read completed, write to destination
             nReadsInProgress--;
             bResult = pior->Write(hFileDst);  // Write to same offset read from source
             nWritesInProgress++;
