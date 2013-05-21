@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="Windows-1252"?>
 <VisualStudioProject
 	ProjectType="Visual C++"
-	Version="8.00"
-	Name="Batch"
+	Version="9.00"
+	Name="batch"
 	ProjectGUID="{30974188-797F-4934-9738-8987B6882A10}"
 	RootNamespace="My11Batch"
 	Keyword="Win32Proj"
+	TargetFrameworkVersion="131072"
 	>
 	<Platforms>
 		<Platform
@@ -66,6 +67,8 @@
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
 				SubSystem="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -85,9 +88,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -141,6 +141,8 @@
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
+				RandomizedBaseAddress="1"
+				DataExecutionPrevention="0"
 				TargetMachine="1"
 			/>
 			<Tool
@@ -160,9 +162,6 @@
 			/>
 			<Tool
 				Name="VCAppVerifierTool"
-			/>
-			<Tool
-				Name="VCWebDeploymentTool"
 			/>
 			<Tool
 				Name="VCPostBuildEventTool"
@@ -324,10 +323,6 @@
 	<References>
 	</References>
 	<Files>
-	    <File
-			RelativePath="src\UI\Batch\CmnHdr.h"
-			>
-		</File>
 		<File
 			RelativePath="src\UI\Batch\Batch.cpp"
 			>
@@ -338,6 +333,10 @@
 		</File>
 		<File
 			RelativePath="src\UI\Batch\Batch.rc"
+			>
+		</File>
+		<File
+			RelativePath="src\UI\Batch\CmnHdr.h"
 			>
 		</File>
 		<File

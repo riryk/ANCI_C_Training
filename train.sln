@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "train", "train.vcproj", "{D51DACE6-5062-4DF6-84F4-3B59FFC90ED2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "errorshow", "errorshow.vcproj", "{1F169C3B-A907-402D-B2EF-C0BB21E90AF9}"
@@ -19,6 +19,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "lockcop", "lockcop.vcproj", "{868FE6EF-6077-45F7-990A-2EF06D3332DE}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "filecopy", "filecopy.vcproj", "{6BF7A805-9654-4850-B391-DA91D5084448}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "batch", "batch.vcproj", "{30974188-797F-4934-9738-8987B6882A10}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -66,6 +68,10 @@ Global
 		{6BF7A805-9654-4850-B391-DA91D5084448}.Debug|Win32.Build.0 = Debug|Win32
 		{6BF7A805-9654-4850-B391-DA91D5084448}.Release|Win32.ActiveCfg = Release|Win32
 		{6BF7A805-9654-4850-B391-DA91D5084448}.Release|Win32.Build.0 = Release|Win32
+		{30974188-797F-4934-9738-8987B6882A10}.Debug|Win32.ActiveCfg = Debug|Win32
+		{30974188-797F-4934-9738-8987B6882A10}.Debug|Win32.Build.0 = Debug|Win32
+		{30974188-797F-4934-9738-8987B6882A10}.Release|Win32.ActiveCfg = Release|Win32
+		{30974188-797F-4934-9738-8987B6882A10}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

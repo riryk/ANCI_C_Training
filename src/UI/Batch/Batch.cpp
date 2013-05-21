@@ -4,7 +4,7 @@ Notices: Copyright (c) 2008 Jeffrey Richter & Christophe Nasarre
 ******************************************************************************/
 
 
-#include "..\CommonFiles\CmnHdr.h"     /* See Appendix A. */
+#include "CmnHdr.h"     /* See Appendix A. */
 #include <Windowsx.h>
 #include <WinBase.h>
 #include <WinNT.h>
@@ -83,6 +83,12 @@ void OnStartBatch() {
    AddMessage(TEXT("----Start a new batch----"));
    
    // Submit 4 tasks by using the same work item
+   /* Posts a work object to the thread pool. 
+    * A worker thread calls the work object's callback function. 
+	* pwk [in, out]
+    *   A TP_WORK structure that defines the work object. 
+	*   The CreateThreadpoolWork function returns this structure.
+	*/
    SubmitThreadpoolWork(g_pWorkItem);
    SubmitThreadpoolWork(g_pWorkItem);
    SubmitThreadpoolWork(g_pWorkItem);
@@ -148,6 +154,24 @@ INT_PTR WINAPI Dlg_Proc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 int APIENTRY _tWinMain(HINSTANCE hInstance, HINSTANCE, LPTSTR pCmdLine, int) {
 
    // Create the work item that will be used by all tasks
+   /* Creates a new work object.
+    * 
+    * pfnwk [in]
+    *   The callback function. 
+	*   A worker thread calls this callback each time you 
+	*   call SubmitThreadpoolWork to post the work object. 
+	*   For details, see WorkCallback.
+	*
+	* pv [in, out, optional]
+    *   Optional application-defined data to pass to the callback function. 
+	*
+	* pcbe [in, optional]
+    *   A TP_CALLBACK_ENVIRON structure that defines the environment 
+	*   in which to execute the callback. 
+	*   The InitializeThreadpoolEnvironment function returns this structure.
+    *   If this parameter is NULL, the callback executes in the default callback environment. 
+	*   For more information, see InitializeThreadpoolEnvironment.
+    */
    g_pWorkItem = CreateThreadpoolWork(TaskHandler, NULL, NULL);
    if (g_pWorkItem == NULL) {
       MessageBox(NULL, TEXT("Impossible to create the work item for tasks."), 
