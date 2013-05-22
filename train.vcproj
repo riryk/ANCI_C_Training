@@ -275,6 +275,46 @@
 					>
 				</File>
 				<File
+					RelativePath="src\main\problem10.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem11.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem12.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem13.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem14.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem15.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem16.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem17.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem18.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\problem19.c"
+					>
+				</File>
+				<File
 					RelativePath="src\main\problem2.c"
 					>
 				</File>
@@ -312,46 +352,6 @@
 				</File>
 				<File
 					RelativePath="src\main\problem9.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\problem10.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\problem11.c"
-					>
-				</File>
-                <File
-					RelativePath="src\main\problem12.c"
-					>
-				</File>
-                <File
-					RelativePath="src\main\problem13.c"
-					>
-				</File>
-                <File
-					RelativePath="src\main\problem14.c"
-					>
-				</File>
-                <File
-					RelativePath="src\main\problem15.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\problem16.c"
-					>
-				</File>
-                       <File
-					RelativePath="src\main\problem17.c"
-					>
-				</File>
-                <File
-					RelativePath="src\main\problem18.c"
-					>
-				</File>
-                <File
-					RelativePath="src\main\problem19.c"
 					>
 				</File>
 			</Filter>

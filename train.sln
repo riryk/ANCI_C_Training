@@ -22,6 +22,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "filecopy", "filecopy.vcproj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "batch", "batch.vcproj", "{30974188-797F-4934-9738-8987B6882A10}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "timedmsgbox", "timedmsgbox.vcproj", "{0F41DF4F-9736-4033-8AD8-B3CFFE54368B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -72,6 +74,10 @@ Global
 		{30974188-797F-4934-9738-8987B6882A10}.Debug|Win32.Build.0 = Debug|Win32
 		{30974188-797F-4934-9738-8987B6882A10}.Release|Win32.ActiveCfg = Release|Win32
 		{30974188-797F-4934-9738-8987B6882A10}.Release|Win32.Build.0 = Release|Win32
+		{0F41DF4F-9736-4033-8AD8-B3CFFE54368B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0F41DF4F-9736-4033-8AD8-B3CFFE54368B}.Debug|Win32.Build.0 = Debug|Win32
+		{0F41DF4F-9736-4033-8AD8-B3CFFE54368B}.Release|Win32.ActiveCfg = Release|Win32
+		{0F41DF4F-9736-4033-8AD8-B3CFFE54368B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
