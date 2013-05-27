@@ -4,7 +4,7 @@ Notices: Copyright (c) 2008 Jeffrey Richter & Christophe Nasarre
 ******************************************************************************/
 
 
-#include "..\CommonFiles\CmnHdr.h"     /* See Appendix A. */
+#include "CmnHdr.h"     /* See Appendix A. */
 #include <WindowsX.h>
 #include <tchar.h>
 #include "Resource.h"
@@ -59,7 +59,7 @@ VOID WINAPI LogMessage(PVOID pFlsValue)
    {
       StringCchCopy(szMsg, _countof(szMsg), TEXT("No more a fiber...\n"));
    }
-   
+   /* Sends a string to the debugger for display. */
    OutputDebugString(szMsg);
 }
 
@@ -67,8 +67,12 @@ VOID WINAPI LogMessage(PVOID pFlsValue)
 void WINAPI FiberFunc(PVOID pvParam) {
 
    PFIBERINFO pFiberInfo = (PFIBERINFO) pvParam;
-
+   
+   /* Stores a value in the calling fiber's fiber local storage (FLS) slot 
+    * for the specified FLS index. 
+	* Each fiber has its own slot for each FLS index. */
    FlsSetValue(g_dwSlot, TEXT("Computation"));
+
    LogMessage(TEXT("entering computation..."));
 
    // Update the window showing which fiber is executing.
@@ -82,6 +86,7 @@ void WINAPI FiberFunc(PVOID pvParam) {
 
       // UI events have higher priority than counting.
       // If there are any UI events, handle them ASAP.
+      /* Retrieves the type of messages found in the calling thread's message queue. */
       if (HIWORD(GetQueueStatus(QS_ALLEVENTS)) != 0) {
 
          // The UI fiber has something to do; temporarily
@@ -130,6 +135,8 @@ void Dlg_OnCommand(HWND hwnd, int id, HWND hwndCtl, UINT codeNotify) {
 
    switch (id) {
       case IDCANCEL: 
+	     /* Indicates to the system that a thread has made a request to terminate (quit). 
+		  * It is typically used in response to a WM_DESTROY message. */
          PostQuitMessage(0);
          break;
 
@@ -167,8 +174,15 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int) {
    PVOID pFiberCounter = NULL;   
 
    // Convert this thread to a fiber.
+
+   /* Converts the current thread into a fiber. 
+    * You must convert a thread into a fiber 
+	* before you can schedule other fibers. */
    g_FiberInfo.pFiberUI = ConvertThreadToFiber(NULL);
 
+   /* Allocates a fiber local storage (FLS) index. 
+    * Any fiber in the process can subsequently use this index 
+	* to store and retrieve values that are local to the fiber. */
    g_dwSlot = FlsAlloc(LogMessage);
    FlsSetValue(g_dwSlot, TEXT("UI fiber"));
 
@@ -189,13 +203,33 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int) {
 
       // UI messages are higher priority than background processing.
       MSG msg;
+	  /* Dispatches incoming sent messages, checks 
+	   * the thread message queue for a posted message, 
+	   * and retrieves the message (if any exist). 
+	   * PM_REMOVE 0x0001 
+	   * Messages are removed from the queue after processing by PeekMessage.
+	   */
       if (PeekMessage(&msg, NULL, 0, 0, PM_REMOVE)) {
 
          // If a message exists in the queue, process it.
-         if (!IsDialogMessage(g_FiberInfo.hwnd, &msg)) {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+	     /* Determines whether a message is intended 
+		  * for the specified dialog box and, 
+		  * if it is, processes the message. 
+		  * hDlg [in] Type: HWND A handle to the dialog box.
+          * lpMsg [in] Type: LPMSG A pointer to an MSG structure 
+		  * that contains the message to be checked.
+		  */
+         if (!IsDialogMessage(g_FiberInfo.hwnd, &msg)) 
+		 {
+			 /* Translates virtual-key messages into character messages. 
+			  * The character messages are posted to the calling thread's message queue, 
+			  * to be read the next time the thread calls the GetMessage or PeekMessage function */
+             TranslateMessage(&msg);
+			 /* Dispatches a message to a window procedure. 
+			  * It is typically used to dispatch a message retrieved by the GetMessage function. */
+             DispatchMessage(&msg);
          }
+
          fQuit = (msg.message == WM_QUIT);
          
          if (fQuit)
@@ -221,6 +255,11 @@ int WINAPI _tWinMain(HINSTANCE hinstExe, HINSTANCE, PTSTR pszCmdLine, int) {
          switch (g_FiberInfo.bps) {
             case BPS_DONE:
                // No background processing to do; wait for a UI event.
+               /* Yields control to other threads when a thread has no other messages 
+			    * in its message queue. 
+				* The WaitMessage function suspends the thread 
+				* and does not return until a new message 
+				* is placed in the thread's message queue. */
                WaitMessage();
                break;
 

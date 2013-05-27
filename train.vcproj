@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -239,6 +239,22 @@
 					>
 					<File
 						RelativePath="src\include\datastructures\datastructures.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="oop"
+					>
+					<File
+						RelativePath="src\include\oop\set.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\oop\new.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\oop\object.h"
 						>
 					</File>
 				</Filter>
@@ -388,6 +404,26 @@
 				>
 				<File
 					RelativePath="src\datastructures\datastructures.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="oop"
+				>
+				<File
+					RelativePath="src\oop\set_test.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\set.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\new.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\object.c"
 					>
 				</File>
 			</Filter>
