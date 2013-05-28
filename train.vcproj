@@ -419,6 +419,10 @@
 					>
 				</File>
 				<File
+					RelativePath="src\oop\bag.c"
+					>
+				</File>
+				<File
 					RelativePath="src\oop\new.c"
 					>
 				</File>

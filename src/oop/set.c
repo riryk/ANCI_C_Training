@@ -82,5 +82,5 @@ int contains(const void* set, const void* element)
 
 int differ(const void* a, const void* b)
 {
-	return a != b;
+   return a != b;
 }

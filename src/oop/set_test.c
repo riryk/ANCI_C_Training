@@ -10,6 +10,10 @@ void set_test()
    void* b = add(s, new(Object));
    void* c = new(Object);
    
+   void* s1 = new(Set);
+   void* a1 = add(s1, new(Object));
+   void* b1 = add(s1, new(Object));
+
    if (contains(s, a) && contains(s, b))
 	   printf("ok");
 
