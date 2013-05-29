@@ -6,12 +6,15 @@
 void set_test()
 {
    void* s = new(Set);
-   void* a = add(s, new(Object));
-   void* b = add(s, new(Object));
+   void* obj1 = new(Object);
+   void* obj2 = new(Object);
+   void* a = add(s, obj1);
+   void* a1 = add(s, obj1);
+   void* b = add(s, obj2);
    void* c = new(Object);
    
    void* s1 = new(Set);
-   void* a1 = add(s1, new(Object));
+   void* a2 = add(s1, new(Object));
    void* b1 = add(s1, new(Object));
 
    if (contains(s, a) && contains(s, b))

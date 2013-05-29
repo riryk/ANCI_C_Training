@@ -3,9 +3,22 @@
 #include "new.h"
 #include "object.h"
 
+struct Type
+{
+	size_t size;        /* size of an object */
+	void (*dtor)(void*) /* destructor */
+}
+
+struct String
+{
+	char* text;           /* dynamic string */
+    const void* destroy;  /* locate destructor */
+}
+
 struct Set
 {
-    unsigned count;
+    unsigned    count;
+	const void* destroy; /* locate destructor */
 };
 
 struct Object
@@ -66,6 +79,11 @@ void* find(const void* set, const void* element)
 int contains(const void* set, const void* element)
 {
     return find(set, element) != 0;
+}
+
+int differ(const void* a, const void* b)
+{
+   return a != b;
 }
 
 void* drop(void* set, const void* element)
