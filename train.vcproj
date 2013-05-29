@@ -430,6 +430,10 @@
 					RelativePath="src\oop\object.c"
 					>
 				</File>
+				<File
+					RelativePath="src\oop\class.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 	</Files>

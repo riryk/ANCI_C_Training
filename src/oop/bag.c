@@ -7,18 +7,18 @@ struct Type
 {
 	size_t size;        /* size of an object */
 	void (*dtor)(void*) /* destructor */
-}
+};
 
 struct String
 {
-	char* text;           /* dynamic string */
-    const void* destroy;  /* locate destructor */
-}
+	const void* class;
+	char*       text;           /* dynamic string */
+};
 
 struct Set
 {
+	const void* class;
     unsigned    count;
-	const void* destroy; /* locate destructor */
 };
 
 struct Object
