@@ -9,11 +9,17 @@
 
 const void* Set;
 
-void* add(void* set, const void* element);
-void* find(const void* set, const void* element);
-void* drop(void* set, const void* element);
-int contains(const void* set, const void* element);
+void* new_set(const void* type);
+void delete_set(void* item);
+void* add_set(void* set, const void* element);
+void* find_set(const void* set, const void* element);
+void* drop_set(void* set, const void* element);
+int contains_set(const void* set, const void* element);
+int differ_set(const void* a, const void* b);
 
 void set_test();
 
 #endif
+
+
+

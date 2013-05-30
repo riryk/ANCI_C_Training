@@ -33,7 +33,7 @@ static const size_t ObjectSize = sizeof(struct Object);
 const void* Set = &SetSize;
 const void* Object = &ObjectSize;
 
-void* new(const void* type)
+void* new_bag(const void* type)
 {
    const size_t size = *(const size_t*)type;
    void* p = calloc(1, size);
@@ -42,12 +42,12 @@ void* new(const void* type)
    return p;
 }
 
-void delete(void* item)
+void delete_bag(void* item)
 {
    free(item);
 }
 
-void* add(void* set, const void* element)
+void* add_bag(void* set, const void* element)
 {
 	struct Set* setLocal = set;
     struct Object* elemLocal = (void*)element;
@@ -66,7 +66,7 @@ void* add(void* set, const void* element)
 	return element;
 }
 
-void* find(const void* set, const void* element)
+void* find_bag(const void* set, const void* element)
 {
     struct Object* elemLocal = (void*)element;
 
@@ -76,20 +76,20 @@ void* find(const void* set, const void* element)
 	return elemLocal->in == set ? (void*)element : 0;
 }
 
-int contains(const void* set, const void* element)
+int contains_bag(const void* set, const void* element)
 {
-    return find(set, element) != 0;
+    return find_bag(set, element) != 0;
 }
 
-int differ(const void* a, const void* b)
+int differ_bag(const void* a, const void* b)
 {
    return a != b;
 }
 
-void* drop(void* set, const void* element)
+void* drop_bag(void* set, const void* element)
 {
 	struct Set* setLocal = set;
-	struct Object* elemLocal = find(set, element);
+	struct Object* elemLocal = find_bag(set, element);
 
 	if (elemLocal)
 	{
@@ -101,9 +101,14 @@ void* drop(void* set, const void* element)
 	return elemLocal;
 }
 
-unsigned count(const void* set)
+unsigned count_bag(const void* set)
 {
     struct Set* setLocal = set;
 	assert(setLocal);
 	return setLocal->count;
+}
+
+void* clone_bag(const void* self)
+{
+	return self;
 }

@@ -1,6 +1,4 @@
 
-/*
-
 #include "set.h"
 #include "new.h"
 #include "object.h"
@@ -11,7 +9,7 @@
 
 static int heap[MANY];
 
-void* new(const void* type)
+void* new_set(const void* type)
 {
    int* p;
 
@@ -29,7 +27,7 @@ void* new(const void* type)
    return p;
 }
 
-void delete(void* item)
+void delete_set(void* item)
 {
    int* p_item = item;
    if (item)
@@ -39,7 +37,7 @@ void delete(void* item)
    }
 }
 
-void* add(void* set, const void* element)
+void* add_set(void* set, const void* element)
 {
    int* int_set = set;
    int* int_elem = element;
@@ -56,7 +54,7 @@ void* add(void* set, const void* element)
    return (void*)int_elem;
 }
 
-void* find(const void* set, const void* element)
+void* find_set(const void* set, const void* element)
 {
     const int* int_set = set;
 	const int* int_elem = element;
@@ -69,21 +67,20 @@ void* find(const void* set, const void* element)
 	return *int_elem == int_set - heap ? element : 0;
 }
 
-void* drop(void* set, const void* element)
+void* drop_set(void* set, const void* element)
 {
-   int* elem = find(set, element);
+   int* elem = find_set(set, element);
    if (elem)
 	   *elem = MANY;
    return elem;
 }
 
-int contains(const void* set, const void* element)
+int contains_set(const void* set, const void* element)
 {
-   return find(set, element) != 0;
+   return find_set(set, element) != 0;
 }
 
-int differ(const void* a, const void* b)
+int differ_set(const void* a, const void* b)
 {
    return a != b;
 }
-*/

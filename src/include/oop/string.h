@@ -9,5 +9,10 @@
 
 const void* String;
 
+struct String
+{
+	const void*  class;
+	char*        text;
+};
 
 #endif

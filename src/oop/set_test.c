@@ -5,30 +5,30 @@
 
 void set_test()
 {
-   void* s = new(Set);
-   void* obj1 = new(Object);
-   void* obj2 = new(Object);
-   void* a = add(s, obj1);
-   void* a1 = add(s, obj1);
-   void* b = add(s, obj2);
-   void* c = new(Object);
+   void* s = new_set(Set);
+   void* obj1 = new_set(Object);
+   void* obj2 = new_set(Object);
+   void* a = add_set(s, obj1);
+   void* a1 = add_set(s, obj1);
+   void* b = add_set(s, obj2);
+   void* c = new_set(Object);
    
-   void* s1 = new(Set);
-   void* a2 = add(s1, new(Object));
-   void* b1 = add(s1, new(Object));
+   void* s1 = new_set(Set);
+   void* a2 = add_set(s1, new_set(Object));
+   void* b1 = add_set(s1, new_set(Object));
 
-   if (contains(s, a) && contains(s, b))
+   if (contains_set(s, a) && contains_set(s, b))
 	   printf("ok");
 
-   if (contains(s, c))
+   if (contains_set(s, c))
        printf("contains?");
 
-   if (differ(a, add(s, a)))
+   if (differ_set(a, add_set(s, a)))
        printf("differ?");
 
-   if (contains(s, drop(s, a)))
+   if (contains_set(s, drop_set(s, a)))
        printf("differ?");
 
-   delete(drop(s, b));
-   delete(drop(s, c));
+   delete_set(drop_set(s, b));
+   delete_set(drop_set(s, c));
 }

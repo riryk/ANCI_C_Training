@@ -4,9 +4,10 @@
 *       of base operations for strings and char arrays
 *
 *******************************************************************************/
-
+#include <wchar.h>
 #include <stdio.h>
 #include <windows.h>
+
 
 /* Those flags are used to determine whether pointer is inside
  * or outside a word.
