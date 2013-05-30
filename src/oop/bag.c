@@ -6,7 +6,7 @@
 struct Type
 {
 	size_t size;        /* size of an object */
-	void (*dtor)(void*) /* destructor */
+	void (*dtor)(void*); /* destructor */
 };
 
 struct String

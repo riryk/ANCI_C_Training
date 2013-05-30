@@ -5,7 +5,9 @@
 #ifndef NEW_H
 #define NEW_H
 
-void* new(const void* type);
+void* new(const void* type,..);
 void delete(void* item);
+void* clone(const void* self);
+int differ();
 
 #endif

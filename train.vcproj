@@ -257,6 +257,14 @@
 						RelativePath="src\include\oop\object.h"
 						>
 					</File>
+					<File
+						RelativePath="src\include\oop\class.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\oop\string.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -374,6 +382,10 @@
 					RelativePath="src\main\problem9.c"
 					>
 				</File>
+				<File
+					RelativePath="src\main\problem21.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="str"
@@ -432,6 +444,10 @@
 				</File>
 				<File
 					RelativePath="src\oop\class.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\string.c"
 					>
 				</File>
 			</Filter>
