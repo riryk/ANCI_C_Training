@@ -10,7 +10,7 @@ void* new(const void* _class, ...)
 	assert(p);
 
     *(const struct Class**)p = class;
-
+   
 	if (class->ctor)
 	{
 		va_list ap;

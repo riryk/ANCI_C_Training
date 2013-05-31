@@ -26,6 +26,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "timedmsgbox", "timedmsgbox.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "counter", "counter.vcproj", "{1D2E855D-F7E6-49FF-8BE4-CB4214D5AB84}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sysinfo", "sysinfo.vcproj", "{6B017571-2105-473A-B987-65800858BE91}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -84,6 +86,10 @@ Global
 		{1D2E855D-F7E6-49FF-8BE4-CB4214D5AB84}.Debug|Win32.Build.0 = Debug|Win32
 		{1D2E855D-F7E6-49FF-8BE4-CB4214D5AB84}.Release|Win32.ActiveCfg = Release|Win32
 		{1D2E855D-F7E6-49FF-8BE4-CB4214D5AB84}.Release|Win32.Build.0 = Release|Win32
+		{6B017571-2105-473A-B987-65800858BE91}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6B017571-2105-473A-B987-65800858BE91}.Debug|Win32.Build.0 = Debug|Win32
+		{6B017571-2105-473A-B987-65800858BE91}.Release|Win32.ActiveCfg = Release|Win32
+		{6B017571-2105-473A-B987-65800858BE91}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

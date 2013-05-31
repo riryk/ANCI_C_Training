@@ -1,7 +1,18 @@
 
 #include "string.h"
 #include "new.h"
+#include "class.h"
 
+static const struct Class _String = 
+{
+	sizeof(struct String),
+    String_ctor,
+    String_dtor,
+    String_clone,
+    String_differ
+};
+
+const void* String = &_String;
 
 static void* String_ctor(const void* self, va_list* app)
 {
@@ -39,6 +50,11 @@ static int String_differ(const void* self, const void* b)
 
     if (selfCopy == bCopy)
         return 0;
+
+	if (!bCopy || bCopy->class != String)
+		return 1;
+
+	return strcmp(selfCopy->text, bCopy->text);
 }
 
 void test_string()
