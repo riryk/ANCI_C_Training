@@ -265,6 +265,10 @@
 						RelativePath="src\include\oop\string.h"
 						>
 					</File>
+					<File
+						RelativePath="src\include\oop\string_ring.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -386,6 +390,10 @@
 					RelativePath="src\main\problem21.c"
 					>
 				</File>
+				<File
+					RelativePath="src\main\problem22.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="str"
@@ -448,6 +456,10 @@
 				</File>
 				<File
 					RelativePath="src\oop\string.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\string_ring.c"
 					>
 				</File>
 			</Filter>
