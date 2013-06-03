@@ -4,16 +4,52 @@
 #include "class.h"
 
 static enum tokens token; /* current input symbol */
+static double number;     /* if NUMBER: numeric value */
 // static jmp_buf onError;
+
+void product()
+{
+
+}
 
 int sum()
 {
+	product();
+   
+    for (;;)
+	{
+		case '+':
+		case '-':
+            scan(0);
+			product();
+			continue;
+	}
+
 	return 0;
 }
 
-int scan(char* buffer)
+static enum tokens scan(char* buffer)
 {
-	return 0;
+	static const char* bbp;
+
+	if (buffer)
+        bbp = buffer;
+
+	while (isspace(*bbp))
+		++bbp;
+
+	if (isdigit(*bbp) || *bbp == '.')
+	{
+        errno = 0; 
+		token = NUMBER;
+        number = strtod(bbp, (char**)&bbp);
+		if (errno == ERANGE)
+			error("bad value: %s", strerror(errno));
+	}
+	else
+		token = *bbp ? *bbp++ : 0;
+
+	return token;
 }
 
 int main_process()
