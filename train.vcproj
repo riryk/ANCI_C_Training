@@ -269,6 +269,10 @@
 						RelativePath="src\include\oop\string_ring.h"
 						>
 					</File>
+					<File
+						RelativePath="src\include\oop\arithmetic_operations.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -462,6 +466,12 @@
 					RelativePath="src\oop\string_ring.c"
 					>
 				</File>
+				
+				<File
+					RelativePath="src\oop\arithmetic_operations.c"
+					>
+				</File>
+				
 			</Filter>
 		</Filter>
 	</Files>

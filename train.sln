@@ -28,6 +28,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "counter", "counter.vcproj",
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "sysinfo", "sysinfo.vcproj", "{6B017571-2105-473A-B987-65800858BE91}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VMStat", "VMStat.vcproj", "{140EFD6F-D0DA-4056-BEAE-0D818AD9D0A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -90,6 +92,10 @@ Global
 		{6B017571-2105-473A-B987-65800858BE91}.Debug|Win32.Build.0 = Debug|Win32
 		{6B017571-2105-473A-B987-65800858BE91}.Release|Win32.ActiveCfg = Release|Win32
 		{6B017571-2105-473A-B987-65800858BE91}.Release|Win32.Build.0 = Release|Win32
+		{140EFD6F-D0DA-4056-BEAE-0D818AD9D0A8}.Debug|Win32.ActiveCfg = Debug|Win32
+		{140EFD6F-D0DA-4056-BEAE-0D818AD9D0A8}.Debug|Win32.Build.0 = Debug|Win32
+		{140EFD6F-D0DA-4056-BEAE-0D818AD9D0A8}.Release|Win32.ActiveCfg = Release|Win32
+		{140EFD6F-D0DA-4056-BEAE-0D818AD9D0A8}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
