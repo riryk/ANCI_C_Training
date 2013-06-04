@@ -9,14 +9,31 @@
 enum tokens
 {
 	NUMBER,
-	START,
-	END
+	ADD,
+	SUB,
+	MINUS,
+	VALUE
 };
 
-void product();
+struct ScanNode
+{
+	enum tokens token;
+    struct ScanNode* left;
+	struct ScanNode* right;
+};
+
+struct Type
+{
+	void* (*anew)(va_list ap);
+	double (*exec)(const void* tree);
+	void (*adelete)(void* tree);
+}
+
+void* product();
 int getchar(char* buffer);
 enum tokens scan(char* buffer);
 void aprocess(void* e);
 void adelete(void* e);
+void* factor();
 int sum();
 void error(const char* fmt,...);

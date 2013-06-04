@@ -7,25 +7,73 @@ static enum tokens token; /* current input symbol */
 static double number;     /* if NUMBER: numeric value */
 // static jmp_buf onError;
 
-void product()
+void* product()
 {
 
 }
 
+void* anew(const void* type,...)
+{
+	va_list ap;
+	void* result;
+
+	assert(type && ((struct Type*)type)->anew);
+
+	va_start(ap, type);
+
+	va_end(ap);
+}
+
 int sum()
 {
-	product();
+	void* result = product();
+	const void* type;
    
     for (;;)
 	{
+		switch (token)
+		{
 		case '+':
+			type = ADD;
+			break;
 		case '-':
-            scan(0);
-			product();
-			continue;
+			type = SUB;
+            break;
+		default:
+			return result;
+		}
+		scan(0);
+        result = new(type, result, product());
 	}
 
 	return 0;
+}
+
+static void* factor()
+{
+	void* result;
+
+	switch (token)
+	{
+	case '+':
+		scan(0);
+		return factor();
+	case '-':
+		scan(0);
+		return new (MINUS, factor());
+	default:
+		error("bad factor: '%c' 0x%x", token, token);
+	case NUMBER:
+        result = new(VALUE, number);
+		break;
+	case '(':
+		scan(0);
+		result = sum();
+		if (token != ')')
+			error("expecting )");
+	}
+	scan(0);
+	return result;
 }
 
 static enum tokens scan(char* buffer)
