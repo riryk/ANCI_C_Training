@@ -24,10 +24,24 @@ struct ScanNode
 
 struct Type
 {
+	char* name;
 	void* (*anew)(va_list ap);
 	double (*exec)(const void* tree);
 	void (*adelete)(void* tree);
-}
+};
+
+struct Bin
+{
+    const void* type;
+	void* left;
+	void* right;
+};
+
+struct Val
+{
+    const void* type;
+	double value;
+};
 
 void* product();
 int getchar(char* buffer);

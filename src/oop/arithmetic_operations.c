@@ -7,9 +7,52 @@ static enum tokens token; /* current input symbol */
 static double number;     /* if NUMBER: numeric value */
 // static jmp_buf onError;
 
-void* product()
-{
+static struct Type _Add = { "+", Bin_ctor, binEmit, Bin_free };
+static struct Type _Sub = { "-", Bin_ctor, binEmit, Bin_free };
+static struct Type _Value = { "", Val_ctor, Val_emit, free };
 
+const void* Add = &_Add;
+const void* Sub = &_Sub;
+const void* Value = &_Value;
+
+static void* Val_ctor(va_list ap)
+{
+    struct Val* node = malloc(sizeof(struct Val));
+
+	assert(node);
+	node->value = va_arg(ap, double);
+	return node;
+}
+
+static void Val_emit(const void* tree)
+{
+	printf(" %g", ((struct Val*)tree)->value);
+}
+
+void* product()
+{ }
+
+static void exec(const void* tree)
+{
+    assert(tree 
+	   && *(struct Type**)tree
+	   && (*(struct Type**)tree)->exec);
+
+	(*(struct Type**)tree)->exec(tree);
+}
+
+static void binEmit(const void* tree)
+{
+	exec(((struct Bin*)tree)->left);
+	exec(((struct Bin*)tree)->right);
+	printf(" %s", (*(struct Type**)tree)->name);
+}
+
+void process(const void* tree)
+{
+	putchar('\t');
+	exec(tree);
+	putchar('\n');
 }
 
 void* anew(const void* type,...)
@@ -21,7 +64,38 @@ void* anew(const void* type,...)
 
 	va_start(ap, type);
 
+	result = ((struct Type*)type)->anew(ap);
+	*(const struct Type**)result = type;
+
 	va_end(ap);
+	return result;
+}
+
+static void* Bin_ctor()
+{
+	struct Bin* node = malloc(sizeof(struct Bin));
+
+	assert(node);
+	node->left = va_arg(ap, void*);
+	node->right = va_arg(ap, void*);
+	return node;
+}
+
+static void Bin_delete(void* tree)
+{
+    assert(tree 
+	   && *(struct Type**)tree
+	   && (*(struct Type**)tree)->adelete);
+
+    (*(struct Type**)tree)->adelete(tree);
+}                
+
+static void Bin_free(void* tree)
+{
+	Bin_delete(((struct Bin*)tree)->left);  
+	Bin_delete(((struct Bin*)tree)->right); 
+
+	free(tree);
 }
 
 int sum()
