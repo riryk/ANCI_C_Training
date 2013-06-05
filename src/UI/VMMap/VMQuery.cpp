@@ -108,6 +108,9 @@ BOOL VMQuery(HANDLE hProcess, LPCVOID pvAddress, PVMQUERY pVMQ) {
 
    // Get the MEMORY_BASIC_INFORMATION for the passed address.
    MEMORY_BASIC_INFORMATION mbi;
+   /* Retrieves information about a range of pages 
+    * within the virtual address space of a specified process. 
+    */
    BOOL bOk = (VirtualQueryEx(hProcess, pvAddress, &mbi, sizeof(mbi)) 
       == sizeof(mbi));
 

@@ -194,6 +194,8 @@ void Refresh(HWND hWndLB, DWORD dwProcessId, BOOL bExpandRegions) {
    ListBox_SetHorizontalExtent(hWndLB, 300 * LOWORD(GetDialogBaseUnits()));
 
    // Is the process still running?
+   /* Opens an existing local process object.
+    *  */
    HANDLE hProcess = OpenProcess(PROCESS_QUERY_INFORMATION, 
       FALSE, dwProcessId);
 
