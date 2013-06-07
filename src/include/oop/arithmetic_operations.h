@@ -51,3 +51,8 @@ void adelete(void* e);
 void* factor();
 int sum();
 void error(const char* fmt,...);
+void* Bin_ctor();
+void binEmit(const void* tree);
+void Bin_free(void* tree);
+void* Val_ctor(va_list ap);
+void Val_emit(const void* tree);

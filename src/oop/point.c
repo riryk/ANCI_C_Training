@@ -1,6 +1,7 @@
 
 #include "point.h"
 #include "new.h"
+#include "class.h"
 
 static const struct Class _Point = 
 {
@@ -9,7 +10,7 @@ static const struct Class _Point =
 	0
 };
 
-static const struct Class _Circle = 
+static const struct Class _Circle =
 {
     sizeof(struct Circle),
 	Circle_ctor,
@@ -58,8 +59,8 @@ void Point_move(void* _self, int dx, int dy)
 void point_test()
 {
 	void* p = new(Point, 1, 2);
-	draw(p);
-	move(p, 10, 20);
-	draw(p);
+	Point_draw(p);
+	Point_move(p, 10, 20);
+	Point_draw(p);
 	delete(p);
 }

@@ -71,7 +71,7 @@ void* anew(const void* type,...)
 	return result;
 }
 
-static void* Bin_ctor()
+static void* Bin_ctor(va_list ap)
 {
 	struct Bin* node = malloc(sizeof(struct Bin));
 
