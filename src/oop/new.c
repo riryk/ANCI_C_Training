@@ -1,6 +1,7 @@
 
 #include "new.h"
 #include "class.h"
+#include "object.h"
 
 void* new(const void* _class, ...)
 {

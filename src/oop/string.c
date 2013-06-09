@@ -1,7 +1,7 @@
 
 #include "string.h"
 #include "new.h"
-#include "class.h"
+#include "object.h"
 
 static const struct Class _String = 
 {

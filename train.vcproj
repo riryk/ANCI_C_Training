@@ -277,6 +277,10 @@
 						RelativePath="src\include\oop\point.h"
 						>
 					</File>
+					<File
+						RelativePath="src\include\oop\point_class.h"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -486,7 +490,10 @@
 					RelativePath="src\oop\point.c"
 					>
 				</File>
-				
+				<File
+					RelativePath="src\oop\point_class.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 	</Files>

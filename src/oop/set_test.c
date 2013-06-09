@@ -1,11 +1,11 @@
 
-#include "new.h"
+/*#include "new.h"
 #include "set.h"
-#include "object.h"
+#include "object.h"*/
 
 void set_test()
 {
-   void* s = new_set(Set);
+   /*void* s = new_set(Set);
    void* obj1 = new_set(Object);
    void* obj2 = new_set(Object);
    void* a = add_set(s, obj1);
@@ -30,5 +30,5 @@ void set_test()
        printf("differ?");
 
    delete_set(drop_set(s, b));
-   delete_set(drop_set(s, c));
+   delete_set(drop_set(s, c));*/
 }

@@ -21,7 +21,7 @@ struct Set
     unsigned    count;
 };
 
-struct Object
+struct OObject
 {
 	unsigned count;
 	struct Set* in;
@@ -31,7 +31,7 @@ static const size_t SetSize = sizeof(struct Set);
 static const size_t ObjectSize = sizeof(struct Object);
 
 const void* Set = &SetSize;
-const void* Object = &ObjectSize;
+const void* OObject = &ObjectSize;
 
 void* new_bag(const void* type)
 {
@@ -50,7 +50,7 @@ void delete_bag(void* item)
 void* add_bag(void* set, const void* element)
 {
 	struct Set* setLocal = set;
-    struct Object* elemLocal = (void*)element;
+    struct OObject* elemLocal = (void*)element;
 
     assert(setLocal);
 	assert(elemLocal);
@@ -68,7 +68,7 @@ void* add_bag(void* set, const void* element)
 
 void* find_bag(const void* set, const void* element)
 {
-    struct Object* elemLocal = (void*)element;
+    struct OObject* elemLocal = (void*)element;
 
 	assert(set);
 	assert(element);
@@ -89,7 +89,7 @@ int differ_bag(const void* a, const void* b)
 void* drop_bag(void* set, const void* element)
 {
 	struct Set* setLocal = set;
-	struct Object* elemLocal = find_bag(set, element);
+	struct OObject* elemLocal = find_bag(set, element);
 
 	if (elemLocal)
 	{
