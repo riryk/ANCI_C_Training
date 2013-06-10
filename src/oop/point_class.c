@@ -97,3 +97,8 @@ static void CCircle_draw(const void* _self)
 	printf("circle at %d,%d rad %d\n", x(self), y(self), self->rad);
 }
 
+void point_class_test()
+{
+    initCircle();
+}
+

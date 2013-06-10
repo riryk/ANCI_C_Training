@@ -22,6 +22,8 @@ void* PPointClass_ctor(void* self, va_list* app);
 void draw(const void* self);
 void move(void* point, int dx, int dy);
 
+void point_class_test();
+
 const void* PPointClass;
 
 #endif

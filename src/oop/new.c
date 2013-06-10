@@ -3,7 +3,7 @@
 #include "class.h"
 #include "object.h"
 
-void* new(const void* _class, ...)
+void* nnew(const void* _class, ...)
 {
     const struct Class* class = _class;
 	void* p = calloc(1, class->size);
@@ -24,7 +24,7 @@ void* new(const void* _class, ...)
 	return p;
 } 
 
-void delete(void* self)
+void ddelete(void* self)
 {
 	const struct Class** cp = self;
 

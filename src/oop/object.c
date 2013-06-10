@@ -84,7 +84,7 @@ void* new(const void* _class, ...)
 	object->class = class;
 
 	va_start(ap, _class);
-	object = ctor(object, &ap);
+	object = Object_ctor(object, &ap);
 	va_end(ap);
 
 	return object;
