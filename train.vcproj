@@ -414,6 +414,10 @@
 					RelativePath="src\main\problem24.c"
 					>
 				</File>
+				<File
+					RelativePath="src\main\problem25.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="str"

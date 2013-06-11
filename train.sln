@@ -32,6 +32,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VMStat", "VMStat.vcproj", "
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VMMap", "VMMap.vcproj", "{069D2040-3CED-41B0-A368-F455327A7070}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "VMAlloc", "VMAlloc.vcproj", "{B730A7E5-0A1E-4EA5-8293-111AB43047BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -102,6 +104,10 @@ Global
 		{069D2040-3CED-41B0-A368-F455327A7070}.Debug|Win32.Build.0 = Debug|Win32
 		{069D2040-3CED-41B0-A368-F455327A7070}.Release|Win32.ActiveCfg = Release|Win32
 		{069D2040-3CED-41B0-A368-F455327A7070}.Release|Win32.Build.0 = Release|Win32
+		{B730A7E5-0A1E-4EA5-8293-111AB43047BB}.Debug|Win32.ActiveCfg = Debug|Win32
+		{B730A7E5-0A1E-4EA5-8293-111AB43047BB}.Debug|Win32.Build.0 = Debug|Win32
+		{B730A7E5-0A1E-4EA5-8293-111AB43047BB}.Release|Win32.ActiveCfg = Release|Win32
+		{B730A7E5-0A1E-4EA5-8293-111AB43047BB}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

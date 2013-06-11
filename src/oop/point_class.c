@@ -88,7 +88,9 @@ static void* CCircle_ctor(void* _self, va_list* app)
 
 static void* PPointClass_ctor(void* self, va_list* app)
 {
-	return "aa";
+	struct PPointClass* pself = super_ctor(PPointClass, self, app);
+
+	return pself;
 }
 
 static void CCircle_draw(const void* _self)
