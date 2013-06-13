@@ -245,6 +245,26 @@
 				<Filter
 					Name="oop"
 					>
+					<Filter
+					    Name="observer"
+					    >
+					    <File
+						    RelativePath="src\include\oop\observer\ECGPkh.h"
+						    >
+					    </File>
+						<File
+						    RelativePath="src\include\oop\observer\TMDQueue.h"
+						    >
+					    </File>
+						<File
+						    RelativePath="src\include\oop\observer\ECGModule.h"
+						    >
+					    </File>
+						<File
+						    RelativePath="src\include\oop\observer\HistogramDisplay.h"
+						    >
+					    </File>
+				    </Filter>
 					<File
 						RelativePath="src\include\oop\set.h"
 						>
