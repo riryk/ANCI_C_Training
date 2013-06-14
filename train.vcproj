@@ -264,6 +264,10 @@
 						    RelativePath="src\include\oop\observer\HistogramDisplay.h"
 						    >
 					    </File>
+						<File
+						    RelativePath="src\include\oop\observer\TestBuilder.h"
+						    >
+					    </File>
 				    </Filter>
 					<File
 						RelativePath="src\include\oop\set.h"
@@ -518,6 +522,26 @@
 					RelativePath="src\oop\point_class.c"
 					>
 				</File>
+				<Filter
+					Name="observer"
+					>
+				    <File
+					    RelativePath="src\oop\observer\TMDQueue.c"
+					>
+					</File>
+					<File
+					    RelativePath="src\oop\observer\ECGModule.c"
+					>
+				    </File>
+					<File
+					    RelativePath="src\oop\observer\HistogramDisplay.c"
+					>
+				    </File>
+					<File
+					    RelativePath="src\oop\observer\TestBuilder.c"
+					>
+				    </File>
+				</Filter>
 			</Filter>
 		</Filter>
 	</Files>
