@@ -330,118 +330,134 @@
 					RelativePath="src\main\main.c"
 					>
 				</File>
+			    <Filter
+				    Name="GCJ2012"
+				>	
 				<File
-					RelativePath="src\main\problem1.c"
+					RelativePath="src\main\GCJ2012\problem1.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem1.h"
+					RelativePath="src\main\GCJ2012\problem1.h"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem10.c"
+					RelativePath="src\main\GCJ2012\problem10.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem11.c"
+					RelativePath="src\main\GCJ2012\problem11.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem12.c"
+					RelativePath="src\main\GCJ2012\problem12.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem13.c"
+					RelativePath="src\main\GCJ2012\problem13.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem14.c"
+					RelativePath="src\main\GCJ2012\problem14.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem15.c"
+					RelativePath="src\main\GCJ2012\problem15.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem16.c"
+					RelativePath="src\main\GCJ2012\problem16.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem17.c"
+					RelativePath="src\main\GCJ2012\problem17.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem18.c"
+					RelativePath="src\main\GCJ2012\problem18.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem19.c"
+					RelativePath="src\main\GCJ2012\problem19.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem20.c"
+					RelativePath="src\main\GCJ2012\problem20.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem2.c"
+					RelativePath="src\main\GCJ2012\problem2.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem2.h"
+					RelativePath="src\main\GCJ2012\problem2.h"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem3.c"
+					RelativePath="src\main\GCJ2012\problem3.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem4.c"
+					RelativePath="src\main\GCJ2012\problem4.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem5.c"
+					RelativePath="src\main\GCJ2012\problem5.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem6.c"
+					RelativePath="src\main\GCJ2012\problem6.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem7.c"
+					RelativePath="src\main\GCJ2012\problem7.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem7.h"
+					RelativePath="src\main\GCJ2012\problem7.h"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem8.c"
+					RelativePath="src\main\GCJ2012\problem8.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem9.c"
+					RelativePath="src\main\GCJ2012\problem9.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem21.c"
+					RelativePath="src\main\GCJ2012\problem21.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem22.c"
+					RelativePath="src\main\GCJ2012\problem22.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem23.c"
+					RelativePath="src\main\GCJ2012\problem23.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem24.c"
+					RelativePath="src\main\GCJ2012\problem24.c"
 					>
 				</File>
 				<File
-					RelativePath="src\main\problem25.c"
+					RelativePath="src\main\GCJ2012\problem25.c"
 					>
 				</File>
+				</Filter>
+				<Filter
+				    Name="GCJ2013"
+				>	
+				<File
+					RelativePath="src\main\GCJ2013\round_2_1.c"
+					>
+				</File>
+				<File
+					RelativePath="src\main\GCJ2013\round_3_1.c"
+					>
+				</File>
+				</Filter>
 			</Filter>
 			<Filter
 				Name="str"
