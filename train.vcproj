@@ -268,6 +268,10 @@
 						    RelativePath="src\include\oop\observer\TestBuilder.h"
 						    >
 					    </File>
+						<File
+						    RelativePath="src\include\oop\observer\NotificationHandle.h"
+						    >
+					    </File>
 				    </Filter>
 					<File
 						RelativePath="src\include\oop\set.h"
