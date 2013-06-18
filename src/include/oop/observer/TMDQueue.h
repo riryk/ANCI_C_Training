@@ -6,6 +6,8 @@
 #include "ECGPkh.h"
 #include "TimeMarkedData.h"
 
+struct NotificationHandle;
+
 typedef struct TMDQueue TMDQueue;
 
 struct TMDQueue
@@ -13,6 +15,7 @@ struct TMDQueue
 	int head;
 	int size;
 	struct TimeMarkedData buffer[QUEUE_SIZE];
+    struct NotificationHandle* itsNotificationHandle;
 };
 
 void TMDQueue_Init(TMDQueue* const me);
@@ -22,6 +25,11 @@ int TMDQueue_getNextIndex(TMDQueue* const me, int index);
 void TMDQueue_insert(TMDQueue* const me, const struct TimeMarkedData tmd);
 boolean TMDQueue_isEmpty(TMDQueue* const me);
 struct TimeMarkedData TMDQueue_remove(TMDQueue* const me, int index);
+
+void TMDQueue_subscribe(TMDQueue* const me, const UpdateFuncPtr updateFuncAddr);
+void TMDQueue_unsubscribe(TMDQueue* const me, const UpdateFuncPtr updateFuncAddr);
+
+
 int TMDQueue_getBuffer(const TMDQueue* const me);
 TMDQueue* TMDQueue_Create(void);
 void TMDQueue_Destroy(TMDQueue* const me);

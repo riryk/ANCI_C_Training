@@ -73,10 +73,53 @@ static void initRelations(TestBuilder* const me)
    WaveformDisplay_Init(&(me->itsWaveFromDisplay));
 
    ECG_Module_setItsTMDQueue(&(me->itsECG_Module), &(me->itsTMDQueue));
-   HistogramDisplay_setItsTMDQueue(&(itsQRSDetector), &(me->itsTMDQueue));
-   
-   
-   ArrytmiaDetector_Init(&(me->itsArrytmiaDetector))
+   HistogramDisplay_setItsTMDQueue(&(me->itsQRSDetector), &(me->itsTMDQueue));
+   QRSDetector_setItsTMDQueue(&(me->itsQRSDetector), &(me->itsTMDQueue));
+   WaveformDisplay_setItsTMDQueue(&(me->itsWaveformDisplay), &(me->itsTMDQueue));
+   ArrytmiaDetector_setItsTMDQueue(&(me->itsArrytmiaDetector), &(me->itsTMDQueue));
+}
 
-   
+public static void cleanUpRelations(TestBuilder* const me)
+{
+   WaveformDisplay_Cleanup(&(me->itsWaveformDisplay));
+   TMDQueue_Cleanup(&(me->itsTMDQueue));
+   QRSDetector_Cleanup(&(me->itsQRSDetector));
+   HistogramDisplay_Cleanup(&(me->itsHistogramDisplay));
+   ECG_Module_Cleanup(&(me->itsECG_Module));
+   ArrytmiaDetector_Cleanup(&(me->itsArrytmiaDetector));
+}
+
+public void BuilderTest()
+{
+	TestBuilder* p_TestBuilder;
+
+	p_TestBuilder = TestBuilder_Create();
+
+    ECG_Module_acquireValue(&(p_TestBuilder->itsECG_Module));
+    ECG_Module_acquireValue(&(p_TestBuilder->itsECG_Module));
+    ECG_Module_acquireValue(&(p_TestBuilder->itsECG_Module));
+	ECG_Module_acquireValue(&(p_TestBuilder->itsECG_Module));
+    ECG_Module_acquireValue(&(p_TestBuilder->itsECG_Module));
+
+    HistogramDisplay_getValue(&(p_TestBuilder->itsHistoryDisplay));
+    HistogramDisplay_getValue(&(p_TestBuilder->itsHistoryDisplay));
+    HistogramDisplay_getValue(&(p_TestBuilder->itsHistoryDisplay));
+    HistogramDisplay_getValue(&(p_TestBuilder->itsHistoryDisplay));
+    HistogramDisplay_getValue(&(p_TestBuilder->itsHistoryDisplay));
+ 
+    QRSDetector_getDataSample(&(p_TestBuilder->itsQRSDetector));  
+    QRSDetector_getDataSample(&(p_TestBuilder->itsQRSDetector));  
+	QRSDetector_getDataSample(&(p_TestBuilder->itsQRSDetector));  
+
+	WaveformDisplay_getScalarValue(&(p_TestBuilder->itsWaveformDisplay));
+    WaveformDisplay_getScalarValue(&(p_TestBuilder->itsWaveformDisplay));
+    WaveformDisplay_getScalarValue(&(p_TestBuilder->itsWaveformDisplay));
+    WaveformDisplay_getScalarValue(&(p_TestBuilder->itsWaveformDisplay));
+    WaveformDisplay_getScalarValue(&(p_TestBuilder->itsWaveformDisplay));
+
+    ArrytmiaDetector_getDataSample(&(p_TestBuilder->itsArrythmiaDetector));
+    ArrytmiaDetector_getDataSample(&(p_TestBuilder->itsArrythmiaDetector));
+    ArrytmiaDetector_getDataSample(&(p_TestBuilder->itsArrythmiaDetector));
+    ArrytmiaDetector_getDataSample(&(p_TestBuilder->itsArrythmiaDetector));
+    ArrytmiaDetector_getDataSample(&(p_TestBuilder->itsArrythmiaDetector));
 }
