@@ -561,6 +561,10 @@
 					    RelativePath="src\oop\observer\TestBuilder.c"
 					>
 				    </File>
+					<File
+					    RelativePath="src\oop\observer\NotificationHandle.c"
+					>
+				    </File>
 				</Filter>
 			</Filter>
 		</Filter>

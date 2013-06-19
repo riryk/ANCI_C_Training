@@ -8,10 +8,19 @@ void HistogramDisplay_Init(HistogramDisplay* const me)
 {
    me->index = 0;
    me->itsTMDQueue = NULL;
+   {
+	   TMDQueue_subscribe(me->itsTMDQueue, HistogramDisplay_update);
+   }
+}
+
+void HistogramDisplay_update(HistogramDisplay* const me, const struct TimeMarkedData tmd)
+{
+	printf("Histogram -> TimeInterval: %d DataValue %d\n", tmd.timeInterval, tmd.dataValue);
 }
 
 void HistogramDisplay_Cleanup(HistogramDisplay* const me)
 {
+   TMDQueue_unsubscribe(me->itsTMDQueue, HistogramDisplay_update);
    cleanUpRelations(me);
 }
 
