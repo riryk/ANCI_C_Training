@@ -95,6 +95,9 @@ public:
       if (bOk) {
          // The "Lock Pages in Memory" privilege must be enabled
          EnablePrivilege(SE_LOCK_MEMORY_NAME, TRUE);
+		 /* Allocates physical memory pages to be mapped 
+		  * and unmapped within any Address Windowing Extensions (AWE) 
+		  * region of a specified process. */
          bOk = AllocateUserPhysicalPages(GetCurrentProcess(), 
             &m_ulPages, m_pulUserPfnArray);
          EnablePrivilege(SE_LOCK_MEMORY_NAME, FALSE);
