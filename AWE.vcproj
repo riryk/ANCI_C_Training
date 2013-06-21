@@ -332,6 +332,10 @@
 			>
 		</File>
 		<File
+			RelativePath="src\UI\AWE\Summation.cpp"
+			>
+		</File>
+		<File
 			RelativePath="src\UI\AWE\AWE.rc"
 			>
 		</File>

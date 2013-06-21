@@ -461,6 +461,10 @@
 					RelativePath="src\main\GCJ2013\round_3_1.c"
 					>
 				</File>
+				<File
+					RelativePath="src\main\GCJ2013\round_3_2.c"
+					>
+				</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -567,6 +571,44 @@
 				    </File>
 				</Filter>
 			</Filter>
+			
+			<Filter
+				Name="lib"
+				>
+				<Filter
+				    Name="unity"
+				    >
+				    <File
+					    RelativePath="src\lib\unity\unity.c"
+					>
+				    </File>
+					<File
+					    RelativePath="src\lib\unity\unity.h"
+					>
+				    </File>
+					<File
+					    RelativePath="src\lib\unity\unity_fixture.c"
+					>
+				    </File>
+					<File
+					    RelativePath="src\lib\unity\unity_fixture.h"
+					>
+				    </File>
+					<File
+					    RelativePath="src\lib\unity\unity_fixture_internals.h"
+					>
+				    </File>
+					<File
+					    RelativePath="src\lib\unity\unity_fixture_malloc_overrides.h"
+					>
+				    </File>
+					<File
+					    RelativePath="src\lib\unity\unity_internals.h"
+					>
+				    </File>
+			    </Filter>	
+			</Filter>
+			
 		</Filter>
 	</Files>
 	<Globals>
