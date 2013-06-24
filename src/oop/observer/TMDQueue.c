@@ -26,7 +26,7 @@ int TMDQueue_getNextIndex(TMDQueue* const me, int index)
 
 void TMDQueue_notify(TMDQueue* const me, const struct TimeMarkedData tmd)
 {
-   NotificationHandle* pNH;
+   struct NotificationHandle* pNH;
    pNH=me->itsNotificationHandle;
    while(pNH)
    {
@@ -50,13 +50,11 @@ boolean TMDQueue_isEmpty(TMDQueue* const me)
 
 struct TimeMarkedData TMDQueue_remove(TMDQueue* const me, int index)
 {
-   TimeMarkedData tmd;
+   struct TimeMarkedData tmd;
    tmd.timeInterval = -1;
    tmd.dataValue=-9999;
 
-   if (!TMDQueue_isEmpty(me) &&
-	   (index>=0) && (index < QUEUE_SIZE)
-	   && index<me->size))
+   if (!TMDQueue_isEmpty(me) && (index>=0) && (index < QUEUE_SIZE) && index<me->size)
    {
 	   tmd = me->buffer[index];
    }
@@ -159,8 +157,8 @@ static void initRelations(TMDQueue* const me)
    int iter = 0;
    while(iter<QUEUE_SIZE)
    {
-      TimeMarketData_Init(&((me->buffer)[iter]));
-      TimeMarketData__setItsTMDQueue(&((me->buffer)[iter]), me);
+      //TimeMarketData_Init(&((me->buffer)[iter]));
+      //TimeMarketData__setItsTMDQueue(&((me->buffer)[iter]), me);
 	  iter++;
    }
 }
@@ -170,7 +168,7 @@ static void cleanUpRelations(TMDQueue* const me)
 	int iter = 0;
 	while(iter<QUEUE_SIZE)
 	{
-        TimeMarketData_Cleanup(&((me->buffer)[iter]));
+        //TimeMarketData_Cleanup(&((me->buffer)[iter]));
 		iter++;
 	}
 }

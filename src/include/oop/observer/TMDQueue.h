@@ -4,9 +4,12 @@
 
 #include <stdio.h>
 #include "ECGPkh.h"
-#include "TimeMarkedData.h"
+//#include "TimeMarkedData.h"
+
+typedef void (*UpdateFuncPtr)();
 
 struct NotificationHandle;
+struct TimeMarkedData;
 
 typedef struct TMDQueue TMDQueue;
 
@@ -36,6 +39,6 @@ int TMDQueue_getBuffer(const TMDQueue* const me);
 TMDQueue* TMDQueue_Create(void);
 void TMDQueue_Destroy(TMDQueue* const me);
 
-struct NotificationHandle NotificationHandle_Create();
+
 
 #endif

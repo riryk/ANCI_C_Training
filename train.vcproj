@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -194,6 +194,26 @@
 			<Filter
 				Name="include"
 				>
+				<Filter
+				    Name="tests"
+				    >
+					<Filter
+				        Name="leddriver"
+				        >
+					    <File
+					        RelativePath="src\include\tests\leddriver\leddrivertest.h"
+					    >
+				        </File>
+				    </Filter>
+				    <File
+					    RelativePath="src\include\tests\sprintftest.h"
+					    >
+				    </File>
+				    <File
+					    RelativePath="src\include\tests\sprintftestrunner.h"
+					    >
+				    </File>
+			    </Filter>
 				<Filter
 					Name="memory"
 					>
@@ -307,6 +327,10 @@
 					</File>
 					<File
 						RelativePath="src\include\oop\point_class.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\oop\LedDriver.h"
 						>
 					</File>
 				</Filter>
@@ -546,6 +570,10 @@
 					RelativePath="src\oop\point_class.c"
 					>
 				</File>
+				<File
+					RelativePath="src\oop\LedDriver.c"
+					>
+				</File>
 				<Filter
 					Name="observer"
 					>
@@ -570,6 +598,31 @@
 					>
 				    </File>
 				</Filter>
+			</Filter>
+			
+			<Filter
+				Name="tests"
+				>
+				<Filter
+				    Name="leddriver"
+				    >
+					<File
+					    RelativePath="src\tests\leddriver\leddrivertest.c"
+					>
+				    </File>
+					<File
+					    RelativePath="src\tests\leddriver\leddrivertestrunner.c"
+					>
+				    </File>
+				</Filter>
+				<File
+					RelativePath="src\tests\sprintftest.c"
+					>
+				</File>
+				<File
+					RelativePath="src\tests\sprintftestrunner.c"
+					>
+				</File>
 			</Filter>
 			
 			<Filter
@@ -604,6 +657,10 @@
 				    </File>
 					<File
 					    RelativePath="src\lib\unity\unity_internals.h"
+					>
+				    </File>
+					<File
+					    RelativePath="src\lib\unity\stdint.h"
 					>
 				    </File>
 			    </Filter>	

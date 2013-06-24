@@ -928,7 +928,12 @@ void UnityAssertEqualString(const char* expected,
       UnityTestResultsFailBegin(lineNumber);
       UnityPrintExpectedAndActualStrings(expected, actual);
       UnityAddMsgIfSpecified(msg);
-      UNITY_FAIL_AND_BAIL;
+
+	  Unity.CurrentTestFailed  = 1; 
+	  UNITY_OUTPUT_CHAR('\n'); 
+	  longjmp(Unity.AbortFrame, 1);
+
+      //UNITY_FAIL_AND_BAIL;
     }
 }
 

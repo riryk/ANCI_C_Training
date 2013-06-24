@@ -18,12 +18,22 @@ struct NotificationHandle* NotificationHandle_getItsNotificationHandle(const Not
    return (struct NotificationHandle*)me->itsNotificationHandle;
 }
 
-void NotificationHandle_setItsNotificationHandle(const NotificationHandle* const me, struct NotificationHandle* p_NotificationHandle)
+void NotificationHandle_setItsNotificationHandle(NotificationHandle* me, struct NotificationHandle* p_NotificationHandle)
 {
    me->itsNotificationHandle = p_NotificationHandle;
 }
 
-NotificationHandle* NotificationHandle_Create(void)
+struct NotificationHandle* NotificationHandle_Create()
+{
+   struct NotificationHandle* me = (struct NotificationHandle*)malloc(sizeof(struct NotificationHandle));   
+   if (me != NULL)
+   {
+       NotificationHandle_Init(me);
+   }
+   return me;
+}
+
+/*struct NotificationHandle* NotificationHandle_Create()
 {
    NotificationHandle* me = (NotificationHandle*)malloc(sizeof(NotificationHandle));   
    if (me != NULL)
@@ -31,7 +41,7 @@ NotificationHandle* NotificationHandle_Create(void)
        NotificationHandle_Init(me);
    }
    return me;
-}
+}*/
 
 void NotificationHandle_Destroy(NotificationHandle* const me)
 {
