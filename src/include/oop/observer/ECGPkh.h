@@ -10,7 +10,12 @@ struct HistogramDisplay;
 struct QRSDetector;
 struct TMDQueue;
 struct TestBuilder;
-struct TimeMarkedData;
+struct TimeMarkedData
+{
+	int id;
+    int dataValue;
+    int timeInterval;
+};
 struct WaveformDisplay;
 
 typedef unsigned char boolean;

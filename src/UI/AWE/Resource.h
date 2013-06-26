@@ -10,6 +10,12 @@
 #define IDC_WINDOW1STORAGE              1008
 #define IDC_WINDOW1TEXT                 1009
 
+#define IDC_CALC                        1010
+#define IDC_SUMNUM                      1011
+#define IDC_ANSWER                      1012
+#define IDD_SUMMATION                   1013
+#define IDI_SUMMATION                   1014
+
 // Next default values for new objects
 // 
 #ifdef APSTUDIO_INVOKED

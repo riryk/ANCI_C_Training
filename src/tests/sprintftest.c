@@ -1,114 +1,40 @@
+#include "sprintftest.h"
 
-#include "set.h"
-#include "new.h"
-#include "object.h"
+TEST_GROUP(sprintf);
 
-struct Type
+static char output[5];
+static const char* expected;
+
+TEST_SETUP(sprintf)
 {
-	size_t size;        /* size of an object */
-	void (*dtor)(void*); /* destructor */
-};
-
-struct String
-{
-	const void* class;
-	char*       text;           /* dynamic string */
-};
-
-struct Set
-{
-	const void* class;
-    unsigned    count;
-};
-
-struct OObject
-{
-	unsigned count;
-	struct Set* in;
-};
-
-static const size_t SetSize = sizeof(struct Set);
-static const size_t ObjectSize = sizeof(struct Object);
-
-const void* Set = &SetSize;
-const void* OObject = &ObjectSize;
-
-void* new_bag(const void* type)
-{
-   const size_t size = *(const size_t*)type;
-   void* p = calloc(1, size);
-
-   assert(p);
-   return p;
+   memset(output, 0xaa, sizeof(output));
+   expected = "";
 }
 
-void delete_bag(void* item)
+TEST_TEAR_DOWN(sprintf)
 {
-   free(item);
 }
 
-void* add_bag(void* set, const void* element)
+static void expect(const char* s)
 {
-	struct Set* setLocal = set;
-    struct OObject* elemLocal = (void*)element;
-
-    assert(setLocal);
-	assert(elemLocal);
-
-	if (!elemLocal->in)
-        elemLocal->in = setLocal;
-	else
-		assert(elemLocal->in == setLocal);
-
-	++elemLocal->count;
-	++setLocal->count;
-
-	return element;
+   expected = s;
 }
 
-void* find_bag(const void* set, const void* element)
+static void given(int charsWritten)
 {
-    struct OObject* elemLocal = (void*)element;
-
-	assert(set);
-	assert(element);
-
-	return elemLocal->in == set ? (void*)element : 0;
+   TEST_ASSERT_EQUAL(strlen(expected), charsWritten);
+   TEST_ASSERT_EQUAL_STRING(expected, output);
+   TEST_ASSERT_BYTES_EQUAL(0xaa, output[strlen(expected) + 1]);
 }
 
-int contains_bag(const void* set, const void* element)
+TEST(sprintf, NoFormatOperations)
 {
-    return find_bag(set, element) != 0;
+    expect("hey");
+	given(sprintf(output, "hey"));
 }
 
-int differ_bag(const void* a, const void* b)
+TEST(sprintf, InsertString)
 {
-   return a != b;
-}
-
-void* drop_bag(void* set, const void* element)
-{
-	struct Set* setLocal = set;
-	struct OObject* elemLocal = find_bag(set, element);
-
-	if (elemLocal)
-	{
-		if (--elemLocal->count == 0)
-			elemLocal->in = 0;
-        --elemLocal->count;
-	}
-
-	return elemLocal;
-}
-
-unsigned count_bag(const void* set)
-{
-    struct Set* setLocal = set;
-	assert(setLocal);
-	return setLocal->count;
-}
-
-void* clone_bag(const void* self)
-{
-	return self;
+    expect("Hello World\n");
+	given(sprintf(output, "Hello %s\n", "World"));
 }

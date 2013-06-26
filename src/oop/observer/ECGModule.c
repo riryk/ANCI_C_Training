@@ -17,10 +17,10 @@ void ECG_Module_Cleanup(ECG_Module* const me)
 
 void ECG_Module_acquireValue(ECG_Module* const me)
 {
-   TimeMarkedData tmd;
+   struct TimeMarkedData tmd;
    tmd.dataValue=rand();
    tmd.timeInterval=++me->dataNum;
-   TMDQueue_insert(me->itsTMDQueue, tmd);
+   //TMDQueue_insert(me->itsTMDQueue, tmd);
 }
 
 void ECG_Module_setLeadPair(ECG_Module* const me, int l1, int l2)

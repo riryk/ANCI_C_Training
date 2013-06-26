@@ -3,6 +3,7 @@
 #include "TMDQueue.h"
 
 static void cleanUpRelations(HistogramDisplay* const me);
+void HistogramDisplay_update(HistogramDisplay* const me, const struct TimeMarkedData tmd);
 
 void HistogramDisplay_Init(HistogramDisplay* const me)
 {
@@ -26,7 +27,7 @@ void HistogramDisplay_Cleanup(HistogramDisplay* const me)
 
 void HistogramDisplay_getValue(HistogramDisplay* const me)
 {
-   TimeMarkedData tmd;
+   struct TimeMarkedData tmd;
    tmd=TMDQueue_remove(me->itsTMDQueue, me->index);
    me->index = TMDQueue_getNextIndex(me->itsTMDQueue, me->index);
 }
@@ -38,7 +39,7 @@ void HistogramDisplay_updateHistogram(HistogramDisplay* const me)
 
 struct TMDQueue* HistogramDisplay_getItsTMDQueue(HistogramDisplay* const me)
 {
-   return (struct TMDQueue)me->itsTMDQueue;
+   return (struct TMDQueue*)me->itsTMDQueue;
 }
 
 void HistogramDisplay_setItsTMDQueue(HistogramDisplay* const me, struct TMDQueue* p_TMDQueue)

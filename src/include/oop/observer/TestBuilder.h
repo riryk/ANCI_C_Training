@@ -4,12 +4,32 @@
 
 #include <stdio.h>
 #include "ECGPkh.h"
-#include "ArrythmiaDetector.h"
-#include "ECG_Module.h"
+//#include "ArrythmiaDetector.h"
+//#include "ECG_Module.h"
 #include "HistogramDisplay.h"
-#include "QRSDetector.h"
+//#include "QRSDetector.h"
 #include "TMDQueue.h"
-#include "WaveformDisplay.h"
+//#include "WaveformDisplay.h"
+
+struct ArrytmiaDetector
+{
+   int Id;
+};
+
+struct ECG_Module
+{
+   int Id;
+};
+
+struct QRSDetector
+{
+   int Id;
+};
+
+struct WaveformDisplay
+{
+   int Id;
+};
 
 typedef struct TestBuilder TestBuilder;
 
@@ -20,7 +40,7 @@ struct TestBuilder
 	struct HistogramDisplay itsHistogramDisplay;
 	struct QRSDetector itsQRSDetector;
 	struct TMDQueue itsTMDQueue;
-	struct WaveFromDisplay itsWaveFromDisplay;
+	struct WaveformDisplay itsWaveFromDisplay;
 };
 
 void TestBuilder_Init(TestBuilder* const me);
