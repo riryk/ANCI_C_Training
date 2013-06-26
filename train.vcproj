@@ -505,6 +505,10 @@
 					RelativePath="src\main\GCJ2013\round_3_2.c"
 					>
 				</File>
+				<File
+					RelativePath="src\main\GCJ2013\round_3_3.c"
+					>
+				</File>
 				</Filter>
 			</Filter>
 			<Filter
