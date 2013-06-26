@@ -38,6 +38,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MemReset", "MemReset.vcproj
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AWE", "AWE.vcproj", "{186E0916-E65F-41F5-B727-EDAD1F57EAE6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppInst", "AppInst.vcproj", "{6145435D-0530-4A20-B20C-37EA43F9B53E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -120,6 +122,10 @@ Global
 		{186E0916-E65F-41F5-B727-EDAD1F57EAE6}.Debug|Win32.Build.0 = Debug|Win32
 		{186E0916-E65F-41F5-B727-EDAD1F57EAE6}.Release|Win32.ActiveCfg = Release|Win32
 		{186E0916-E65F-41F5-B727-EDAD1F57EAE6}.Release|Win32.Build.0 = Release|Win32
+		{6145435D-0530-4A20-B20C-37EA43F9B53E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6145435D-0530-4A20-B20C-37EA43F9B53E}.Debug|Win32.Build.0 = Debug|Win32
+		{6145435D-0530-4A20-B20C-37EA43F9B53E}.Release|Win32.ActiveCfg = Release|Win32
+		{6145435D-0530-4A20-B20C-37EA43F9B53E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

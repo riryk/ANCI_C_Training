@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;src/include/network;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;src/include/network;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -219,6 +219,14 @@
 					>
 					<File
 						RelativePath="src\include\memory\memory.h"
+						>
+					</File>
+				</Filter>
+				<Filter
+					Name="network"
+					>
+					<File
+						RelativePath="src\include\network\winsocket.h"
 						>
 					</File>
 				</Filter>
@@ -348,6 +356,14 @@
 				>
 				<File
 					RelativePath="src\inout\inout.c"
+					>
+				</File>
+			</Filter>
+			<Filter
+				Name="network"
+				>
+				<File
+					RelativePath="src\network\winsocket.c"
 					>
 				</File>
 			</Filter>
