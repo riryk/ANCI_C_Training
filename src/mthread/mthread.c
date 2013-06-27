@@ -2568,3 +2568,19 @@ int TestFibers()
 
    return RTN_OK;
 }  
+
+void CreateMemoryMappedFiles()
+{
+	HANDLE hFile = CreateFile(TEXT("C:\\test.dat"),
+		GENERIC_READ | GENERIC_WRITE,
+		FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+		PAGE_READWRITE, 0, 100, NULL);
+
+	HANDLE hFileMap = CreateFileMapping(hFile, NULL, 
+		PAGE_READWRITE, 0, 100, NULL);
+
+	CloseHandle(hFileMap);
+    CloseHandle(hFile);
+
+	return 0;
+}
