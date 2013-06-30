@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual C++ Express 2008
+# Visual Studio 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "train", "train.vcproj", "{D51DACE6-5062-4DF6-84F4-3B59FFC90ED2}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "errorshow", "errorshow.vcproj", "{1F169C3B-A907-402D-B2EF-C0BB21E90AF9}"
@@ -39,6 +39,8 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AWE", "AWE.vcproj", "{186E0916-E65F-41F5-B727-EDAD1F57EAE6}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AppInst", "AppInst.vcproj", "{6145435D-0530-4A20-B20C-37EA43F9B53E}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trainclient", "trainclient.vcproj", "{4D94FCD2-EA98-4242-B382-90E197CAF322}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -126,6 +128,10 @@ Global
 		{6145435D-0530-4A20-B20C-37EA43F9B53E}.Debug|Win32.Build.0 = Debug|Win32
 		{6145435D-0530-4A20-B20C-37EA43F9B53E}.Release|Win32.ActiveCfg = Release|Win32
 		{6145435D-0530-4A20-B20C-37EA43F9B53E}.Release|Win32.Build.0 = Release|Win32
+		{4D94FCD2-EA98-4242-B382-90E197CAF322}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4D94FCD2-EA98-4242-B382-90E197CAF322}.Debug|Win32.Build.0 = Debug|Win32
+		{4D94FCD2-EA98-4242-B382-90E197CAF322}.Release|Win32.ActiveCfg = Release|Win32
+		{4D94FCD2-EA98-4242-B382-90E197CAF322}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

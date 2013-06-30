@@ -2584,3 +2584,79 @@ void CreateMemoryMappedFiles()
 
 	return 0;
 }
+
+void TestMapViewOfFile()
+{
+	// Open the file that we want to map.
+    HANDLE hFile = CreateFile(TEXT("C:\\test.dat"),
+		GENERIC_READ | GENERIC_WRITE, 0, NULL,
+		OPEN_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    // Create a file-mapping object for the file.
+    HANDLE hFileMapping = CreateFileMapping(hFile, NULL, PAGE_WRITECOPY, 0, 0, NULL);
+
+	/* Maps a view of a file mapping into the address space of a calling process.
+	 *
+	 * hFileMappingObject [in]
+     *   A handle to a file mapping object. 
+	 *   The CreateFileMapping and OpenFileMapping functions return this handle.
+	 * 
+	 * dwDesiredAccess [in]
+     *   The type of access to a file mapping object, 
+	 *   which determines the protection of the pages. 
+	 *   This parameter can be one of the following values.
+	 *
+     * FILE_MAP_COPY
+     *   A copy-on-write view of the file is mapped. 
+	 *   The file mapping object must have been created with 
+	 *   PAGE_READONLY, PAGE_READ_EXECUTE, PAGE_WRITECOPY, 
+	 *   PAGE_EXECUTE_WRITECOPY, PAGE_READWRITE, 
+	 *   or PAGE_EXECUTE_READWRITE protection.
+     *   When a process writes to a copy-on-write page, 
+	 *   the system copies the original page to a new page that is private to the process. 
+	 *   The new page is backed by the paging file. 
+	 *   The protection of the new page changes from copy-on-write to read/write.
+     *   When copy-on-write access is specified, 
+	 *   the system and process commit charge 
+	 *   taken is for the entire view 
+	 *   because the calling process can potentially 
+	 *   write to every page in the view, making all pages private. 
+	 *   The contents of the new page are never written back to the original file 
+	 *   and are lost when the view is unmapped.
+	 * 
+	 * dwFileOffsetHigh [in]
+     *   A high-order DWORD of the file offset where the view begins. 
+	 * 
+	 * dwFileOffsetLow [in]
+     *   A low-order DWORD of the file offset where the view is to begin. 
+	 *   The combination of the high and low offsets 
+	 *   must specify an offset within the file mapping. 
+	 *   They must also match the memory allocation granularity of the system. 
+	 *   That is, the offset must be a multiple of the allocation granularity. 
+	 *   To obtain the memory allocation granularity of the system, 
+	 *   use the GetSystemInfo function, which fills in the members of a SYSTEM_INFO structure.
+	 * 
+	 * dwNumberOfBytesToMap [in]
+     *   The number of bytes of a file mapping to map to the view. 
+	 *   All bytes must be within the maximum size specified by CreateFileMapping. 
+	 *   If this parameter is 0 (zero), 
+	 *   the mapping extends from the specified offset to the end of the file mapping. 
+	 */
+    PBYTE pbFile = (PBYTE)MapViewOfFile(hFileMapping, FILE_MAP_COPY, 0, 0, 0);
+    // Read a byte from the mapped view.
+	BYTE bSomeByte = pbFile[0];
+	// Write a byte to the mapped view
+	/* When writing for the first time, the system grabs a committed page 
+	 * from the paging file, copies the original contents of the page
+	 * (the copy) into the process' address space. The new page has 
+	 * an attribute of PAGE_READWRITE */
+    pbFile[0] = 0;
+	//Write another byte to the mapped view.
+    pbFile[1] = 0;
+	/* Because this byte is now in a PAGE_READWRITE page, the system
+	 * simply writes the byte to the page (backed by the paging file).
+	 */
+	UnmapViewOfFile(pbFile);
+	CloseHandle(hFileMapping);
+    CloseHandle(hFile);
+}
