@@ -685,3 +685,73 @@ DWORD GetCurrentSessionId()
 	}
 	return 0;
 }
+
+__int64 Count0s(void)
+{
+	SYSTEM_INFO sinf;
+    HANDLE hFile;
+    HANDLE hFileMapping;
+    DWORD dwFileSizeHigh;
+    __int64 dwFileSize;
+	__int64 dwFileOffset = 0, dwNumOf0s = 0;
+
+	GetSystemInfo(&sinf);
+	hFile = CreateFile(TEXT("C:\\HugeFile.Big"), GENERIC_READ, FILE_SHARE_READ,
+		NULL, OPEN_EXISTING, FILE_FLAG_SEQUENTIAL_SCAN, NULL);
+    
+    hFileMapping = CreateFileMapping(hFile, NULL, PAGE_READONLY, 0, 0, NULL);
+
+	/* GetFileSize function
+	 * Retrieves the size of the specified file, in bytes.
+     * It is recommended that you use GetFileSizeEx.
+	 * 
+	 * hFile [in]
+     *  A handle to the file.
+	 *
+     * lpFileSizeHigh [out, optional]
+     *  A pointer to the variable where 
+	 *  the high-order doubleword of the file size is returned. 
+	 *  This parameter can be NULL if the application 
+	 *  does not require the high-order doubleword.
+	 */
+    dwFileSize = GetFileSize(hFile, &dwFileSizeHigh);
+    dwFileSize += (((__int64)dwFileSizeHigh) << 32);
+
+	// We no longer need access to the file object's handle.
+	CloseHandle(hFile);
+
+	while (dwFileSize > 0)
+	{
+		PBYTE pbFile;
+        __int64 qwFileOffset = 0;
+		DWORD dwByte;
+
+        // Determine the number of bytes to be mapped in this view
+		DWORD dwBytesInBlock = sinf.dwAllocationGranularity;
+		if (dwFileSize < sinf.dwAllocationGranularity)
+            dwBytesInBlock = (DWORD)dwFileSize;
+
+        pbFile = (PBYTE)MapViewOfFile(hFileMapping, FILE_MAP_READ, 
+			(DWORD)(qwFileOffset >> 32),        //Starting byte
+            (DWORD)(qwFileOffset & 0xFFFFFFFF), //in file
+            dwBytesInBlock);                    //# of bytes to map
+
+		// Count the number of 0s in this block
+		for (dwByte = 0; dwByte < dwBytesInBlock; dwByte++)
+		{
+			if (pbFile[dwByte] == 0)
+                dwNumOf0s++;
+		}
+
+		// Unmap the view; we don't want multiple views 
+		// in our address space.
+		UnmapViewOfFile(pbFile);
+
+		// Skip to the next set of bytes in the file.
+        qwFileOffset += dwBytesInBlock;
+        dwFileSize -= dwBytesInBlock;
+	} 
+
+    CloseHandle(hFileMapping);
+	return (dwNumOf0s);
+}

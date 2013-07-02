@@ -52,6 +52,13 @@ BOOL FileReverse(PCTSTR pszPathname, PBOOL pbIsTextUnicode) {
    }
 
    // Get the address where the first byte of the file is mapped into memory.
+   // FILE_MAP_WRITE
+   // A read/write view of the file is mapped. 
+   // The file mapping object must have been created 
+   // with PAGE_READWRITE or PAGE_EXECUTE_READWRITE protection.
+   // When used with MapViewOfFile, (FILE_MAP_WRITE | FILE_MAP_READ) 
+   // and FILE_MAP_ALL_ACCESS are equivalent to FILE_MAP_WRITE.
+   // 
    PVOID pvFile = MapViewOfFile(hFileMap, FILE_MAP_WRITE, 0, 0, 0);
 
    if (pvFile == NULL) {
