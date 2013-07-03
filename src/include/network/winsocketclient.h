@@ -4,3 +4,4 @@
 #include <stdio.h>
 
 void TcpClient();
+void UdpClient();
