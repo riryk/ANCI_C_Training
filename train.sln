@@ -44,6 +44,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "trainclient", "trainclient.
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "FileRev", "FileRev.vcproj", "{F52878BA-1A86-4E3B-96F6-EDCE8C5011BD}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MMFShare", "MMFShare.vcproj", "{17779528-890E-4BC2-B0B7-3B295D9C8847}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -138,6 +140,10 @@ Global
 		{F52878BA-1A86-4E3B-96F6-EDCE8C5011BD}.Debug|Win32.Build.0 = Debug|Win32
 		{F52878BA-1A86-4E3B-96F6-EDCE8C5011BD}.Release|Win32.ActiveCfg = Release|Win32
 		{F52878BA-1A86-4E3B-96F6-EDCE8C5011BD}.Release|Win32.Build.0 = Release|Win32
+		{17779528-890E-4BC2-B0B7-3B295D9C8847}.Debug|Win32.ActiveCfg = Debug|Win32
+		{17779528-890E-4BC2-B0B7-3B295D9C8847}.Debug|Win32.Build.0 = Debug|Win32
+		{17779528-890E-4BC2-B0B7-3B295D9C8847}.Release|Win32.ActiveCfg = Release|Win32
+		{17779528-890E-4BC2-B0B7-3B295D9C8847}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

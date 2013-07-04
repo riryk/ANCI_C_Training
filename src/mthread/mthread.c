@@ -2660,3 +2660,19 @@ void TestMapViewOfFile()
 	CloseHandle(hFileMapping);
     CloseHandle(hFile);
 }
+
+void TestMapViewOfFile1()
+{
+    HANDLE hFile = CreateFile(TEXT("C:\\test.dat"),
+		GENERIC_READ | GENERIC_WRITE, 0, NULL,
+		OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL);
+
+    HANDLE hFileMapping = CreateFileMapping(hFile, NULL, 
+		PAGE_READWRITE, 0, 0, NULL);
+
+	// Map a view of the whole file into our address space.
+    PBYTE pbFile = (PBYTE)MapViewOfFile(hFileMapping, FILE_MAP_WRITE, 0, 0, 0);
+
+	// Map a view of the file (starting 64 KB) into our address space
+    PBYTE pbFile = (PBYTE)MapViewOfFile(hFileMapping, FILE_MAP_WRITE, 0, 65536, 0);
+}
