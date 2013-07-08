@@ -2674,5 +2674,5 @@ void TestMapViewOfFile1()
     PBYTE pbFile = (PBYTE)MapViewOfFile(hFileMapping, FILE_MAP_WRITE, 0, 0, 0);
 
 	// Map a view of the file (starting 64 KB) into our address space
-    PBYTE pbFile = (PBYTE)MapViewOfFile(hFileMapping, FILE_MAP_WRITE, 0, 65536, 0);
+    pbFile = (PBYTE)MapViewOfFile(hFileMapping, FILE_MAP_WRITE, 0, 65536, 0);
 }
