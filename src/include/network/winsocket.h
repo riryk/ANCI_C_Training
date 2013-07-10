@@ -9,5 +9,6 @@
 void StartMain();
 void BindSocket();
 int TcpServer();
+void UniversalServer();
 
 #endif
