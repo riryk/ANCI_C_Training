@@ -9,6 +9,7 @@
 void StartMain();
 void BindSocket();
 int TcpServer();
-void UniversalServer();
+void UniversalServerIP6();
+void UniversalServerIP61();
 
 #endif

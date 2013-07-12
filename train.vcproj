@@ -43,7 +43,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;src/include/network;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;src/include/network;src/include/dll;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -128,7 +128,7 @@
 				Name="VCCLCompilerTool"
 				AdditionalOptions="/MP"
 				Optimization="0"
-				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;src/include/network;"
+				AdditionalIncludeDirectories="src/include/datastructures;src/include/memory;src/include/inout;src/include/str;src/include/mthread;src/include/sort;src/include/oop;src/lib/unity;src/include/oop/observer;src/include/tests;src/include/tests/leddriver;src/include/network;src/include/dll;"
 				StringPooling="false"
 				RuntimeLibrary="3"
 				AssemblerOutput="0"
@@ -194,6 +194,14 @@
 			<Filter
 				Name="include"
 				>
+				<Filter
+					Name="dll"
+					>
+					<File
+						RelativePath="src\include\dll\mylib.h"
+						>
+					</File>
+				</Filter>
 				<Filter
 				    Name="tests"
 				    >
@@ -689,7 +697,6 @@
 				    </File>
 			    </Filter>	
 			</Filter>
-			
 		</Filter>
 	</Files>
 	<Globals>
