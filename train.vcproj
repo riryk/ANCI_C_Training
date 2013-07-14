@@ -198,7 +198,7 @@
 					Name="dll"
 					>
 					<File
-						RelativePath="src\include\dll\mylib.h"
+						RelativePath="src\include\dll\mylibimport.h"
 						>
 					</File>
 				</Filter>

@@ -17,8 +17,8 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory=".\Debug\mydll"
-			IntermediateDirectory=".\Debug\mydll"
+			OutputDirectory=".\Debug\train"
+			IntermediateDirectory=".\Debug\train"
 			ConfigurationType="2"
 			UseOfMFC="0"
 			ATLMinimizesCRunTimeLibraryUsage="false"
@@ -199,7 +199,7 @@
 					Name="dll"
 					>
 					<File
-						RelativePath="src\include\dll\mylib.h"
+						RelativePath="src\include\dll\mylibexport.h"
 						>
 					</File>
 				</Filter>

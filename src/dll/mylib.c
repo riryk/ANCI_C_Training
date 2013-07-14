@@ -1,12 +1,12 @@
 
 #include <windows.h>
-#include "mylib.h"
+#include "mylibexport.h"
 
-int g_nResult;
+int MyLib_g_nResult;
 
-int Add(int nLeft, int nRight)
+int MyLib_Add(int nLeft, int nRight)
 {
-    g_nResult = nLeft + nRight;
-	return g_nResult;
+    MyLib_g_nResult = nLeft + nRight;
+	return MyLib_g_nResult;
 }
 
