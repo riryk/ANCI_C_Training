@@ -15,6 +15,7 @@ void UniversalServerIP61();
 void IrServer();
 void NBATest();
 void NBATest1();
+int NetBiosMain(int argc, char **argv);
 
 // LANANUM and LOCALNAME should be set as in your system
 // For LANA num you may want to use LANACFG.EXE tool
