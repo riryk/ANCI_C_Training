@@ -5,3 +5,4 @@
 
 void TcpClient();
 void UdpClient();
+void NetBiosClient(int argc, char **argv);

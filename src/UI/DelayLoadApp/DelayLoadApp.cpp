@@ -28,7 +28,7 @@ Notices: Copyright (c) 2008 Jeffrey Richter & Christophe Nasarre
 
 
 // The name of the Delay-Load module (only used by this sample app)
-TCHAR g_szDelayLoadModuleName[] = TEXT("20-DelayLoadLib");
+TCHAR g_szDelayLoadModuleName[] = TEXT("DelayLoadLib");
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -42,7 +42,8 @@ LONG WINAPI DelayLoadDllExceptionFilter(PEXCEPTION_POINTERS pep);
 
 
 void IsModuleLoaded(PCTSTR pszModuleName) {
-
+   /* Retrieves a module handle for the specified module. 
+    * The module must have been loaded by the calling process. */
    HMODULE hmod = GetModuleHandle(pszModuleName);
    char sz[100];
 #ifdef UNICODE
@@ -78,7 +79,7 @@ int WINAPI _tWinMain(HINSTANCE hInstExe, HINSTANCE, PTSTR pszCmdLine, int) {
 
       // Unload the delay-loaded DLL
       // NOTE: Name must exactly match /DelayLoad:(DllName)
-		PCSTR pszDll = "20-DelayLoadLib.dll";
+		PCSTR pszDll = "DelayLoadLib.dll";
       __FUnloadDelayLoadedDLL2(pszDll);
 
       // Use Debug.Modules to see that the DLL is now unloaded

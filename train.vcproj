@@ -203,25 +203,25 @@
 					</File>
 				</Filter>
 				<Filter
-				    Name="tests"
-				    >
+					Name="tests"
+					>
+					<File
+						RelativePath="src\include\tests\sprintftest.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\tests\sprintftestrunner.h"
+						>
+					</File>
 					<Filter
-				        Name="leddriver"
-				        >
-					    <File
-					        RelativePath="src\include\tests\leddriver\leddrivertest.h"
-					    >
-				        </File>
-				    </Filter>
-				    <File
-					    RelativePath="src\include\tests\sprintftest.h"
-					    >
-				    </File>
-				    <File
-					    RelativePath="src\include\tests\sprintftestrunner.h"
-					    >
-				    </File>
-			    </Filter>
+						Name="leddriver"
+						>
+						<File
+							RelativePath="src\include\tests\leddriver\leddrivertest.h"
+							>
+						</File>
+					</Filter>
+				</Filter>
 				<Filter
 					Name="memory"
 					>
@@ -281,36 +281,16 @@
 				<Filter
 					Name="oop"
 					>
-					<Filter
-					    Name="observer"
-					    >
-					    <File
-						    RelativePath="src\include\oop\observer\ECGPkh.h"
-						    >
-					    </File>
-						<File
-						    RelativePath="src\include\oop\observer\TMDQueue.h"
-						    >
-					    </File>
-						<File
-						    RelativePath="src\include\oop\observer\ECGModule.h"
-						    >
-					    </File>
-						<File
-						    RelativePath="src\include\oop\observer\HistogramDisplay.h"
-						    >
-					    </File>
-						<File
-						    RelativePath="src\include\oop\observer\TestBuilder.h"
-						    >
-					    </File>
-						<File
-						    RelativePath="src\include\oop\observer\NotificationHandle.h"
-						    >
-					    </File>
-				    </Filter>
 					<File
-						RelativePath="src\include\oop\set.h"
+						RelativePath="src\include\oop\arithmetic_operations.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\oop\class.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\oop\LedDriver.h"
 						>
 					</File>
 					<File
@@ -322,7 +302,15 @@
 						>
 					</File>
 					<File
-						RelativePath="src\include\oop\class.h"
+						RelativePath="src\include\oop\point.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\oop\point_class.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\oop\set.h"
 						>
 					</File>
 					<File
@@ -333,22 +321,34 @@
 						RelativePath="src\include\oop\string_ring.h"
 						>
 					</File>
-					<File
-						RelativePath="src\include\oop\arithmetic_operations.h"
+					<Filter
+						Name="observer"
 						>
-					</File>
-					<File
-						RelativePath="src\include\oop\point.h"
-						>
-					</File>
-					<File
-						RelativePath="src\include\oop\point_class.h"
-						>
-					</File>
-					<File
-						RelativePath="src\include\oop\LedDriver.h"
-						>
-					</File>
+						<File
+							RelativePath="src\include\oop\observer\ECGModule.h"
+							>
+						</File>
+						<File
+							RelativePath="src\include\oop\observer\ECGPkh.h"
+							>
+						</File>
+						<File
+							RelativePath="src\include\oop\observer\HistogramDisplay.h"
+							>
+						</File>
+						<File
+							RelativePath="src\include\oop\observer\NotificationHandle.h"
+							>
+						</File>
+						<File
+							RelativePath="src\include\oop\observer\TestBuilder.h"
+							>
+						</File>
+						<File
+							RelativePath="src\include\oop\observer\TMDQueue.h"
+							>
+						</File>
+					</Filter>
 				</Filter>
 			</Filter>
 			<Filter
@@ -382,145 +382,145 @@
 					RelativePath="src\main\main.c"
 					>
 				</File>
-			    <Filter
-				    Name="GCJ2012"
-				>	
-				<File
-					RelativePath="src\main\GCJ2012\problem1.c"
+				<Filter
+					Name="GCJ2012"
 					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem1.h"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem10.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem11.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem12.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem13.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem14.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem15.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem16.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem17.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem18.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem19.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem20.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem2.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem2.h"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem3.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem4.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem5.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem6.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem7.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem7.h"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem8.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem9.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem21.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem22.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem23.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem24.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2012\problem25.c"
-					>
-				</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem1.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem1.h"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem10.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem11.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem12.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem13.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem14.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem15.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem16.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem17.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem18.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem19.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem2.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem2.h"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem20.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem21.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem22.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem23.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem24.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem25.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem3.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem4.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem5.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem6.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem7.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem7.h"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem8.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2012\problem9.c"
+						>
+					</File>
 				</Filter>
 				<Filter
-				    Name="GCJ2013"
-				>	
-				<File
-					RelativePath="src\main\GCJ2013\round_2_1.c"
+					Name="GCJ2013"
 					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2013\round_3_1.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2013\round_3_2.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2013\round_3_3.c"
-					>
-				</File>
-				<File
-					RelativePath="src\main\GCJ2013\round_3_4.c"
-					>
-				</File>
+					<File
+						RelativePath="src\main\GCJ2013\round_2_1.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\round_3_1.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\round_3_2.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\round_3_3.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\round_3_4.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
@@ -559,15 +559,19 @@
 				Name="oop"
 				>
 				<File
-					RelativePath="src\oop\set_test.c"
-					>
-				</File>
-				<File
-					RelativePath="src\oop\set.c"
+					RelativePath="src\oop\arithmetic_operations.c"
 					>
 				</File>
 				<File
 					RelativePath="src\oop\bag.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\class.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\LedDriver.c"
 					>
 				</File>
 				<File
@@ -579,7 +583,19 @@
 					>
 				</File>
 				<File
-					RelativePath="src\oop\class.c"
+					RelativePath="src\oop\point.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\point_class.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\set.c"
+					>
+				</File>
+				<File
+					RelativePath="src\oop\set_test.c"
 					>
 				</File>
 				<File
@@ -590,63 +606,34 @@
 					RelativePath="src\oop\string_ring.c"
 					>
 				</File>
-				<File
-					RelativePath="src\oop\arithmetic_operations.c"
-					>
-				</File>
-				<File
-					RelativePath="src\oop\point.c"
-					>
-				</File>
-				<File
-					RelativePath="src\oop\point_class.c"
-					>
-				</File>
-				<File
-					RelativePath="src\oop\LedDriver.c"
-					>
-				</File>
 				<Filter
 					Name="observer"
 					>
-				    <File
-					    RelativePath="src\oop\observer\TMDQueue.c"
-					>
+					<File
+						RelativePath="src\oop\observer\ECGModule.c"
+						>
 					</File>
 					<File
-					    RelativePath="src\oop\observer\ECGModule.c"
-					>
-				    </File>
+						RelativePath="src\oop\observer\HistogramDisplay.c"
+						>
+					</File>
 					<File
-					    RelativePath="src\oop\observer\HistogramDisplay.c"
-					>
-				    </File>
+						RelativePath="src\oop\observer\NotificationHandle.c"
+						>
+					</File>
 					<File
-					    RelativePath="src\oop\observer\TestBuilder.c"
-					>
-				    </File>
+						RelativePath="src\oop\observer\TestBuilder.c"
+						>
+					</File>
 					<File
-					    RelativePath="src\oop\observer\NotificationHandle.c"
-					>
-				    </File>
+						RelativePath="src\oop\observer\TMDQueue.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
-			
 			<Filter
 				Name="tests"
 				>
-				<Filter
-				    Name="leddriver"
-				    >
-					<File
-					    RelativePath="src\tests\leddriver\leddrivertest.c"
-					>
-				    </File>
-					<File
-					    RelativePath="src\tests\leddriver\leddrivertestrunner.c"
-					>
-				    </File>
-				</Filter>
 				<File
 					RelativePath="src\tests\sprintftest.c"
 					>
@@ -655,47 +642,58 @@
 					RelativePath="src\tests\sprintftestrunner.c"
 					>
 				</File>
+				<Filter
+					Name="leddriver"
+					>
+					<File
+						RelativePath="src\tests\leddriver\leddrivertest.c"
+						>
+					</File>
+					<File
+						RelativePath="src\tests\leddriver\leddrivertestrunner.c"
+						>
+					</File>
+				</Filter>
 			</Filter>
-			
 			<Filter
 				Name="lib"
 				>
 				<Filter
-				    Name="unity"
-				    >
-				    <File
-					    RelativePath="src\lib\unity\unity.c"
+					Name="unity"
 					>
-				    </File>
 					<File
-					    RelativePath="src\lib\unity\unity.h"
-					>
-				    </File>
+						RelativePath="src\lib\unity\stdint.h"
+						>
+					</File>
 					<File
-					    RelativePath="src\lib\unity\unity_fixture.c"
-					>
-				    </File>
+						RelativePath="src\lib\unity\unity.c"
+						>
+					</File>
 					<File
-					    RelativePath="src\lib\unity\unity_fixture.h"
-					>
-				    </File>
+						RelativePath="src\lib\unity\unity.h"
+						>
+					</File>
 					<File
-					    RelativePath="src\lib\unity\unity_fixture_internals.h"
-					>
-				    </File>
+						RelativePath="src\lib\unity\unity_fixture.c"
+						>
+					</File>
 					<File
-					    RelativePath="src\lib\unity\unity_fixture_malloc_overrides.h"
-					>
-				    </File>
+						RelativePath="src\lib\unity\unity_fixture.h"
+						>
+					</File>
 					<File
-					    RelativePath="src\lib\unity\unity_internals.h"
-					>
-				    </File>
+						RelativePath="src\lib\unity\unity_fixture_internals.h"
+						>
+					</File>
 					<File
-					    RelativePath="src\lib\unity\stdint.h"
-					>
-				    </File>
-			    </Filter>	
+						RelativePath="src\lib\unity\unity_fixture_malloc_overrides.h"
+						>
+					</File>
+					<File
+						RelativePath="src\lib\unity\unity_internals.h"
+						>
+					</File>
+				</Filter>
 			</Filter>
 		</Filter>
 	</Files>
