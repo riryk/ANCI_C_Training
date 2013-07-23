@@ -374,6 +374,10 @@
 					RelativePath="src\network\winsocket.c"
 					>
 				</File>
+				<File
+					RelativePath="src\network\appletalkserver.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="main"
