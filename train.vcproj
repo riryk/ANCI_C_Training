@@ -378,6 +378,10 @@
 					RelativePath="src\network\appletalkserver.c"
 					>
 				</File>
+				<File
+					RelativePath="src\network\appletalkexample2.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="main"
