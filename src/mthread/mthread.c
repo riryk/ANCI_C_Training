@@ -2676,3 +2676,41 @@ void TestMapViewOfFile1()
 	// Map a view of the file (starting 64 KB) into our address space
     pbFile = (PBYTE)MapViewOfFile(hFileMapping, FILE_MAP_WRITE, 0, 65536, 0);
 }
+
+DWORD g_dwTlsIndex; // Assume that this is initialized
+                    // with the result of a call to TlsAlloc.
+
+struct SOMESTRUCT
+{
+    int  A;
+};
+
+typedef struct SOMESTRUCT* PSOMESTRUCT;
+
+void MyFunction(PSOMESTRUCT pSomeStruct)
+{
+    if (pSomeStruct != NULL)
+	{
+	   // The caller is priming this function.
+	   // See if we already allocated space to save the data.
+	   if (TlsGetValue(g_dwTlsIndex) == NULL)
+	   {
+          // Space was never allocated. This is the first
+	      // time this function has ever been called by this thread.
+	      TlsSetValue(g_dwTlsIndex, 
+			  HeapAlloc(GetProcessHeap(), 0, sizeof(*pSomeStruct));
+	   }
+
+	   // Memory already exists for the data;
+	   // save the newly passed values.
+       memcpy(TlsGetValue(g_dwTlsIndex), pSomeStruct, sizeof(*pSomeStruct));
+	}
+	else
+	{
+		// The caller already primed the function. Now it
+		// wants to do something with the saved data.
+		// Get the address of the saved data.
+        pSomeStruct = (PSOMESTRUCT)TlsGetValue(g_dwTlsIndex);
+		// The saved data is pointed to by pSomeStruct; use it.
+	}
+}
