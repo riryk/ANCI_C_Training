@@ -2698,7 +2698,7 @@ void MyFunction(PSOMESTRUCT pSomeStruct)
           // Space was never allocated. This is the first
 	      // time this function has ever been called by this thread.
 	      TlsSetValue(g_dwTlsIndex, 
-			  HeapAlloc(GetProcessHeap(), 0, sizeof(*pSomeStruct));
+			  HeapAlloc(GetProcessHeap(), 0, sizeof(*pSomeStruct)));
 	   }
 
 	   // Memory already exists for the data;
