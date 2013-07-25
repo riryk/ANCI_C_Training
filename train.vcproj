@@ -382,6 +382,10 @@
 					RelativePath="src\network\appletalkexample2.c"
 					>
 				</File>
+				<File
+					RelativePath="src\network\atmexample.c"
+					>
+				</File>
 			</Filter>
 			<Filter
 				Name="main"
