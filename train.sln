@@ -1,5 +1,5 @@
 Microsoft Visual Studio Solution File, Format Version 10.00
-# Visual Studio 2008
+# Visual C++ Express 2008
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "train", "train.vcproj", "{D51DACE6-5062-4DF6-84F4-3B59FFC90ED2}"
 	ProjectSection(ProjectDependencies) = postProject
 		{E58216C3-42D4-460D-8385-A45A0DBE84D8} = {E58216C3-42D4-460D-8385-A45A0DBE84D8}
@@ -59,6 +59,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DelayLoadApp", "DelayLoadAp
 	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DelayLoadLib", "DelayLoadLib.vcproj", "{4DDFA74F-A0E8-4735-91D1-04A86F413BB2}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DIPS", "DIPS.vcproj", "{D0F7D479-6A1A-4B2C-B79F-4B8F7CCC0320}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4A35B488-267F-4186-9495-48DA0A84798A} = {4A35B488-267F-4186-9495-48DA0A84798A}
+	EndProjectSection
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "DIPSLib", "DIPSLib.vcproj", "{4A35B488-267F-4186-9495-48DA0A84798A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -174,6 +181,14 @@ Global
 		{4DDFA74F-A0E8-4735-91D1-04A86F413BB2}.Debug|Win32.Build.0 = Debug|Win32
 		{4DDFA74F-A0E8-4735-91D1-04A86F413BB2}.Release|Win32.ActiveCfg = Release|Win32
 		{4DDFA74F-A0E8-4735-91D1-04A86F413BB2}.Release|Win32.Build.0 = Release|Win32
+		{D0F7D479-6A1A-4B2C-B79F-4B8F7CCC0320}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D0F7D479-6A1A-4B2C-B79F-4B8F7CCC0320}.Debug|Win32.Build.0 = Debug|Win32
+		{D0F7D479-6A1A-4B2C-B79F-4B8F7CCC0320}.Release|Win32.ActiveCfg = Release|Win32
+		{D0F7D479-6A1A-4B2C-B79F-4B8F7CCC0320}.Release|Win32.Build.0 = Release|Win32
+		{4A35B488-267F-4186-9495-48DA0A84798A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{4A35B488-267F-4186-9495-48DA0A84798A}.Debug|Win32.Build.0 = Debug|Win32
+		{4A35B488-267F-4186-9495-48DA0A84798A}.Release|Win32.ActiveCfg = Release|Win32
+		{4A35B488-267F-4186-9495-48DA0A84798A}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
