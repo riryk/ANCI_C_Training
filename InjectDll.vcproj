@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="DelayLoadApp"
-	ProjectGUID="{B2C718D1-70F8-40D0-857E-3D1CA6660A89}"
-	RootNamespace="DelayLoadApp"
+	Name="InjectDll"
+	ProjectGUID="{EE43B1D4-3112-4E94-910B-B7CEE0FFC2F4}"
+	RootNamespace="InjectDll"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -21,9 +21,9 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)DIP\$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -44,7 +44,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MY22DIPSLIB_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -97,7 +97,7 @@
 			Name="Release|Win32"
 			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -118,7 +118,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MY22DIPSLIB_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -171,7 +171,7 @@
 			Name="Debug|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			>
 			<Tool
@@ -193,7 +193,7 @@
 			<Tool
 				Name="VCCLCompilerTool"
 				Optimization="0"
-				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;_DEBUG;_WINDOWS;_USRDLL;MY22DIPSLIB_EXPORTS"
 				MinimalRebuild="true"
 				BasicRuntimeChecks="3"
 				RuntimeLibrary="3"
@@ -214,10 +214,8 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="2"
-				DelayLoadDLLs="&quot;DelayLoadLib.dll&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
-				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -249,7 +247,7 @@
 			Name="Release|x64"
 			OutputDirectory="$(SolutionDir)$(PlatformName)\$(ConfigurationName)"
 			IntermediateDirectory="$(PlatformName)\$(ConfigurationName)"
-			ConfigurationType="1"
+			ConfigurationType="2"
 			CharacterSet="1"
 			WholeProgramOptimization="1"
 			>
@@ -271,7 +269,7 @@
 			/>
 			<Tool
 				Name="VCCLCompilerTool"
-				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS"
+				PreprocessorDefinitions="WIN32;NDEBUG;_WINDOWS;_USRDLL;MY22DIPSLIB_EXPORTS"
 				RuntimeLibrary="2"
 				UsePrecompiledHeader="0"
 				WarningLevel="3"
@@ -290,12 +288,10 @@
 			<Tool
 				Name="VCLinkerTool"
 				LinkIncremental="1"
-				DelayLoadDLLs="&quot;DelayLoadLib.dll&quot;"
 				GenerateDebugInformation="true"
 				SubSystem="2"
 				OptimizeReferences="2"
 				EnableCOMDATFolding="2"
-				SupportUnloadOfDelayLoadedDLL="true"
 				TargetMachine="17"
 			/>
 			<Tool
@@ -328,23 +324,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="src\UI\DelayLoadApp\CmnHdr.h"
-			>
-		</File>
-		<File
-			RelativePath="src\UI\DelayLoadApp\DelayLoadApp.cpp"
-			>
-		</File>
-		<File
-			RelativePath="src\UI\DelayLoadApp\DelayLoadApp.rc"
-			>
-		</File>
-		<File
-			RelativePath="src\UI\DelayLoadApp\DelayLoadLib.h"
-			>
-		</File>
-		<File
-			RelativePath="src\UI\DelayLoadApp\Resource.h"
+			RelativePath="src\UI\InjectDll\InjectDll.cpp"
 			>
 		</File>
 	</Files>

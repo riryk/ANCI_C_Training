@@ -228,8 +228,39 @@ LRESULT WINAPI GetMsgProc(int nCode, WPARAM wParam, LPARAM lParam) {
       // and ready to handle requests.
       PostThreadMessage(g_dwThreadIdDIPS, WM_NULL, 0, 0);
    }
-
+   /* Passes the hook information to 
+    * the next hook procedure in the current hook chain. 
+	* A hook procedure can call this function 
+	* either before or after processing the hook information. 
+	*
+	* hhk [in, optional]
+    * Type: HHOOK
+    * This parameter is ignored.
+	* 
+	* nCode [in]
+    * Type: int
+    * The hook code passed to the current hook procedure. 
+	* The next hook procedure uses this code 
+	* to determine how to process the hook information.
+	* 
+	* wParam [in]
+    * Type: WPARAM
+    * The wParam value passed to the current hook procedure. 
+	* The meaning of this parameter depends on 
+	* the type of hook associated with the current hook chain.
+	*
+    * lParam [in]
+    * Type: LPARAM
+    * The lParam value passed to the current hook procedure. 
+	* The meaning of this parameter depends on 
+	* the type of hook associated with the current hook chain.
+	* 
+	* Hook procedures are installed in chains for particular hook types. 
+	* CallNextHookEx calls the next hook in the chain.
+	*/
    return(CallNextHookEx(g_hHook, nCode, wParam, lParam));
+
+   /* http://resources.infosecinstitute.com/using-setwindowshookex-for-dll-injection-on-windows/ */
 }
 
 

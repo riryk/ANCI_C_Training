@@ -2,9 +2,9 @@
 <VisualStudioProject
 	ProjectType="Visual C++"
 	Version="9.00"
-	Name="DelayLoadApp"
-	ProjectGUID="{B2C718D1-70F8-40D0-857E-3D1CA6660A89}"
-	RootNamespace="DelayLoadApp"
+	Name="InjectProgram"
+	ProjectGUID="{D69C7FFF-0299-4337-96A6-C4AB2334E333}"
+	RootNamespace="InjectProgram"
 	Keyword="Win32Proj"
 	TargetFrameworkVersion="131072"
 	>
@@ -21,7 +21,7 @@
 	<Configurations>
 		<Configuration
 			Name="Debug|Win32"
-			OutputDirectory="$(SolutionDir)$(ConfigurationName)"
+			OutputDirectory="$(SolutionDir)Delay\$(ConfigurationName)"
 			IntermediateDirectory="$(ConfigurationName)"
 			ConfigurationType="1"
 			CharacterSet="1"
@@ -66,7 +66,7 @@
 				Name="VCLinkerTool"
 				LinkIncremental="2"
 				GenerateDebugInformation="true"
-				SubSystem="2"
+				SubSystem="1"
 				RandomizedBaseAddress="1"
 				DataExecutionPrevention="0"
 				TargetMachine="1"
@@ -328,23 +328,7 @@
 	</References>
 	<Files>
 		<File
-			RelativePath="src\UI\DelayLoadApp\CmnHdr.h"
-			>
-		</File>
-		<File
-			RelativePath="src\UI\DelayLoadApp\DelayLoadApp.cpp"
-			>
-		</File>
-		<File
-			RelativePath="src\UI\DelayLoadApp\DelayLoadApp.rc"
-			>
-		</File>
-		<File
-			RelativePath="src\UI\DelayLoadApp\DelayLoadLib.h"
-			>
-		</File>
-		<File
-			RelativePath="src\UI\DelayLoadApp\Resource.h"
+			RelativePath="src\UI\InjectProcess\InjectProcess.cpp"
 			>
 		</File>
 	</Files>
