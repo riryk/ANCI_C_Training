@@ -234,6 +234,10 @@
 					Name="network"
 					>
 					<File
+						RelativePath="src\include\network\atmexample.h"
+						>
+					</File>
+					<File
 						RelativePath="src\include\network\winsocket.h"
 						>
 					</File>
