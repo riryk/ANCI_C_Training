@@ -241,6 +241,10 @@
 						RelativePath="src\include\network\winsocket.h"
 						>
 					</File>
+					<File
+						RelativePath="src\include\network\winsocketselect.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="inout"
@@ -388,6 +392,10 @@
 				</File>
 				<File
 					RelativePath="src\network\atmexample.c"
+					>
+				</File>
+				<File
+					RelativePath="src\network\winsocketselect.c"
 					>
 				</File>
 			</Filter>
