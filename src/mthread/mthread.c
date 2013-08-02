@@ -1,6 +1,7 @@
 #include "mthread.h"
 #include "Dbghelp.h"
 
+#pragma comment(lib, "Dbghelp.lib")
 
 /****
 *HANDLE CreateMThread(PTHREAD_START_ROUTINE threadFunc)  - creates a new thread in the current process
@@ -2715,6 +2716,17 @@ void MyFunction(PSOMESTRUCT pSomeStruct)
 	}
 }
 
+// Handle unexpected exceptions if the module is unloaded
+LONG WINAPI InvalidReadExceptionFilter(PEXCEPTION_POINTERS pep) 
+{
+   // handle all unexpected exceptions because we simply don't patch
+   // any module in that case
+   LONG lDisposition = EXCEPTION_EXECUTE_HANDLER;
+   // Note: pep->ExceptionRecord->ExceptionCode has 0xc0000005 as a value
+   return(lDisposition);
+}
+
+
 void ReplaceIATEntryInOneMod(PCSTR pszCalleeModName, PROC pfnCurrent, PROC pfnNew, HMODULE hmodCaller)
 {
     // Get the address of the module's import section
@@ -2723,7 +2735,7 @@ void ReplaceIATEntryInOneMod(PCSTR pszCalleeModName, PROC pfnCurrent, PROC pfnNe
 	// a folder) into imagehlp.dll. It looks like one module was unloaded...
 	// Maybe some threading problem: the list of modules from Toolhelp might
 	// not be accurate if FreeLibrary is called during the enumeration.
-    PIMATE_IMPORT_DESCRIPTOR pImportDesc = NULL;
+    PIMAGE_IMPORT_DESCRIPTOR pImportDesc = NULL;
     __try
 	{
 		/* This function has been superseded by the ImageDirectoryEntryToDataEx function. 
@@ -2749,7 +2761,7 @@ void ReplaceIATEntryInOneMod(PCSTR pszCalleeModName, PROC pfnCurrent, PROC pfnNe
 		 * If the function succeeds, the return value is a pointer 
 		 * to the directory entry's data
 		 */
-        pImportDesc = (PIMATE_IMPORT_DESCRIPTOR)ImageDirectoryEntryToData(
+        pImportDesc = (PIMAGE_IMPORT_DESCRIPTOR)ImageDirectoryEntryToData(
             hmodCaller, TRUE, IMAGE_DIRECTORY_ENTRY_IMPORT, &ulSize);
 	}
 	__except (InvalidReadExceptionFilter(GetExceptionInformation()))
