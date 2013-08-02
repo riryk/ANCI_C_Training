@@ -214,6 +214,10 @@
 					RelativePath="src\network\winsocketclient.c"
 					>
 				</File>
+				<File
+					RelativePath="src\network\winsocketselectclient.c"
+					>
+				</File>
 			</Filter>
 		</Filter>
 	</Files>

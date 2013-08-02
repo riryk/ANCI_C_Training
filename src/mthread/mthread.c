@@ -1,6 +1,7 @@
 #include "mthread.h"
 #include "Dbghelp.h"
 
+#pragma comment(lib, "Dbghelp.lib")
 
 /****
 *HANDLE CreateMThread(PTHREAD_START_ROUTINE threadFunc)  - creates a new thread in the current process
@@ -2715,6 +2716,7 @@ void MyFunction(PSOMESTRUCT pSomeStruct)
 	}
 }
 
+<<<<<<< HEAD
 //void ReplaceIATEntryInOneMod(PCSTR pszCalleeModName, PROC pfnCurrent, PROC pfnNew, HMODULE hmodCaller)
 //{
 //    // Get the address of the module's import section
@@ -2840,3 +2842,141 @@ void MyFunction(PSOMESTRUCT pSomeStruct)
 //		}
 //	}
 //}
+=======
+// Handle unexpected exceptions if the module is unloaded
+LONG WINAPI InvalidReadExceptionFilter(PEXCEPTION_POINTERS pep) 
+{
+   // handle all unexpected exceptions because we simply don't patch
+   // any module in that case
+   LONG lDisposition = EXCEPTION_EXECUTE_HANDLER;
+   // Note: pep->ExceptionRecord->ExceptionCode has 0xc0000005 as a value
+   return(lDisposition);
+}
+
+
+void ReplaceIATEntryInOneMod(PCSTR pszCalleeModName, PROC pfnCurrent, PROC pfnNew, HMODULE hmodCaller)
+{
+    // Get the address of the module's import section
+	ULONG ulSize;
+    // An exception was triggered by Explorer (when browsing the content of
+	// a folder) into imagehlp.dll. It looks like one module was unloaded...
+	// Maybe some threading problem: the list of modules from Toolhelp might
+	// not be accurate if FreeLibrary is called during the enumeration.
+    PIMAGE_IMPORT_DESCRIPTOR pImportDesc = NULL;
+    __try
+	{
+		/* This function has been superseded by the ImageDirectoryEntryToDataEx function. 
+		 * Use ImageDirectoryEntryToDataEx to retrieve the section header. 
+		 *
+		 * Base [in]
+         *  The base address of the image.
+		 *
+		 * MappedAsImage [in]
+         *  If this parameter is TRUE, the file is mapped by the system as an image. 
+		 *  If the flag is FALSE, the file is mapped as 
+		 *  a data file by the MapViewOfFile function.
+		 *  
+		 * DirectoryEntry [in]
+         *  The index number of the desired directory entry. 
+		 *  This parameter can be one of the following values.
+		 *  IMAGE_DIRECTORY_ENTRY_IMPORT   Import directory
+		 * 
+		 * Size [out]
+         *  A pointer to a variable that receives the size of the data 
+		 *  for the directory entry, in bytes.
+		 * 
+		 * If the function succeeds, the return value is a pointer 
+		 * to the directory entry's data
+		 */
+        pImportDesc = (PIMAGE_IMPORT_DESCRIPTOR)ImageDirectoryEntryToData(
+            hmodCaller, TRUE, IMAGE_DIRECTORY_ENTRY_IMPORT, &ulSize);
+	}
+	__except (InvalidReadExceptionFilter(GetExceptionInformation()))
+	{
+        // Nothing to do in here, thread continues to run normally
+		// with NULL for pImportDesc
+	}
+    if (pImportDesc == NULL)
+		return; // This module has no import section or is no longer loaded.
+
+	// Find the import descriptor containing references to callee's functions
+    for (; pImportDesc->Name; pImportDesc++)
+	{
+		PSTR pszModName = (PSTR)((PBYTE)hmodCaller + pImportDesc->Name);
+		if (lstrcmpiA(pszModName, pszCalleeModName))
+		{
+           // Get caller's import address table (IAN) for the calee's functions.
+		   PIMAGE_THUNK_DATA pThunk = (PIMAGE_THUNK_DATA)
+			   ((PBYTE)hmodCaller + pImportDesc->FirstThunk);
+
+           // Replace current function address with new function address
+		   for (; pThunk->u1.Function; pThunk++)
+		   {
+               // Get the address of the function address.
+			   PROC* ppfn = (PROC*)&pThunk->u1.Function;
+			   // Is this the function we're looking for?
+               BOOL bFound = (*ppfn == pfnCurrent);
+			   if (bFound)
+			   {
+				   /* Writes data to an area of memory in a specified process. 
+				    * The entire area to be written to must be accessible or the operation fails. 
+					*
+					* hProcess [in]
+                    *  A handle to the process memory to be modified. 
+					*  The handle must have PROCESS_VM_WRITE and PROCESS_VM_OPERATION access to the process.
+					* 
+					* lpBaseAddress [in]
+                    *  A pointer to the base address in the specified process to which data is written. 
+					*  Before data transfer occurs, the system verifies 
+					*  that all data in the base address and memory 
+					*  of the specified size is accessible for write access, 
+					*  and if it is not accessible, the function fails.
+					* 
+					* lpBuffer [in]
+                    *  A pointer to the buffer that contains data to be written 
+					*  in the address space of the specified process.
+					* 
+					* nSize [in]
+                    *  The number of bytes to be written to the specified process. 
+					*/
+                   if (!WriteProcessMemory(GetCurrentProcess(), ppfn, &pfnNew, sizeof(pfnNew), NULL)
+					   && (ERROR_NOACCESS == GetLastError()))
+				   {
+                      DWORD dwOldProtect;
+					  /* 
+					   * Changes the protection on a region of committed pages 
+					   * in the virtual address space of the calling process.
+                       * To change the access protection of any process, 
+					   * use the VirtualProtectEx function. 
+					   *
+					   * lpAddress [in]
+                       *   A pointer an address that describes the starting 
+					   *   page of the region of pages whose access protection attributes are to be changed.
+					   * 
+					   * dwSize [in]
+                       *   The size of the region whose access protection attributes are to be changed, in bytes. 
+					   * 
+					   * flNewProtect [in]
+                       *   The memory protection option. 
+					   *   This parameter can be one of the memory protection constants.
+					   *   For mapped views, this value must be compatible with the access protection 
+					   *   specified when the view was mapped
+					   *   
+					   * lpflOldProtect [out]
+                       *   A pointer to a variable that receives the previous access protection value of 
+					   *   the first page in the specified region of pages.
+                       *
+					   */  
+                      if (VirtualProtect(ppfn, sizeof(pfnNew), PAGE_WRITECOPY, &dwOldProtect))
+					  {
+                          WriteProcessMemory(GetCurrentProcess(), ppfn, &pfnNew, sizeof(pfnNew), NULL);
+                          VirtualProtect(ppfn, sizeof(pfnNew), PAGE_WRITECOPY, &dwOldProtect);
+					  }
+				   }
+				   return;
+			   }
+		   }
+		}
+	}
+}
+>>>>>>> origin/master
