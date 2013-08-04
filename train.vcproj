@@ -242,7 +242,7 @@
 						>
 					</File>
 					<File
-						RelativePath="src\include\network\winsocketselect.h"
+						RelativePath="src\include\network\winsocketasyncwindow.h"
 						>
 					</File>
 				</Filter>
@@ -275,6 +275,10 @@
 					>
 					<File
 						RelativePath="src\include\sort\sort.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\network\winsocketselect.h"
 						>
 					</File>
 				</Filter>
@@ -379,7 +383,7 @@
 				Name="network"
 				>
 				<File
-					RelativePath="src\network\winsocket.c"
+					RelativePath="src\network\appletalkexample2.c"
 					>
 				</File>
 				<File
@@ -387,11 +391,15 @@
 					>
 				</File>
 				<File
-					RelativePath="src\network\appletalkexample2.c"
+					RelativePath="src\network\atmexample.c"
 					>
 				</File>
 				<File
-					RelativePath="src\network\atmexample.c"
+					RelativePath="src\network\winsocket.c"
+					>
+				</File>
+				<File
+					RelativePath="src\network\winsocketasyncwindow.c"
 					>
 				</File>
 				<File
