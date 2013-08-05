@@ -75,6 +75,13 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjectProgram", "InjectProg
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "InjLib", "InjLib.vcproj", "{50E90666-4708-4ECC-912F-A4D2EDB52346}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LastMsgBoxInfoLib", "LastMsgBoxInfoLib.vcproj", "{D24E1FEF-4501-4052-A6FA-DB091249D90A}"
+EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LastMsgBoxInfo", "LastMsgBoxInfo.vcproj", "{6CFDF6DA-9EE2-4AFB-95CE-E3FBFF253BEE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{D24E1FEF-4501-4052-A6FA-DB091249D90A} = {D24E1FEF-4501-4052-A6FA-DB091249D90A}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -209,6 +216,14 @@ Global
 		{50E90666-4708-4ECC-912F-A4D2EDB52346}.Debug|Win32.Build.0 = Debug|Win32
 		{50E90666-4708-4ECC-912F-A4D2EDB52346}.Release|Win32.ActiveCfg = Release|Win32
 		{50E90666-4708-4ECC-912F-A4D2EDB52346}.Release|Win32.Build.0 = Release|Win32
+		{D24E1FEF-4501-4052-A6FA-DB091249D90A}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D24E1FEF-4501-4052-A6FA-DB091249D90A}.Debug|Win32.Build.0 = Debug|Win32
+		{D24E1FEF-4501-4052-A6FA-DB091249D90A}.Release|Win32.ActiveCfg = Release|Win32
+		{D24E1FEF-4501-4052-A6FA-DB091249D90A}.Release|Win32.Build.0 = Release|Win32
+		{6CFDF6DA-9EE2-4AFB-95CE-E3FBFF253BEE}.Debug|Win32.ActiveCfg = Debug|Win32
+		{6CFDF6DA-9EE2-4AFB-95CE-E3FBFF253BEE}.Debug|Win32.Build.0 = Debug|Win32
+		{6CFDF6DA-9EE2-4AFB-95CE-E3FBFF253BEE}.Release|Win32.ActiveCfg = Release|Win32
+		{6CFDF6DA-9EE2-4AFB-95CE-E3FBFF253BEE}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
