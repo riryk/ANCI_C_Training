@@ -2726,7 +2726,6 @@ LONG WINAPI InvalidReadExceptionFilter(PEXCEPTION_POINTERS pep)
    return(lDisposition);
 }
 
-
 void ReplaceIATEntryInOneMod(PCSTR pszCalleeModName, PROC pfnCurrent, PROC pfnNew, HMODULE hmodCaller)
 {
     // Get the address of the module's import section
@@ -2852,3 +2851,4 @@ void ReplaceIATEntryInOneMod(PCSTR pszCalleeModName, PROC pfnCurrent, PROC pfnNe
 		}
 	}
 }
+
