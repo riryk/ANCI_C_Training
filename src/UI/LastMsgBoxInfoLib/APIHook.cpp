@@ -253,7 +253,7 @@ void CAPIHook::ReplaceIATEntryInOneMod(PCSTR pszCalleeModName,
             ((PBYTE) hmodCaller + pImportDesc->FirstThunk);
 
          // Replace current function address with new function address
-         for (; pThunk->u1.Function; pThunk++) {
+         for (; pThunk->u1.Function; pThunk++) { 
 
             // Get the address of the function address
             PROC* ppfn = (PROC*) &pThunk->u1.Function;

@@ -336,15 +336,15 @@
 			>
 		</File>
 		<File
-			RelativePath="src\UI\LastMsgBoxInfoLib\Toolhelp.h"
-			>
-		</File>
-		<File
 			RelativePath="src\UI\LastMsgBoxInfoLib\LastMsgBoxInfoLib.cpp"
 			>
 		</File>
 		<File
 			RelativePath="src\UI\LastMsgBoxInfoLib\LastMsgBoxInfoLib.h"
+			>
+		</File>
+		<File
+			RelativePath="src\UI\LastMsgBoxInfoLib\Toolhelp.h"
 			>
 		</File>
 	</Files>

@@ -1,2 +1,2 @@
 
-int main_winsock(int argc, char **argv);
+void socket_server_event();
