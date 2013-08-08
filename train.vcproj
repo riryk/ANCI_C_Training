@@ -249,6 +249,10 @@
 						RelativePath="src\include\network\winsocketeventselect.h"
 						>
 					</File>
+					<File
+						RelativePath="src\include\network\winsocketoverlapped.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="inout"
@@ -412,6 +416,10 @@
 				</File>
 				<File
 					RelativePath="src\network\winsocketeventselect.c"
+					>
+				</File>
+				<File
+					RelativePath="src\network\winsocketoverlapped.c"
 					>
 				</File>
 			</Filter>
