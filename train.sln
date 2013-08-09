@@ -82,6 +82,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LastMsgBoxInfo", "LastMsgBo
 		{D24E1FEF-4501-4052-A6FA-DB091249D90A} = {D24E1FEF-4501-4052-A6FA-DB091249D90A}
 	EndProjectSection
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SEHTerm", "SEHTerm.vcproj", "{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -224,6 +226,10 @@ Global
 		{6CFDF6DA-9EE2-4AFB-95CE-E3FBFF253BEE}.Debug|Win32.Build.0 = Debug|Win32
 		{6CFDF6DA-9EE2-4AFB-95CE-E3FBFF253BEE}.Release|Win32.ActiveCfg = Release|Win32
 		{6CFDF6DA-9EE2-4AFB-95CE-E3FBFF253BEE}.Release|Win32.Build.0 = Release|Win32
+		{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}.Debug|Win32.ActiveCfg = Debug|Win32
+		{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}.Debug|Win32.Build.0 = Debug|Win32
+		{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}.Release|Win32.ActiveCfg = Release|Win32
+		{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
