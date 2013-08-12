@@ -1099,3 +1099,79 @@ BOOL StringReverseA(PSTR pMultiByteStr, DWORD cchLength)
    HeapFree(GetProcessHeap(), 0, pWideCharStr);
    return (fOk);
 }
+
+char* RobustStrCpy(char* strDestination, const char* strSource)
+{
+   __try
+   {
+	   strcpy(strDestination, strSource);
+   }
+   __except (EXCEPTION_EXECUTE_HANDLER)
+   {
+	   // Nothing to do here
+   }
+
+   return (strDestination);
+}
+
+int RobustHowManyToken(const char* str)
+{
+   int nHowManyTokens = -1; // -1 indicates failure
+   char* strTemp = NULL;    // Assume failure
+
+   __try
+   {
+       // Allocate a temporary buffer
+       strTemp = (char*) malloc(strlen(str) + 1);
+
+	   // Copy the original string to the temporary buffer
+	   strcpy(strTemp, str);
+
+	   // Get the first token
+	   /* A sequence of calls to this function split str into tokens,
+	    * which are sequences of contiguous characters separated 
+		* by any of the characters that are part of delimiters. 
+		*
+		* On a first call, the function expects a C string as argument for str, 
+		* whose first character is used as the starting location to scan for tokens. 
+		* In subsequent calls, the function expects a null pointer 
+		* and uses the position right after the end of last token 
+		* as the new starting location for scanning.
+	    */
+	   char* pszToken = strtok(strTemp, " ");
+
+	   // Iterate through all the tokens
+	   for (; pszToken != NULL; pszToken = strtok(NULL, " "))
+          nHowManyTokens++;
+
+       nHowManyTokens++; // Add 1 since we started at -1
+   }
+   __except(EXCEPTION_EXECUTE_HANDLER)
+   {
+       // Nothing to do here 
+   }
+
+   // Free the temporary buffer (guaranteed)
+   free(strTemp);
+
+   return (nHowManyTokens);
+}
+
+PBYTE RobustMemDup(PByte pbSrc, size_t cb)
+{
+   PBYTE pbDup = NULL;  // Assume failure
+
+   __try
+   {
+       // Allocate a buffer for the duplicate memory block
+       pbDup = (PBYTE)malloc(cb);
+	   memcpy(pbDup, pbSrc, cb);
+   }
+   __except (EXCEPTION_EXECUTE_HANDLER)
+   {
+       free(pbDup); 
+       pbDup = NULL;
+   }
+
+   return (pbDup);
+}
