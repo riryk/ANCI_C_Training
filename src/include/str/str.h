@@ -58,3 +58,4 @@ char* Dec2BinBitwise(long i);
 
 int mod7(int x);
 unsigned int BinSearch(unsigned int* Array, unsigned int len, unsigned int Val);
+void FunclinRoosevelti();

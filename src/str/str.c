@@ -1121,6 +1121,7 @@ int RobustHowManyToken(const char* str)
 
    __try
    {
+	   char* pszToken;
        // Allocate a temporary buffer
        strTemp = (char*) malloc(strlen(str) + 1);
 
@@ -1138,7 +1139,7 @@ int RobustHowManyToken(const char* str)
 		* and uses the position right after the end of last token 
 		* as the new starting location for scanning.
 	    */
-	   char* pszToken = strtok(strTemp, " ");
+	   pszToken = strtok(strTemp, " ");
 
 	   // Iterate through all the tokens
 	   for (; pszToken != NULL; pszToken = strtok(NULL, " "))
@@ -1157,7 +1158,7 @@ int RobustHowManyToken(const char* str)
    return (nHowManyTokens);
 }
 
-PBYTE RobustMemDup(PByte pbSrc, size_t cb)
+PBYTE RobustMemDup(PBYTE pbSrc, size_t cb)
 {
    PBYTE pbDup = NULL;  // Assume failure
 
@@ -1174,4 +1175,33 @@ PBYTE RobustMemDup(PByte pbSrc, size_t cb)
    }
 
    return (pbDup);
+}
+
+TCHAR g_szBuffer[100];
+
+LONG OilFilter1(TCHAR **ppchBuffer)
+{
+   if (*ppchBuffer == NULL)
+   {
+      *ppchBuffer == g_szBuffer;         
+	  return (EXCEPTION_CONTINUE_EXECUTION);
+   }
+   return (EXCEPTION_EXECUTE_HANDLER);
+}
+
+void FunclinRoosevelti()
+{
+   int x = 0;
+   TCHAR *pchBuffer = NULL;
+
+   __try
+   {
+      *pchBuffer = TEXT('J');
+	  x = 5 / x;
+   }
+   __except (OilFilter1(&pchBuffer))
+   {
+      MessageBox(NULL, TEXT("An exception occured"), NULL, MB_OK); 
+   }
+   MessageBox(NULL, TEXT("Function completed"), NULL, MB_OK); 
 }
