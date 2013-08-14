@@ -1205,3 +1205,51 @@ void FunclinRoosevelti()
    }
    MessageBox(NULL, TEXT("Function completed"), NULL, MB_OK); 
 }
+
+void TestException()
+{
+   int x, y;
+
+   __try
+   {
+      x = 0;
+	  y = 4 / x; // y is used later so this
+   }
+   __except ((GetExceptionCode() == EXCEPTION_INT_DIVIDE_BY_ZERO) ? 
+              EXCEPTION_EXECUTE_HANDLER : 
+              EXCEPTION_CONTINUE_SEARCH)
+   {
+	   // Handle divide by zero exception.
+   }
+}
+
+void TestException1()
+{
+   int x, y;
+
+   __try
+   {
+      y = 0;
+	  x = 4 / y; // y is used later so this
+   }
+   __except (
+	   ((GetExceptionCode() == EXCEPTION_ACCESS_VIOLATION) || 
+	    (GetExceptionCode() == EXCEPTION_INT_DIVIDE_BY_ZERO) ) ? 
+       EXCEPTION_EXECUTE_HANDLER : 
+       EXCEPTION_CONTINUE_SEARCH)
+   {
+	   // Handle divide by zero exception.
+       switch (GetExceptionCode())
+	   {
+	   case EXCEPTION_ACCESS_VIOLATION:
+		   // Handle the access violation.
+		   // ...
+		   break;
+
+	   case EXCEPTION_INT_DIVIDE_BY_ZERO:
+           // Handle the integer divide by 0.
+		   // ...
+		   break;
+	   }
+   }
+}

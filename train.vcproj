@@ -770,19 +770,7 @@
 </VisualStudioProject>
 
 
- I talked to Rob Finerty about this one -- 
- his direction is that, one way or another, 
- a user with appropriate permissions or our best guess at them 
- should be able to flip the slider to show all valuations 
  
- and be able to see these "orphaned" valuations on the CHUP side. 
 
- 
- He didn't really care whether this is accomplished 
- by creating a "default" user to assign them to when necessary on the CHUP side or in some other way, 
- 
- so long as there is some way for the valuations to be visible in CHUP.
-
- 
  
  
