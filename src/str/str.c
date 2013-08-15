@@ -1253,3 +1253,75 @@ void TestException1()
 	   }
    }
 }
+
+void FunkSkunk()
+{
+    // Declare variables that we can use to save the exception
+    // record and the context if an exception should occur.
+	EXCEPTION_RECORD SavedExceptRec;
+	CONTEXT SavedContext;
+	// ...
+    __try
+	{
+		// ... throw some exception
+	}
+	__except
+	(
+	SavedExceptRec = *(GetExceptionInformation())->ExceptionRecord,
+	SavedContext = *(GetExceptionInformation())->ContextRecord,
+    EXCEPTION_EXECUTE_HANDLER	
+	)
+	{
+		// We can use the SavedExceptRec and SavedContext
+		// variables inside the handler code block.
+		switch (SavedExceptRec.ExceptionCode)
+		{
+			// ...
+		}
+	}
+}
+
+LONG ExpFltr(LPEXCEPTION_POINTERS pep)
+{
+    TCHAR szBuf[300], *p;
+	PEXCEPTION_RECORD pER = pep->ExceptionRecord;
+	DWORD dwExceptionCode = pER->ExceptionCode;
+    
+    StringCchPrintf(szBuf, 
+		            _countof(szBuf), 
+					TEXT("Code = %x, Address = %p"), 
+					dwExceptionCode, 
+					pER->ExceptionAddress);
+
+	// Find the end of the string.
+	p = _tcschr(szBuf, TEXT('0'));
+
+	// I used a switch statement in case Microsoft adds
+	// information for other exception codes in the future.
+	switch (dwExceptionCode)
+	{
+	case EXCEPTION_ACCESS_VIOLATION:
+		StringCchPrintf(p, _countof(szBuf),
+			TEXT("\n--> Attempt to %s data at address %p"),
+			pER->ExceptionInformation[0] ? TEXT("write") : TEXT("read"),
+            pER->ExceptionInformation[1]);
+		break;
+	default:
+		break;
+	}
+	MessageBox(NULL, szBuf, TEXT("Exception"), MB_OK | MB_ICONEXCLAMATION);
+
+	return (EXCEPTION_CONTINUE_SEARCH);
+}
+
+void TestExpFltr()
+{
+	__try
+	{
+		// ...
+	}
+	__except (ExpFltr(GetExceptionInformation()))
+	{
+		// ...
+	}
+}

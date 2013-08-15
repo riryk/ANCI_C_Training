@@ -261,6 +261,10 @@
 						RelativePath="src\include\network\winsocketcallback.h"
 						>
 					</File>
+					<File
+						RelativePath="src\include\network\winsocketcomport.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="inout"
@@ -436,6 +440,10 @@
 				</File>
 				<File
 					RelativePath="src\network\winsocketcallback.c"
+					>
+				</File>
+				<File
+					RelativePath="src\network\winsocketcomport.c"
 					>
 				</File>
 			</Filter>

@@ -7,7 +7,7 @@
 #include <wchar.h>
 #include <stdio.h>
 #include <windows.h>
-
+#include <strsafe.h>
 
 /* Those flags are used to determine whether pointer is inside
  * or outside a word.
