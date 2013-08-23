@@ -84,6 +84,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "LastMsgBoxInfo", "LastMsgBo
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "SEHTerm", "SEHTerm.vcproj", "{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Spreadsheet", "Spreadsheet.vcproj", "{99D20942-DB33-45C5-BACB-23F96C17AE9E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Win32 = Debug|Win32
@@ -230,6 +232,10 @@ Global
 		{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}.Debug|Win32.Build.0 = Debug|Win32
 		{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}.Release|Win32.ActiveCfg = Release|Win32
 		{D73C199A-7910-4E3D-A8D6-630D2ED98B1B}.Release|Win32.Build.0 = Release|Win32
+		{99D20942-DB33-45C5-BACB-23F96C17AE9E}.Debug|Win32.ActiveCfg = Debug|Win32
+		{99D20942-DB33-45C5-BACB-23F96C17AE9E}.Debug|Win32.Build.0 = Debug|Win32
+		{99D20942-DB33-45C5-BACB-23F96C17AE9E}.Release|Win32.ActiveCfg = Release|Win32
+		{99D20942-DB33-45C5-BACB-23F96C17AE9E}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

@@ -265,6 +265,10 @@
 						RelativePath="src\include\network\winsocketcomport.h"
 						>
 					</File>
+					<File
+						RelativePath="src\include\network\winsocketscalable.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="inout"
@@ -444,6 +448,10 @@
 				</File>
 				<File
 					RelativePath="src\network\winsocketcomport.c"
+					>
+				</File>
+				<File
+					RelativePath="src\network\winsocketscalable.c"
 					>
 				</File>
 			</Filter>
