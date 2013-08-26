@@ -7,11 +7,11 @@ Notices: Copyright (c) 2008 Jeffrey Richter & Christophe Nasarre
 #include "CmnHdr.h"     /* See Appendix A. */
 #include <tchar.h>
 #include <StrSafe.h>
-#include <winsock2.h>
-#include <ws2tcpip.h>
+//#include <winsock2.h>
+//#include <ws2tcpip.h>
 #include <stdio.h>
 
-#pragma comment(lib, "Ws2_32.lib")
+//#pragma comment(lib, "Ws2_32.lib")
 
 //////////////////////////////////////////////////////////////////////////////
 
@@ -60,7 +60,7 @@ VOID CALLBACK MsgBoxTimeoutCallback(
    }
 }
 
-void TcpClient()
+/*void TcpClient()
 {
    WSAData      wsaData;
    SOCKET       s;
@@ -103,7 +103,7 @@ void TcpClient()
    //At this point you can send or receive data on soket s
    closesocket(s);
    WSACleanup();
-}
+}*/
 
 int WINAPI _tWinMain(HINSTANCE, HINSTANCE, PTSTR, int) 
 {
