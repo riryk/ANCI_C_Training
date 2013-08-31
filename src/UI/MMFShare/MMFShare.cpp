@@ -125,7 +125,7 @@ void Dlg_OnCommand(HWND hWnd, int id, HWND hWndCtl, UINT codeNotify) {
          } else {
             chMB("Can't open mapping.");
          }
-         break;
+         break; 
    }
 }
 
