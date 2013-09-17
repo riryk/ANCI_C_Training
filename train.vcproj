@@ -246,6 +246,14 @@
 						>
 					</File>
 					<File
+						RelativePath="src\include\network\winsocketcallback.h"
+						>
+					</File>
+					<File
+						RelativePath="src\include\network\winsocketcomport.h"
+						>
+					</File>
+					<File
 						RelativePath="src\include\network\winsocketeventselect.h"
 						>
 					</File>
@@ -255,14 +263,6 @@
 					</File>
 					<File
 						RelativePath="src\include\network\winsocketoverlapped1.h"
-						>
-					</File>
-					<File
-						RelativePath="src\include\network\winsocketcallback.h"
-						>
-					</File>
-					<File
-						RelativePath="src\include\network\winsocketcomport.h"
 						>
 					</File>
 					<File
@@ -427,7 +427,11 @@
 					>
 				</File>
 				<File
-					RelativePath="src\network\winsocketselect.c"
+					RelativePath="src\network\winsocketcallback.c"
+					>
+				</File>
+				<File
+					RelativePath="src\network\winsocketcomport.c"
 					>
 				</File>
 				<File
@@ -443,15 +447,11 @@
 					>
 				</File>
 				<File
-					RelativePath="src\network\winsocketcallback.c"
-					>
-				</File>
-				<File
-					RelativePath="src\network\winsocketcomport.c"
-					>
-				</File>
-				<File
 					RelativePath="src\network\winsocketscalable.c"
+					>
+				</File>
+				<File
+					RelativePath="src\network\winsocketselect.c"
 					>
 				</File>
 			</Filter>
@@ -590,6 +590,10 @@
 						>
 					</File>
 					<File
+						RelativePath="src\main\GCJ2013\round_2_3.c"
+						>
+					</File>
+					<File
 						RelativePath="src\main\GCJ2013\round_3_1.c"
 						>
 					</File>
@@ -603,6 +607,10 @@
 					</File>
 					<File
 						RelativePath="src\main\GCJ2013\round_3_4.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\final_1.c"
 						>
 					</File>
 				</Filter>
@@ -784,9 +792,3 @@
 	<Globals>
 	</Globals>
 </VisualStudioProject>
-
-
- 
-
- 
- 
