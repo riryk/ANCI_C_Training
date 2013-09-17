@@ -1,7 +1,6 @@
 
 #include <stdio.h>
 
-
 #define MAXWORD 100
 #define HASHSIZE 101
 
