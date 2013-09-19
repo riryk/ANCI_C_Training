@@ -5,3 +5,8 @@
 #include <stdlib.h>
 
 //int WinsockSelectServer(int argc, char **argv);
+
+void main_multicast(BOOL bReceive);
+void main_multicast_receive();
+void main_multicast_send();
+int main_address_list();
