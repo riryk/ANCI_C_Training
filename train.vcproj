@@ -273,6 +273,10 @@
 					    RelativePath="src\include\network\winsockmulticast_IP_TTL.h"
 					    >
 				    </File>
+					<File
+					    RelativePath="src\include\network\winsockheaders.h"
+					    >
+				    </File>
 				</Filter>
 				<Filter
 					Name="inout"
@@ -460,6 +464,10 @@
 				</File>
 				<File
 					RelativePath="src\network\winsockmulticast_IP_TTL.c"
+					>
+				</File>
+				<File
+					RelativePath="src\network\winsockheaders.c"
 					>
 				</File>
 			</Filter>

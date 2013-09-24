@@ -12,3 +12,5 @@ void main_multicast_send();
 int main_address_list();
 int main_addr_list_query(int argc, char **argv);
 int main_get_atm_address(int argc, char **argv);
+int main_sio_get_broadcast_address(int argc, char **argv);
+int main_sio_keepalive_vals(int argc, char **argv);
