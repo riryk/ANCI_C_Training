@@ -17,3 +17,6 @@ int main_sio_keepalive_vals(int argc, char **argv);
 int main_sio_routing_interface_query(int argc, char **argv);
 int main_so_acceptconn(int argc, char **argv);
 int main_so_broadcast(int argc, char **argv, BOOL bSender);
+int main_protocol_info(int argc, char **argv);
+int main_rcvtimeo(int argc, char **argv);
+int main_so_type(int argc, char **argv);
