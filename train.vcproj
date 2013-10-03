@@ -277,6 +277,10 @@
 					    RelativePath="src\include\network\winsockheaders.h"
 					    >
 				    </File>
+					<File
+					    RelativePath="src\include\network\winsocknamespaces.h"
+					    >
+				    </File>
 				</Filter>
 				<Filter
 					Name="inout"
@@ -467,7 +471,7 @@
 					>
 				</File>
 				<File
-					RelativePath="src\network\winsockheaders.c"
+					RelativePath="src\network\winsocknamespaces.c"
 					>
 				</File>
 			</Filter>
