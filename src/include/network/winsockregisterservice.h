@@ -4,4 +4,4 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-int main_WSAEnumNameSpaceProviders(int argc, char **argv);
+int main_register_service(int argc, char **argv);
