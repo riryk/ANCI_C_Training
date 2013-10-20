@@ -649,6 +649,10 @@
 						RelativePath="src\main\GCJ2013\final_3.c"
 						>
 					</File>
+					<File
+						RelativePath="src\main\GCJ2013\final_4.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
