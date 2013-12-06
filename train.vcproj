@@ -270,21 +270,21 @@
 						>
 					</File>
 					<File
-					    RelativePath="src\include\network\winsockmulticast_IP_TTL.h"
-					    >
-				    </File>
+						RelativePath="src\include\network\winsockheaders.h"
+						>
+					</File>
 					<File
-					    RelativePath="src\include\network\winsockheaders.h"
-					    >
-				    </File>
+						RelativePath="src\include\network\winsockmulticast_IP_TTL.h"
+						>
+					</File>
 					<File
-					    RelativePath="src\include\network\winsocknamespaces.h"
-					    >
-				    </File>
+						RelativePath="src\include\network\winsocknamespaces.h"
+						>
+					</File>
 					<File
-					    RelativePath="src\include\network\winsockregisterservice.h"
-					    >
-				    </File>
+						RelativePath="src\include\network\winsockregisterservice.h"
+						>
+					</File>
 				</Filter>
 				<Filter
 					Name="inout"
@@ -610,6 +610,26 @@
 					Name="GCJ2013"
 					>
 					<File
+						RelativePath="src\main\GCJ2013\final_1.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\final_2.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\final_3.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\final_4.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\final_5.c"
+						>
+					</File>
+					<File
 						RelativePath="src\main\GCJ2013\round_2_1.c"
 						>
 					</File>
@@ -619,6 +639,10 @@
 					</File>
 					<File
 						RelativePath="src\main\GCJ2013\round_2_3.c"
+						>
+					</File>
+					<File
+						RelativePath="src\main\GCJ2013\round_2_4.c"
 						>
 					</File>
 					<File
@@ -637,20 +661,12 @@
 						RelativePath="src\main\GCJ2013\round_3_4.c"
 						>
 					</File>
+				</Filter>
+				<Filter
+					Name="GCJ2010"
+					>
 					<File
-						RelativePath="src\main\GCJ2013\final_1.c"
-						>
-					</File>
-					<File
-						RelativePath="src\main\GCJ2013\final_2.c"
-						>
-					</File>
-					<File
-						RelativePath="src\main\GCJ2013\final_3.c"
-						>
-					</File>
-					<File
-						RelativePath="src\main\GCJ2013\final_4.c"
+						RelativePath=".\qual_2.c"
 						>
 					</File>
 				</Filter>
