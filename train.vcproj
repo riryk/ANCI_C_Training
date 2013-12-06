@@ -669,6 +669,10 @@
 						RelativePath=".\qual_2.c"
 						>
 					</File>
+					<File
+						RelativePath="src\main\GCJ2013\final_5.c"
+						>
+					</File>
 				</Filter>
 			</Filter>
 			<Filter
