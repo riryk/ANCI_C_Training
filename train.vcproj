@@ -471,6 +471,10 @@
 					>
 				</File>
 				<File
+					RelativePath="src\network\winsockmulticast.c"
+					>
+				</File>
+				<File
 					RelativePath="src\network\winsockmulticast_IP_TTL.c"
 					>
 				</File>
@@ -630,6 +634,10 @@
 						>
 					</File>
 					<File
+						RelativePath="src\main\GCJ2013\qual_3.c"
+						>
+					</File>
+					<File
 						RelativePath="src\main\GCJ2013\round_2_1.c"
 						>
 					</File>
@@ -666,11 +674,11 @@
 					Name="GCJ2010"
 					>
 					<File
-						RelativePath=".\qual_2.c"
+						RelativePath="src\main\GCJ2013\final_5.c"
 						>
 					</File>
 					<File
-						RelativePath="src\main\GCJ2013\final_5.c"
+						RelativePath="src\main\GCJ2010\qual_2.c"
 						>
 					</File>
 				</Filter>
